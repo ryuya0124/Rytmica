@@ -123,3 +123,13 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+msix_config:
+  display_name: Rytmica
+  publisher_display_name: ryuya
+  identity_name: Rytmica
+  publisher: CN=ryuya
+  version: 2.2.23.0
+  logo_path: assets/icon/icon/icon.jpg
+  store_logo_path: assets/icon/icon/icon.jpg
+  install_certificate: false
