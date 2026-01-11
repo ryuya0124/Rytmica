@@ -193,7 +193,7 @@ jobs:
   # Windows ビルド (ARM64)
   # ============================================================
   build-windows-arm64:
-    runs-on: windows-latest
+    runs-on: windows-arm64
     continue-on-error: true # クロスビルド環境が整っていない可能性があるためエラーでも完了とする
 
     steps:
@@ -222,7 +222,9 @@ jobs:
       run: flutter gen-l10n
 
     - name: Build Windows ARM64
-      run: flutter build windows --release --target-platform windows-arm64
+      # Windowsビルドはホストマシンのアーキテクチャに依存します。
+      # ARM64ランナーで実行すれば自動的にARM64ビルドになります。
+      run: flutter build windows --release
 
     - name: Package Windows ARM64
       run: |
