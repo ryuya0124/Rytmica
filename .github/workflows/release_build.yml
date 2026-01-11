@@ -193,7 +193,7 @@ jobs:
   # Windows ビルド (ARM64)
   # ============================================================
   build-windows-arm64:
-    runs-on: windows-arm64
+    runs-on: windows-11-arm
     continue-on-error: true # クロスビルド環境が整っていない可能性があるためエラーでも完了とする
 
     steps:
