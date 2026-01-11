@@ -58,6 +58,7 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
   flutter_launcher_icons: ^0.14.4
+  msix: ^3.16.7
 
 # アプリアイコン設定
 flutter_launcher_icons:

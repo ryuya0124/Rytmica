@@ -133,9 +133,9 @@ jobs:
         path: build/app/outputs/flutter-apk/Rytmica.apk
 
   # ============================================================
-  # Windows ビルド (x64 / ARM64 + MSIX)
+  # Windows ビルド (x64)
   # ============================================================
-  build-windows:
+  build-windows-x64:
     runs-on: windows-latest
 
     steps:
@@ -172,18 +172,6 @@ jobs:
         xcopy /E /I /Y build\windows\x64\runner\Release dist\Rytmica-x64
       shell: cmd
 
-    - name: Build Windows ARM64
-      run: flutter build windows --release --target-platform windows-arm64
-      continue-on-error: true
-
-    - name: Package Windows ARM64
-      run: |
-        if (Test-Path "build\windows\arm64\runner\Release") {
-          xcopy /E /I /Y build\windows\arm64\runner\Release dist\Rytmica-arm64
-        }
-      shell: powershell
-      continue-on-error: true
-
     - name: Build Windows MSIX (Universal)
       run: dart run msix:create --build-windows false
       continue-on-error: true
@@ -194,17 +182,60 @@ jobs:
         name: Rytmica-Windows-x64
         path: dist/Rytmica-x64
 
-    - name: Upload Windows ARM64 artifact
-      uses: actions/upload-artifact@v4
-      if: hashFiles('dist/Rytmica-arm64') != ''
-      with:
-        name: Rytmica-Windows-arm64
-        path: dist/Rytmica-arm64
-
     - name: Upload Windows MSIX artifact
       uses: actions/upload-artifact@v4
       if: hashFiles('build/windows/**/*.msix') != ''
       with:
         name: rytmica-windows-msix
         path: build/windows/**/*.msix
+
+  # ============================================================
+  # Windows ビルド (ARM64)
+  # ============================================================
+  build-windows-arm64:
+    runs-on: windows-latest
+    continue-on-error: true # クロスビルド環境が整っていない可能性があるためエラーでも完了とする
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Cache Flutter SDK
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~\AppData\Local\Pub\Cache
+          ~\.flutter
+        key: ${{ runner.os }}-flutter-${{ hashFiles('**/pubspec.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-flutter-
+
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.38.3'
+
+    - name: Install dependencies
+      run: flutter pub get
+
+    - name: Generate l10n
+      run: flutter gen-l10n
+
+    - name: Build Windows ARM64
+      run: flutter build windows --release --target-platform windows-arm64
+
+    - name: Package Windows ARM64
+      run: |
+        mkdir -p dist
+        if (Test-Path "build\windows\arm64\runner\Release") {
+          xcopy /E /I /Y build\windows\arm64\runner\Release dist\Rytmica-arm64
+        }
+      shell: powershell
+
+    - name: Upload Windows ARM64 artifact
+      uses: actions/upload-artifact@v4
+      if: hashFiles('dist/Rytmica-arm64') != ''
+      with:
+        name: Rytmica-Windows-arm64
+        path: dist/Rytmica-arm64
 
