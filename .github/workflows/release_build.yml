@@ -129,7 +129,7 @@ jobs:
     - name: Upload Android APK
       uses: actions/upload-artifact@v4
       with:
-        name: rytmica-android
+        name: Rytmica-Android
         path: build/app/outputs/flutter-apk/Rytmica.apk
 
   # ============================================================
@@ -186,7 +186,7 @@ jobs:
       uses: actions/upload-artifact@v4
       if: hashFiles('build/windows/**/*.msix') != ''
       with:
-        name: rytmica-windows-msix
+        name: Rytmica-Windows-MSIX
         path: build/windows/**/*.msix
 
   # ============================================================

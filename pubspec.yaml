@@ -133,3 +133,4 @@ msix_config:
   logo_path: assets/icon/icon/icon.jpg
   store_logo_path: assets/icon/icon/icon.jpg
   install_certificate: false
+  output_name: Rytmica
