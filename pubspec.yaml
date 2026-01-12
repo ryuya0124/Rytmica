@@ -127,8 +127,8 @@ flutter:
 msix_config:
   display_name: Rytmica
   publisher_display_name: ryuya
-  identity_name: Rytmica
-  publisher: CN=ryuya
+  identity_name: ryuya.Rytmica
+  publisher: CN=2492F63A-A943-4F47-BCBE-6BCFF558B3D9
   version: 2.2.23.0
   logo_path: assets/icon/icon/icon.jpg
   store_logo_path: assets/icon/icon/icon.jpg
