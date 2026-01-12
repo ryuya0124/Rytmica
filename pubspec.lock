@@ -280,10 +280,9 @@ packages:
   metronome:
     dependency: "direct main"
     description:
-      name: metronome
-      sha256: "223ed76f0737e7b0974e7dd9ca3bf23a33db6752653f9961398198bbbb70fcd9"
-      url: "https://pub.dev"
-    source: hosted
+      path: "packages/metronome"
+      relative: true
+    source: path
     version: "2.0.7"
   msix:
     dependency: "direct dev"
