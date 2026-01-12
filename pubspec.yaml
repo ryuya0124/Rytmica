@@ -129,9 +129,9 @@ msix_config:
   publisher_display_name: ryuya
   identity_name: ryuya.Rytmica
   publisher: CN=2492F63A-A943-4F47-BCBE-6BCFF558B3D9
-  version: 2.2.24.0
-  logo_path: assets/icon/windows/icon-256.jpg
-  store_logo_path: assets/icon/windows/icon-256.jpg
+  version: 2.2.25.0
+  logo_path: assets/icon/windows/icon-256.png
+  store_logo_path: assets/icon/windows/icon-256.png
   install_certificate: false
   output_name: Rytmica
   store: true
