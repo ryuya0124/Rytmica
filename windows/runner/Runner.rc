@@ -94,7 +94,7 @@ BEGIN
             VALUE "FileVersion", VERSION_AS_STRING "\0"
             VALUE "InternalName", "Rytmica" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2024 ryuya-dev. All rights reserved." "\0"
-            VALUE "OriginalFilename", "musical_note_calculator.exe" "\0"
+            VALUE "OriginalFilename", "Rytmica.exe" "\0"
             VALUE "ProductName", "Rytmica" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
