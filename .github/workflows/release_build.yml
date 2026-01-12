@@ -172,9 +172,8 @@ jobs:
         xcopy /E /I /Y build\windows\x64\runner\Release dist\Rytmica-x64
       shell: cmd
 
-    - name: Build Windows MSIX (Universal)
-      run: dart run msix:create --build-windows false
-      continue-on-error: true
+    - name: Build Windows MSIX (Store)
+      run: dart run msix:create
 
     - name: Upload Windows x64 artifact
       uses: actions/upload-artifact@v4
