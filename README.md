@@ -24,7 +24,8 @@ Linux版とAndroid版は[GitHubの最新リリース](https://github.com/ryuya01
 ## アプリ画面例
 | 音符計算画面 | 音符回数画面 |
 | --- | --- |
-| ![音符計算画面](https://github.com/user-attachments/assets/31724174-d531-4497-8d14-f493c64bb9df) | ![音符回数画面](https://github.com/user-attachments/assets/bf9d286c-aad7-42a8-bdc7-503c28cd42c7) |
+| ![音符計算画面](<img width="230" height="499" alt="image" src="https://github.com/user-attachments/assets/f52d86d5-cd0f-4ac9-9940-13a5a58f25e6" />
+) | ![音符回数画面](https://github.com/user-attachments/assets/bf9d286c-aad7-42a8-bdc7-503c28cd42c7) |
 
 | 音符換算画面 | 音符換算画面(展開) |
 | --- | --- |
