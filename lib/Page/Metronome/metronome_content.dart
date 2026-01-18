@@ -64,6 +64,7 @@ class MetronomeContentState extends State<MetronomeContent>
     _animationController = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: (60000 / _currentQuarterBpm).round()),
+      value: 0.5, // 初期位置を中央に設定
     );
     // 振り子の動き: -1.0 (左) <-> 1.0 (右)
     // easeInOutSine で自然な減速・加速を表現
@@ -202,7 +203,16 @@ class MetronomeContentState extends State<MetronomeContent>
     debugPrint('metronome.stop() called');
 
     _animationController.stop();
-    _animationController.reset();
+    // 現在のBPMに基づいて戻る時間を計算 (例: 4分音符の時間の半分)
+    // 速いBPMなら速く、遅いBPMならゆっくり戻る
+    final returnDurationMs = (30000 / _currentQuarterBpm).round();
+    
+    _animationController.animateTo(
+      0.5,
+      // 極端に遅くならないように上限などを設けても良いが、まずはBPMに忠実に従う
+      duration: Duration(milliseconds: returnDurationMs),
+      curve: Curves.easeOut,
+    );
 
     setState(() {
       isPlaying = false;
