@@ -13,7 +13,7 @@ macOS版とiOS/iPadOS版がApp Storeで公開されています。
 
 ### Microsoft Store (Windows)
 <a href="https://apps.microsoft.com/detail/9n7hmk8tn36x?mode=direct">
-	<img src="https://get.microsoft.com/images/ja-jp%20dark.svg" width="200"/>
+	<img src="assets/microsoft-store-badge-ja.svg" width="200"/>
 </a>
 
 Windows版がMicrosoft Storeで公開されています。
