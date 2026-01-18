@@ -12,7 +12,9 @@
 macOS版とiOS/iPadOS版がApp Storeで公開されています。
 
 ### Microsoft Store (Windows)
-Windows版はMicrosoft Storeで公開予定です。
+[![Get it from Microsoft](https://get.microsoft.com/images/ja-jp%20dark.svg)](https://apps.microsoft.com/detail/9n7hmk8tn36x?hl=ja-JP&gl=JP)
+
+Windows版がMicrosoft Storeで公開されています。
 
 ### Linux / Android
 Linux版とAndroid版は[GitHubの最新リリース](https://github.com/ryuya0124/rytmica/releases/latest)からダウンロードできます。
