@@ -325,7 +325,9 @@ class MetronomeContentState extends State<MetronomeContent>
 
   double convertNoteDurationToBPM(double bpm, String note) {
     final noteData = findNoteData(note);
-    return calculateNoteBPM(bpm, noteData, 4);
+    // 4分音符基準でBPMを計算
+    final quarterNote = findNoteData('quarter_note');
+    return calculateNoteBPM(bpm, noteData, quarterNote);
   }
 
   int get _currentBeats {

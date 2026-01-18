@@ -38,12 +38,24 @@ NoteData findNoteData(String name) {
 }
 
 /// ノートをn分音符に換算した場合のBPMを計算する関数
-double calculateNoteBPM(double bpm, NoteData note, double afterNote) {
-  if (note.dotted) {
-    return bpm * (note.note / afterNote) / 1.5;
-  } else {
-    return bpm * (note.note / afterNote);
+/// [bpm] 元のBPM
+/// [baseNote] 元の音符
+/// [targetNote] 換算先の音符
+double calculateNoteBPM(double bpm, NoteData baseNote, NoteData targetNote) {
+  // 基本計算: BPM * (元の音符比率 / 換算先の音符比率)
+  double result = bpm * (baseNote.note / targetNote.note);
+  
+  // 元の音符が付点の場合、1.5倍長いので割る
+  if (baseNote.dotted) {
+    result /= 1.5;
   }
+  
+  // 換算先の音符が付点の場合、1.5倍長いので掛ける
+  if (targetNote.dotted) {
+    result *= 1.5;
+  }
+  
+  return result;
 }
 
 /// ノートの長さを計算

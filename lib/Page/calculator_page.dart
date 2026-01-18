@@ -74,7 +74,7 @@ class CalculatorPageState extends State<CalculatorPage> {
     for (var baseNote in notes) {
       calculatedNotes[baseNote.name] = notes.map((targetNote) {
         final double targetBPM =
-            calculateNoteBPM(bpm, baseNote, targetNote.note);
+            calculateNoteBPM(bpm, baseNote, targetNote);
         return {
           'note': targetNote.name,
           'bpm': targetBPM
