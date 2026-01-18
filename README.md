@@ -24,7 +24,7 @@ Linux版とAndroid版は[GitHubの最新リリース](https://github.com/ryuya01
 ## アプリ画面例
 | 音符計算画面 | 音符回数画面 |
 | --- | --- |
-| ![音符計算画面](<img width="230" height="499" alt="image" src="https://github.com/user-attachments/assets/f52d86d5-cd0f-4ac9-9940-13a5a58f25e6" />
+| ![音符計算画面](https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/d7/5c/8e/d75c8e4f-850f-03e8-7ff1-24a2432ad412/Simulator_Screenshot_-_iPhone_17_Pro_Max_-_2026-01-12_at_00.35.47.png/230x499bb.webp
 ) | ![音符回数画面](https://github.com/user-attachments/assets/bf9d286c-aad7-42a8-bdc7-503c28cd42c7) |
 
 | 音符換算画面 | 音符換算画面(展開) |
