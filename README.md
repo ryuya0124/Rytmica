@@ -24,19 +24,15 @@ Linux版とAndroid版は[GitHubの最新リリース](https://github.com/ryuya01
 ## アプリ画面例
 | 音符計算画面 | 音符回数画面 |
 | --- | --- |
-| ![音符計算画面](https://github.com/user-attachments/assets/31724174-d531-4497-8d14-f493c64bb9df) | ![音符回数画面](https://github.com/user-attachments/assets/bf9d286c-aad7-42a8-bdc7-503c28cd42c7) |
+| ![音符計算画面](assets/screenshot1.webp) | ![音符回数画面](assets/screenshot2.webp) |
 
 | 音符換算画面 | 音符換算画面(展開) |
 | --- | --- |
-| ![音符換算画面](https://github.com/user-attachments/assets/00194d00-36c2-4aef-8ad1-fdb914e04daa) | ![音符換算画面(展開)](https://github.com/user-attachments/assets/a9e40091-57e7-4af1-b459-abeb61ddb7f1) |
+| ![音符換算画面](assets/screenshot3.webp) | ![音符換算画面(展開)](assets/screenshot4.webp) |
 
 | メトロノーム画面 |  |
 | --- | --- |
-| ![メトロノーム画面](https://github.com/user-attachments/assets/b458b8eb-1446-45dd-913e-4b2020c081dd) |  |
-
-| 設定画面 | 設定画面 |
-| --- | --- |
-| ![設定画面](https://github.com/user-attachments/assets/cfb03d52-f109-4c15-830c-a2a4bf22217c) | ![設定画面](https://github.com/user-attachments/assets/bc1460df-85b6-4c2c-a5f2-0b0971c5ac90) |
+| ![メトロノーム画面](assets/screenshot5.webp) |  |
 
 
 ## 主な機能
