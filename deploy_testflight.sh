@@ -25,7 +25,7 @@ echo -e "${YELLOW}📦 pubspec.yaml から取得: バージョン ${VERSION_NAME
 # 最初に証明書を同期
 echo -e "${YELLOW}🔐 証明書を同期中...${NC}"
 cd ios
-fastlane sync_certificates
+bundle exec fastlane sync_certificates
 cd ..
 
 # Info.plistを直接書き換え（Xcodeの自動インクリメントを回避）
@@ -64,7 +64,7 @@ fi
 echo -e "${YELLOW}🚀 TestFlightにアップロード中...${NC}"
 cd ios
 
-OUTPUT=$(fastlane upload_local 2>&1) || {
+OUTPUT=$(bundle exec fastlane upload_local 2>&1) || {
     EXIT_CODE=$?
     
     # ビルド番号重複エラーチェック
