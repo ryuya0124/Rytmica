@@ -43,7 +43,7 @@ jobs:
           cache: true
 
       - name: Install Android 17 SDK
-        run: '"$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-37" "build-tools;37.0.0"'
+        run: '"$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-37.0" "build-tools;37.0.0"'
 
       - name: Restore Android release key
         env:
