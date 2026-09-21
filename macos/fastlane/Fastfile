@@ -265,7 +265,8 @@ platform :mac do
       },
       output_directory: "../build/macos/Build/Products/Release",
       output_name: "Rytmica",
-      clean: false
+      clean: false,
+      xcargs: "FLUTTER_BUILD_NAME=#{version_name} FLUTTER_BUILD_NUMBER=#{build_number}"
     )
 
     # ローカル用のApp Store Connect API認証設定

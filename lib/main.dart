@@ -1,25 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+
 import 'Page/main_page.dart'; // MainScreenのインポート
 import 'ParamData/settings_model.dart'; // SettingsModelのインポート
+
 import 'package:musical_note_calculator/l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:dynamic_color/dynamic_color.dart';
+
 import 'Theme/custom_theme.dart';
 import 'Theme/materialDark.dart';
 import 'Theme/materialLight.dart';
-import 'dart:io';
+
 import 'dart:async';
 
 void main() async {
-  print('Rytmica: Start main()');
+  debugPrint('Rytmica: Start main()');
   WidgetsFlutterBinding.ensureInitialized();
-  print('Rytmica: WidgetsFlutterBinding initialized');
-  
+  debugPrint('Rytmica: WidgetsFlutterBinding initialized');
+
   // SettingsModelを作成して初期化
   final settingsModel = SettingsModel();
-  
+
   try {
     // 10秒でタイムアウトするように設定
     await settingsModel.initialize().timeout(
@@ -28,7 +31,7 @@ void main() async {
         throw TimeoutException('Settings initialization timed out');
       },
     );
-  } catch (e, stackTrace) {
+  } catch (e) {
     // エラーが発生した場合はエラー画面を表示
     runApp(
       MaterialApp(
@@ -55,7 +58,7 @@ void main() async {
                   TextButton(
                     onPressed: () {
                       // 再試行などの処理（現状はアプリ再起動が必要）
-                    }, 
+                    },
                     child: const Text('Please restart the app'),
                   ),
                 ],
@@ -68,7 +71,7 @@ void main() async {
     // 元のmain処理を中断
     return;
   }
-  
+
   runApp(
     ChangeNotifierProvider.value(
       value: settingsModel,
@@ -94,26 +97,10 @@ class _OrientationControllerState extends State<OrientationController> {
   }
 
   void _setOrientations() {
-    // デスクトップ（Windows/macOS/Linux）は常に回転許可
-    if (Platform.isWindows || Platform.isMacOS || Platform.isLinux) {
-      SystemChrome.setPreferredOrientations(DeviceOrientation.values);
-      return;
-    }
-
-    // モバイル（Android/iOS）はデバイスサイズで判定
-    final shortestSide = MediaQuery.of(context).size.shortestSide;
-    final isTablet = shortestSide >= 600;
-
-    if (isTablet) {
-      // タブレット（iPad/Androidタブレット）: 回転許可
-      SystemChrome.setPreferredOrientations(DeviceOrientation.values);
-    } else {
-      // スマホ（iPhone/Androidスマホ）: 縦固定
-      SystemChrome.setPreferredOrientations([
-        DeviceOrientation.portraitUp,
-        DeviceOrientation.portraitDown,
-      ]);
-    }
+    // Foldables (including iPhone Duo), tablets, and resizable desktop
+    // windows must be able to transition between every orientation. The
+    // layout itself responds to the available width.
+    SystemChrome.setPreferredOrientations(DeviceOrientation.values);
   }
 
   @override
@@ -121,7 +108,6 @@ class _OrientationControllerState extends State<OrientationController> {
     return widget.child;
   }
 }
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -134,9 +120,9 @@ class MyApp extends StatelessWidget {
           builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
             final bool isDynamicColorAvailable =
                 lightDynamic != null && darkDynamic != null;
-            context
-                .read<SettingsModel>()
-                .setDynamicColorAvailability(isDynamicColorAvailable);
+            context.read<SettingsModel>().setDynamicColorAvailability(
+              isDynamicColorAvailable,
+            );
 
             return MaterialApp(
               localizationsDelegates: const [
@@ -150,30 +136,32 @@ class MyApp extends StatelessWidget {
                 Locale('ja', 'JP'),
               ],
               title: 'MyApp',
-              theme: context.read<SettingsModel>().useMaterialYou &&
+              theme:
+                  context.read<SettingsModel>().useMaterialYou &&
                       isDynamicColorAvailable
                   ? materialLightTheme(lightDynamic) // Dynamic Theme 有効かつ利用可能
                   : ThemeData.from(colorScheme: MaterialTheme.lightScheme())
-                      .copyWith(
-                      pageTransitionsTheme: const PageTransitionsTheme(
-                        builders: {
-                          TargetPlatform.android:
-                              PredictiveBackPageTransitionsBuilder(), // Androidで予測型戻るジェスチャーを有効化
-                        },
-                      ),
-                    ),
-              darkTheme: context.read<SettingsModel>().useMaterialYou &&
+                        .copyWith(
+                          pageTransitionsTheme: const PageTransitionsTheme(
+                            builders: {
+                              TargetPlatform.android:
+                                  PredictiveBackPageTransitionsBuilder(), // Androidで予測型戻るジェスチャーを有効化
+                            },
+                          ),
+                        ),
+              darkTheme:
+                  context.read<SettingsModel>().useMaterialYou &&
                       isDynamicColorAvailable
                   ? materialDarkTheme(darkDynamic) // Dynamic Theme 有効かつ利用可能
                   : ThemeData.from(colorScheme: MaterialTheme.darkScheme())
-                      .copyWith(
-                      pageTransitionsTheme: const PageTransitionsTheme(
-                        builders: {
-                          TargetPlatform.android:
-                              PredictiveBackPageTransitionsBuilder(), // Androidで予測型戻るジェスチャーを有効化
-                        },
-                      ),
-                    ),
+                        .copyWith(
+                          pageTransitionsTheme: const PageTransitionsTheme(
+                            builders: {
+                              TargetPlatform.android:
+                                  PredictiveBackPageTransitionsBuilder(), // Androidで予測型戻るジェスチャーを有効化
+                            },
+                          ),
+                        ),
               debugShowCheckedModeBanner: false,
               home: const OrientationController(
                 child: MainScreen(),

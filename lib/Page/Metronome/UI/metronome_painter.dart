@@ -24,10 +24,22 @@ class MetronomePainter extends CustomPainter {
     final double bodyHeight = size.height * 0.9;
     final double bodyBottomY = size.height;
 
-    bodyPath.moveTo(size.width / 2 - bodyTopWidth / 2, size.height - bodyHeight); // Top Left
-    bodyPath.lineTo(size.width / 2 + bodyTopWidth / 2, size.height - bodyHeight); // Top Right
-    bodyPath.lineTo(size.width / 2 + bodyBottomWidth / 2, bodyBottomY); // Bottom Right
-    bodyPath.lineTo(size.width / 2 - bodyBottomWidth / 2, bodyBottomY); // Bottom Left
+    bodyPath.moveTo(
+      size.width / 2 - bodyTopWidth / 2,
+      size.height - bodyHeight,
+    ); // Top Left
+    bodyPath.lineTo(
+      size.width / 2 + bodyTopWidth / 2,
+      size.height - bodyHeight,
+    ); // Top Right
+    bodyPath.lineTo(
+      size.width / 2 + bodyBottomWidth / 2,
+      bodyBottomY,
+    ); // Bottom Right
+    bodyPath.lineTo(
+      size.width / 2 - bodyBottomWidth / 2,
+      bodyBottomY,
+    ); // Bottom Left
     bodyPath.close();
 
     // 本体の塗りと枠線
@@ -64,7 +76,7 @@ class MetronomePainter extends CustomPainter {
     canvas.drawCircle(const Offset(0, 0), 6, pivotPaint);
 
     // 3. 重り (Bob) の位置計算
-    final double bobY = -rodLength * 0.8; 
+    final double bobY = -rodLength * 0.8;
     final double bobWidth = 24.0;
     final double bobHeight = 36.0;
 
@@ -79,7 +91,11 @@ class MetronomePainter extends CustomPainter {
 
     // 影
     canvas.drawShadow(
-        Path()..addRRect(bobRRect), Colors.black.withValues(alpha: 0.3), 4.0, true);
+      Path()..addRRect(bobRRect),
+      Colors.black.withValues(alpha: 0.3),
+      4.0,
+      true,
+    );
 
     // 重りの本体
     final Paint bobPaint = Paint()

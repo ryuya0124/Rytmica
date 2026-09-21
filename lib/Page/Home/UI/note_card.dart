@@ -5,8 +5,6 @@ import 'package:musical_note_calculator/extensions/app_localizations_extension.d
 class NoteCard extends StatelessWidget {
   final Map<String, String> note;
 
-
-  
   final VoidCallback onTap;
 
   const NoteCard({
@@ -18,7 +16,10 @@ class NoteCard extends StatelessWidget {
   static const _cardBorderRadius = BorderRadius.all(Radius.circular(16));
   static const _iconBorderRadius = BorderRadius.all(Radius.circular(12));
   static const _arrowBorderRadius = BorderRadius.all(Radius.circular(10));
-  static const _cardPadding = EdgeInsets.symmetric(horizontal: 16, vertical: 14);
+  static const _cardPadding = EdgeInsets.symmetric(
+    horizontal: 16,
+    vertical: 14,
+  );
   static const _cardMargin = EdgeInsets.symmetric(vertical: 6, horizontal: 16);
   static const _iconSize = 44.0;
   // static const _musicIcon = Icon(Icons.music_note_rounded, size: 24); // Use directly
@@ -63,7 +64,9 @@ class NoteCard extends StatelessWidget {
                       borderRadius: _iconBorderRadius,
                     ),
                     child: IconTheme(
-                      data: IconThemeData(color: colorScheme.onPrimaryContainer),
+                      data: IconThemeData(
+                        color: colorScheme.onPrimaryContainer,
+                      ),
                       child: const Icon(Icons.music_note_rounded, size: 24),
                     ),
                   ),
@@ -74,7 +77,8 @@ class NoteCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          AppLocalizations.of(context)!.getTranslation(note['name']!),
+                          AppLocalizations.of(context)!
+                              .getTranslation(note['name']!),
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 16,
@@ -104,7 +108,10 @@ class NoteCard extends StatelessWidget {
                     ),
                     child: IconTheme(
                       data: IconThemeData(color: colorScheme.onSurfaceVariant),
-                      child: const Icon(Icons.arrow_forward_ios_rounded, size: 16),
+                      child: const Icon(
+                        Icons.arrow_forward_ios_rounded,
+                        size: 16,
+                      ),
                     ),
                   ),
                 ],

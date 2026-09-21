@@ -1,8 +1,8 @@
 // ノートデータのクラス定義
 class NoteData {
-  final String name;       // ノートの名前
+  final String name; // ノートの名前
   final double note; // 元のノートの比率
-  final bool dotted;       // ドット付きかどうか
+  final bool dotted; // ドット付きかどうか
 
   NoteData(this.name, this.note, this.dotted);
 }
@@ -32,7 +32,7 @@ final List<NoteData> notes = [
 /// 該当するノートを検索する関数
 NoteData findNoteData(String name) {
   return notes.firstWhere(
-        (n) => n.name == name,
+    (n) => n.name == name,
     orElse: () => NoteData('default', 4, false), // デフォルト値
   );
 }
@@ -44,32 +44,41 @@ NoteData findNoteData(String name) {
 double calculateNoteBPM(double bpm, NoteData baseNote, NoteData targetNote) {
   // 基本計算: BPM * (元の音符比率 / 換算先の音符比率)
   double result = bpm * (baseNote.note / targetNote.note);
-  
+
   // 元の音符が付点の場合、1.5倍長いので割る
   if (baseNote.dotted) {
     result /= 1.5;
   }
-  
+
   // 換算先の音符が付点の場合、1.5倍長いので掛ける
   if (targetNote.dotted) {
     result *= 1.5;
   }
-  
+
   return result;
 }
 
 /// ノートの長さを計算
-double calculateNoteLength(double quarterNoteLength, double noteRatio, {bool isDotted = false}) {
+double calculateNoteLength(
+  double quarterNoteLength,
+  double noteRatio, {
+  bool isDotted = false,
+}) {
   final double baseLength = quarterNoteLength / noteRatio * 4;
   return isDotted ? baseLength * 1.5 : baseLength;
 }
 
 /// 指定された時間 / ノーツの長さ (秒単位)
-double calculateNoteFrequency(double bpm, num unit, double note, {bool isDotted = false}) {
+double calculateNoteFrequency(
+  double bpm,
+  num unit,
+  double note, {
+  bool isDotted = false,
+}) {
   //4分音符基準(計算式的に)
   note = note / 4;
   //付点を考慮
-  if(isDotted){
+  if (isDotted) {
     return bpm / (unit / note) / 1.5;
   } else {
     return bpm / (unit / note);

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:musical_note_calculator/l10n/app_localizations.dart';
+
 import '../../../ParamData/notes.dart';
 
 class MetronomeControls extends StatelessWidget {
@@ -150,23 +151,25 @@ class MetronomeControls extends StatelessWidget {
                   offset: const Offset(0, 8),
                   itemBuilder: (context) {
                     return [
-                      ...beatOptions.map((b) => PopupMenuItem(
-                            value: b,
-                            child: Text(
-                              formatBeatLabel(b),
-                              style: TextStyle(
-                                fontWeight: selectedBeatOption == b
-                                    ? FontWeight.bold
-                                    : FontWeight.normal,
-                                color: selectedBeatOption == b
-                                    ? colorScheme.primary
-                                    : colorScheme.onSurface,
-                              ),
+                      ...beatOptions.map(
+                        (b) => PopupMenuItem(
+                          value: b,
+                          child: Text(
+                            formatBeatLabel(b),
+                            style: TextStyle(
+                              fontWeight: selectedBeatOption == b
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
+                              color: selectedBeatOption == b
+                                  ? colorScheme.primary
+                                  : colorScheme.onSurface,
                             ),
-                          )),
+                          ),
+                        ),
+                      ),
                       PopupMenuItem(
                         value: customBeatSentinel,
-                         child: Text(
+                        child: Text(
                           localizations.otherOption,
                           style: TextStyle(
                             fontWeight: selectedBeatOption == customBeatSentinel
@@ -183,9 +186,13 @@ class MetronomeControls extends StatelessWidget {
                   onSelected: onBeatOptionChanged,
                   child: Container(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 16.0, vertical: 14.0),
+                      horizontal: 16.0,
+                      vertical: 14.0,
+                    ),
                     decoration: BoxDecoration(
-                      color: colorScheme.surfaceContainerHigh.withValues(alpha: 0.5),
+                      color: colorScheme.surfaceContainerHigh.withValues(
+                        alpha: 0.5,
+                      ),
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(
                         color: colorScheme.outline.withValues(alpha: 0.2),
@@ -220,11 +227,15 @@ class MetronomeControls extends StatelessWidget {
                 child: TextField(
                   keyboardType: TextInputType.number,
                   textAlign: TextAlign.center,
-                  controller: TextEditingController(text: customBeats?.toString() ?? ''),
+                  controller: TextEditingController(
+                    text: customBeats?.toString() ?? '',
+                  ),
                   decoration: InputDecoration(
                     labelText: localizations.beatLabel,
-                    contentPadding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 12,
+                    ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide(
@@ -232,12 +243,14 @@ class MetronomeControls extends StatelessWidget {
                       ),
                     ),
                     filled: true,
-                    fillColor: colorScheme.surfaceContainerHigh.withValues(alpha: 0.3),
+                    fillColor: colorScheme.surfaceContainerHigh.withValues(
+                      alpha: 0.3,
+                    ),
                   ),
                   onChanged: (val) {
                     final parsed = int.tryParse(val);
                     if (parsed != null) {
-                        onCustomBeatsChanged(parsed);
+                      onCustomBeatsChanged(parsed);
                     }
                   },
                 ),
@@ -276,8 +289,9 @@ class MetronomeControls extends StatelessWidget {
 
   Widget _buildToggleButton(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final buttonColor =
-        isPlaying ? colorScheme.error : colorScheme.secondaryContainer;
+    final buttonColor = isPlaying
+        ? colorScheme.error
+        : colorScheme.secondaryContainer;
 
     return SizedBox(
       width: double.infinity,

@@ -1,5 +1,9 @@
 # Project-level configuration.
 cmake_minimum_required(VERSION 3.14)
+
+# Build against the current Windows 11 26H1 SDK. Windows SDK 10.0.28000
+# remains compatible with supported earlier Windows releases at runtime.
+set(CMAKE_SYSTEM_VERSION "10.0.28000.0" CACHE STRING "Windows SDK version" FORCE)
 project(musical_note_calculator LANGUAGES CXX)
 
 # The name of the executable created for the application. Change this to change

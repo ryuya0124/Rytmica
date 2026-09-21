@@ -31,7 +31,9 @@ class AnmituCheckerPageState extends State<AnmituCheckerPage> {
   String? selectedLatePresetId;
 
   bool isDotted = false;
-  final TextEditingController noteController = TextEditingController(text: '16');
+  final TextEditingController noteController = TextEditingController(
+    text: '16',
+  );
   final FocusNode noteFocusNode = FocusNode();
 
   // 表示モード (0: Table, 1: Diagram)
@@ -116,7 +118,10 @@ class AnmituCheckerPageState extends State<AnmituCheckerPage> {
                       buildNoteInputSection(),
                       const SizedBox(height: 16),
                       // ゲーム・プリセット切り替えセクション
-                      buildGameSwitchSection(selection, settingsModel.visibleJudgmentPresetsByGame),
+                      buildGameSwitchSection(
+                        selection,
+                        settingsModel.visibleJudgmentPresetsByGame,
+                      ),
                       const SizedBox(height: 16),
                       // 広い画面では横並び、狭い画面ではタブ切り替え
                       if (isWideScreen) ...[
@@ -129,7 +134,10 @@ class AnmituCheckerPageState extends State<AnmituCheckerPage> {
                             ),
                             const SizedBox(width: 16),
                             Expanded(
-                              child: buildDiagramSection(colorScheme, settingsModel.numDecimal),
+                              child: buildDiagramSection(
+                                colorScheme,
+                                settingsModel.numDecimal,
+                              ),
                             ),
                           ],
                         ),
@@ -140,7 +148,10 @@ class AnmituCheckerPageState extends State<AnmituCheckerPage> {
                         if (_selectedViewIndex == 0)
                           buildResultSection(colorScheme)
                         else
-                          buildDiagramSection(colorScheme, settingsModel.numDecimal),
+                          buildDiagramSection(
+                            colorScheme,
+                            settingsModel.numDecimal,
+                          ),
                       ],
                     ],
                   ),
@@ -204,8 +215,10 @@ class AnmituCheckerPageState extends State<AnmituCheckerPage> {
               _calculateAnmitu();
             },
             title: Text(loc.dotted_note),
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 24,
+              vertical: 4,
+            ),
           ),
         ],
       ),
@@ -232,22 +245,24 @@ class AnmituCheckerPageState extends State<AnmituCheckerPage> {
             Text(
               loc.judgment_presets,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const SizedBox(height: 16),
             if (hasPresets) ...[
               DropdownButtonFormField<String>(
-                value: selection.game,
+                initialValue: selection.game,
                 decoration: InputDecoration(
                   labelText: loc.select_game,
                   border: const OutlineInputBorder(),
                 ),
                 items: gameItems
-                    .map((game) => DropdownMenuItem(
-                          value: game,
-                          child: Text(game),
-                        ))
+                    .map(
+                      (game) => DropdownMenuItem(
+                        value: game,
+                        child: Text(game),
+                      ),
+                    )
                     .toList(),
                 onChanged: (value) {
                   if (value == null) return;
@@ -261,7 +276,7 @@ class AnmituCheckerPageState extends State<AnmituCheckerPage> {
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
-                value: selection.earlyPreset?.id,
+                initialValue: selection.earlyPreset?.id,
                 decoration: InputDecoration(
                   labelText: loc.early_window_label,
                   border: const OutlineInputBorder(),
@@ -284,7 +299,7 @@ class AnmituCheckerPageState extends State<AnmituCheckerPage> {
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
-                value: selection.latePreset?.id,
+                initialValue: selection.latePreset?.id,
                 decoration: InputDecoration(
                   labelText: loc.late_window_label,
                   border: const OutlineInputBorder(),
@@ -314,8 +329,8 @@ class AnmituCheckerPageState extends State<AnmituCheckerPage> {
               Text(
                 loc.custom_preset_section_title,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: colorScheme.onSurfaceVariant,
-                    ),
+                  color: colorScheme.onSurfaceVariant,
+                ),
               ),
             ],
           ],
@@ -326,7 +341,8 @@ class AnmituCheckerPageState extends State<AnmituCheckerPage> {
 
   Widget buildResultSection(ColorScheme colorScheme) {
     final loc = AppLocalizations.of(context)!;
-    final message = _statusMessage ??
+    final message =
+        _statusMessage ??
         (_resultRows.isEmpty ? loc.no_Results_Available : null);
 
     return Container(
@@ -424,8 +440,8 @@ class AnmituCheckerPageState extends State<AnmituCheckerPage> {
               Text(
                 loc.viewDiagram,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const SizedBox(height: 16),
               JudgmentDiagram(
@@ -474,8 +490,8 @@ class AnmituCheckerPageState extends State<AnmituCheckerPage> {
       setState(() {
         _statusMessage =
             (selection.earlyPreset == null || selection.latePreset == null)
-                ? AppLocalizations.of(context)!.no_presets_available
-                : AppLocalizations.of(context)!.invalid_BPM_or_Note_Type;
+            ? AppLocalizations.of(context)!.no_presets_available
+            : AppLocalizations.of(context)!.invalid_BPM_or_Note_Type;
         _resultRows = [];
         _calcResult = null;
       });

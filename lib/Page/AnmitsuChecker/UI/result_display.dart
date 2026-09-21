@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../Logic/anmitsu_models.dart';
 
 class ResultTile extends StatelessWidget {
@@ -16,8 +17,9 @@ class ResultTile extends StatelessWidget {
         Expanded(
           child: Text(
             row.title,
-            style: theme.textTheme.bodyMedium
-                ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
           ),
         ),
         const SizedBox(width: 16),

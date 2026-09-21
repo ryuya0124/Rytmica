@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:musical_note_calculator/l10n/app_localizations.dart';
+
 import '../../UI/app_bar.dart';
 
 import 'UI/display_settings_section.dart';
@@ -99,12 +100,12 @@ class SettingsPageState extends State<SettingsPage> {
             }
 
             // 小画面: 従来の縦並びレイアウト
-            return Padding(
-              padding: const EdgeInsets.all(16.0),
+            return const Padding(
+              padding: EdgeInsets.all(16.0),
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
+                  children: [
                     DisplaySettingsSection(),
                     SizedBox(height: 40),
                     NoteSettingsSection(),
@@ -127,7 +128,10 @@ class SettingsPageState extends State<SettingsPage> {
 
   // カテゴリナビゲーション（左側）
   Widget _buildCategoryNavigation(
-      BuildContext context, ColorScheme colorScheme, AppLocalizations loc) {
+    BuildContext context,
+    ColorScheme colorScheme,
+    AppLocalizations loc,
+  ) {
     return Container(
       width: 220,
       decoration: BoxDecoration(
@@ -152,8 +156,9 @@ class SettingsPageState extends State<SettingsPage> {
               color: Colors.transparent,
               child: ListTile(
                 selected: isSelected,
-                selectedTileColor:
-                    colorScheme.secondaryContainer.withValues(alpha: 0.5),
+                selectedTileColor: colorScheme.secondaryContainer.withValues(
+                  alpha: 0.5,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -166,8 +171,9 @@ class SettingsPageState extends State<SettingsPage> {
                 title: Text(
                   _getCategoryTitle(loc, category.titleKey),
                   style: TextStyle(
-                    fontWeight:
-                        isSelected ? FontWeight.w600 : FontWeight.normal,
+                    fontWeight: isSelected
+                        ? FontWeight.w600
+                        : FontWeight.normal,
                     color: isSelected
                         ? colorScheme.onSecondaryContainer
                         : colorScheme.onSurface,
@@ -206,7 +212,10 @@ class SettingsPageState extends State<SettingsPage> {
 
   // カテゴリ詳細（右側）
   Widget _buildCategoryDetail(
-      BuildContext context, ColorScheme colorScheme, AppLocalizations loc) {
+    BuildContext context,
+    ColorScheme colorScheme,
+    AppLocalizations loc,
+  ) {
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
       child: _buildSelectedCategoryContent(context, colorScheme),
@@ -215,7 +224,9 @@ class SettingsPageState extends State<SettingsPage> {
 
   // 選択されたカテゴリに応じたコンテンツを返す
   Widget _buildSelectedCategoryContent(
-      BuildContext context, ColorScheme colorScheme) {
+    BuildContext context,
+    ColorScheme colorScheme,
+  ) {
     final category = _categories[_selectedCategoryIndex];
 
     switch (category.id) {

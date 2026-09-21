@@ -1,16 +1,20 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../../ParamData/settings_model.dart';
 import '../Metronome/metronome_page.dart';
 import '../../ParamData/notes.dart';
 import 'UI/unit_switch_section.dart';
 import 'UI/notes_list.dart';
+import '../../UI/adaptive_layout.dart';
 
 class HomePage extends StatefulWidget {
   final TextEditingController bpmController; // bpmControllerを保持
   final FocusNode bpmFocusNode; // bpmFocusNodeを保持
-  final void Function(double bpm, String note, String interval)? onMetronomeRequest;
+  final void Function(double bpm, String note, String interval)?
+  onMetronomeRequest;
 
   const HomePage({
     super.key,
@@ -40,7 +44,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
     _notesStreamController =
         StreamController<List<Map<String, String>>>.broadcast();
     WidgetsBinding.instance.addObserver(this);
-    
+
     // 初期計算をトリガー
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _calculateNotes();
@@ -78,33 +82,41 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
               notesStream: _notesStreamController.stream,
               enabledNotes: enabledNotes,
               onNoteTap: (note) {
-                 final bpm = double.tryParse(bpmController.text) ?? 120.0;
-                 final isTablet = MediaQuery.of(context).size.shortestSide >= 600;
+                final bpm = double.tryParse(bpmController.text) ?? 120.0;
+                final supportsInlinePanel = AdaptiveLayoutInfo.of(context)
+                    .supportsInlinePanel;
 
-                 if (isTablet && widget.onMetronomeRequest != null) {
-                   widget.onMetronomeRequest!(bpm, note['name']!, note['duration']!);
-                 } else {
-                   Navigator.push(
-                     context,
-                     MaterialPageRoute(
-                       builder: (context) => MetronomePage(
-                         bpm: bpm,
-                         note: note['name']!,
-                         interval: note['duration']!,
-                       ),
-                     ),
-                   ).then((result) {
-                     if (!mounted) return;
-                     if (result != null &&
-                         result is Map &&
-                         result['switchToSplit'] == true) {
-                       if (widget.onMetronomeRequest != null) {
-                         widget.onMetronomeRequest!(
-                             bpm, note['name']!, note['duration']!);
-                       }
-                     }
-                   });
-                 }
+                if (supportsInlinePanel && widget.onMetronomeRequest != null) {
+                  widget.onMetronomeRequest!(
+                    bpm,
+                    note['name']!,
+                    note['duration']!,
+                  );
+                } else {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MetronomePage(
+                        bpm: bpm,
+                        note: note['name']!,
+                        interval: note['duration']!,
+                      ),
+                    ),
+                  ).then((result) {
+                    if (!mounted) return;
+                    if (result != null &&
+                        result is Map &&
+                        result['switchToSplit'] == true) {
+                      if (widget.onMetronomeRequest != null) {
+                        widget.onMetronomeRequest!(
+                          bpm,
+                          note['name']!,
+                          note['duration']!,
+                        );
+                      }
+                    }
+                  });
+                }
               },
             ),
           ],
@@ -136,8 +148,10 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
     final notesList = notes.map((note) {
       final double durationMs = calculateNoteLength(
-          quarterNoteLengthMs, note.note,
-          isDotted: note.dotted);
+        quarterNoteLengthMs,
+        note.note,
+        isDotted: note.dotted,
+      );
 
       // auto選択時は値に応じて適切な単位を自動選択
       String displayUnit;
@@ -158,13 +172,14 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
         conversionFactor = selectedUnit == 's'
             ? 1 / 1000.0
             : selectedUnit == 'µs'
-                ? 1000.0
-                : 1.0;
+            ? 1000.0
+            : 1.0;
       }
 
       return {
         'name': note.name,
-        'duration': '${(durationMs * conversionFactor).toStringAsFixed(context.read<SettingsModel>().numDecimal)} $displayUnit',
+        'duration':
+            '${(durationMs * conversionFactor).toStringAsFixed(context.read<SettingsModel>().numDecimal)} $displayUnit',
       };
     }).toList();
 

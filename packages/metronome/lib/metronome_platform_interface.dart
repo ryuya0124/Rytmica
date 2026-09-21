@@ -91,7 +91,7 @@ abstract class MetronomePlatform extends PlatformInterface {
     throw UnimplementedError('destroy() has not been implemented.');
   }
 
-  Stream<dynamic> onListenTick(onEvent) {
+  Stream<dynamic> onListenTick(void Function(dynamic event)? onEvent) {
     throw UnimplementedError('onListenTick() has not been implemented.');
   }
 }

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import 'notes.dart';
 import 'judgment.dart';
 
@@ -57,9 +58,9 @@ class SettingsModel extends ChangeNotifier {
   }
 
   List<JudgmentPreset> get allJudgmentPresets => [
-        ...defaultJudgmentPresets,
-        ...customJudgmentPresets,
-      ];
+    ...defaultJudgmentPresets,
+    ...customJudgmentPresets,
+  ];
 
   List<JudgmentPreset> get visibleJudgmentPresets => allJudgmentPresets
       .where((preset) => !hiddenJudgmentPresetIds.contains(preset.id))
@@ -72,7 +73,8 @@ class SettingsModel extends ChangeNotifier {
       _groupPresets(visibleJudgmentPresets);
 
   Map<String, List<JudgmentPreset>> _groupPresets(
-      List<JudgmentPreset> presets) {
+    List<JudgmentPreset> presets,
+  ) {
     final Map<String, List<JudgmentPreset>> grouped = {};
     for (final preset in presets) {
       grouped.putIfAbsent(preset.game, () => []).add(preset);
@@ -83,7 +85,8 @@ class SettingsModel extends ChangeNotifier {
     for (final key in sortedKeys) {
       final entries = grouped[key]!
         ..sort(
-            (a, b) => a.label.toLowerCase().compareTo(b.label.toLowerCase()));
+          (a, b) => a.label.toLowerCase().compareTo(b.label.toLowerCase()),
+        );
       sorted[key] = entries;
     }
     return sorted;
@@ -104,12 +107,15 @@ class SettingsModel extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
 
     // カスタムノートの保存
-    final List<String> customNoteNames =
-        customNotes.map((note) => note.name).toList();
-    final List<String> customNoteValues =
-        customNotes.map((note) => note.note.toString()).toList();
-    final List<String> customNoteDotted =
-        customNotes.map((note) => note.dotted.toString()).toList();
+    final List<String> customNoteNames = customNotes
+        .map((note) => note.name)
+        .toList();
+    final List<String> customNoteValues = customNotes
+        .map((note) => note.note.toString())
+        .toList();
+    final List<String> customNoteDotted = customNotes
+        .map((note) => note.dotted.toString())
+        .toList();
 
     prefs.setStringList('customNoteNames', customNoteNames);
     prefs.setStringList('customNoteValues', customNoteValues);
@@ -117,8 +123,9 @@ class SettingsModel extends ChangeNotifier {
 
     // 音符の状態を保存
     final List<String> noteKeys = enabledNotes.keys.toList();
-    final List<String> noteValues =
-        enabledNotes.values.map((e) => e.toString()).toList();
+    final List<String> noteValues = enabledNotes.values
+        .map((e) => e.toString())
+        .toList();
 
     prefs.setStringList('enabledNotesKeys', noteKeys);
     prefs.setStringList('enabledNotesValues', noteValues);
@@ -154,12 +161,15 @@ class SettingsModel extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
 
     // カスタムノートの読み込み
-    final List<String>? customNoteNames =
-        prefs.getStringList('customNoteNames');
-    final List<String>? customNoteValues =
-        prefs.getStringList('customNoteValues');
-    final List<String>? customNoteDotted =
-        prefs.getStringList('customNoteDotted');
+    final List<String>? customNoteNames = prefs.getStringList(
+      'customNoteNames',
+    );
+    final List<String>? customNoteValues = prefs.getStringList(
+      'customNoteValues',
+    );
+    final List<String>? customNoteDotted = prefs.getStringList(
+      'customNoteDotted',
+    );
 
     if (customNoteNames != null &&
         customNoteValues != null &&
@@ -202,13 +212,17 @@ class SettingsModel extends ChangeNotifier {
       useMaterialYou = prefs.getBool('useMaterialYou') ?? false;
     }
 
-    final List<String>? presetJson =
-        prefs.getStringList('customJudgmentPresets');
+    final List<String>? presetJson = prefs.getStringList(
+      'customJudgmentPresets',
+    );
     customJudgmentPresets = [];
     if (presetJson != null) {
       customJudgmentPresets = presetJson
-          .map((entry) => JudgmentPreset.fromJson(
-              jsonDecode(entry) as Map<String, dynamic>))
+          .map(
+            (entry) => JudgmentPreset.fromJson(
+              jsonDecode(entry) as Map<String, dynamic>,
+            ),
+          )
           .toList();
     }
 
@@ -276,7 +290,7 @@ class SettingsModel extends ChangeNotifier {
     notifyListeners();
   }
 
-// カスタムノートの削除
+  // カスタムノートの削除
   void removeCustomNote(String noteName) {
     customNotes.removeWhere((note) => note.name == noteName); // カスタムノートリストから削除
     enabledNotes.remove(noteName); // enabledNotesからも削除
@@ -304,8 +318,9 @@ class SettingsModel extends ChangeNotifier {
   }
 
   void removeCustomJudgmentPreset(String presetId) {
-    customJudgmentPresets
-        .removeWhere((preset) => preset.id == presetId && preset.isCustom);
+    customJudgmentPresets.removeWhere(
+      (preset) => preset.id == presetId && preset.isCustom,
+    );
     hiddenJudgmentPresetIds.remove(presetId);
     _saveSettings();
     notifyListeners();

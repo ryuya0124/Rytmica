@@ -33,6 +33,18 @@ linter:
     # prefer_single_quotes: true   # シングルクォートを推奨
     prefer_final_locals: true    # final をローカル変数に使用
     unnecessary_new: true        # 不要な new キーワードを避ける
+    # Keep established public filenames until their imports can be migrated in
+    # a dedicated compatibility release.
+    file_names: false
+analyzer:
+  exclude:
+    - build/**
+    - android/**
+    - ios/**
+    - web/**
+    - windows/**
+    - macos/**
+    - linux/**
     # avoid_print: false  # Uncomment to disable the `avoid_print` rule
     # prefer_single_quotes: true  # Uncomment to enable the `prefer_single_quotes` rule
 

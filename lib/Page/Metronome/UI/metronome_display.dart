@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:musical_note_calculator/l10n/app_localizations.dart';
 import 'package:musical_note_calculator/extensions/app_localizations_extension.dart';
 import 'package:provider/provider.dart';
-import '../../../ParamData/settings_model.dart';
 
+import '../../../ParamData/settings_model.dart';
 
 class MetronomeDisplay extends StatelessWidget {
   final double bpm;
@@ -34,8 +34,9 @@ class MetronomeDisplay extends StatelessWidget {
 
   Widget _buildBpmDisplay(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final bpmValue =
-        bpm.toStringAsFixed(context.read<SettingsModel>().numDecimal);
+    final bpmValue = bpm.toStringAsFixed(
+      context.read<SettingsModel>().numDecimal,
+    );
 
     return Column(
       children: [
@@ -87,8 +88,9 @@ class MetronomeDisplay extends StatelessWidget {
 
   Widget _buildQuarterNoteEquivalent(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final equivalent =
-        quarterNoteBpm.toStringAsFixed(context.read<SettingsModel>().numDecimal);
+    final equivalent = quarterNoteBpm.toStringAsFixed(
+      context.read<SettingsModel>().numDecimal,
+    );
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),

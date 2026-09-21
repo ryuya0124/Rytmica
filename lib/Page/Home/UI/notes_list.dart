@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:musical_note_calculator/l10n/app_localizations.dart';
+
 import 'note_card.dart';
 
 class NotesList extends StatelessWidget {
@@ -22,11 +24,15 @@ class NotesList extends StatelessWidget {
         builder: (context, snapshot) {
           if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return Center(
-                child: Text(
-              AppLocalizations.of(context)!.home_instruction,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ));
+              child: Text(
+                AppLocalizations.of(context)!.home_instruction,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            );
           }
 
           // 有効な音符のみをフィルタリング
@@ -36,11 +42,15 @@ class NotesList extends StatelessWidget {
 
           if (filteredNotes.isEmpty) {
             return Center(
-                child: Text(
-              AppLocalizations.of(context)!.home_instruction,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ));
+              child: Text(
+                AppLocalizations.of(context)!.home_instruction,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            );
           }
 
           return LayoutBuilder(
@@ -49,12 +59,15 @@ class NotesList extends StatelessWidget {
               // カードの最小幅を基準に動的に計算
               final double width = constraints.maxWidth;
               const double minCardWidth = 280.0;
-              final int crossAxisCount = (width / minCardWidth).floor().clamp(1, 100);
+              final int crossAxisCount = (width / minCardWidth).floor().clamp(
+                1,
+                100,
+              );
 
               if (crossAxisCount == 1) {
                 // 1列の場合は従来のListViewを使用
                 return ListView.builder(
-                  cacheExtent: 500, // スクロール最適化
+                  scrollCacheExtent: const ScrollCacheExtent.pixels(500),
                   itemCount: filteredNotes.length,
                   itemBuilder: (context, index) {
                     return NoteCard(
@@ -67,7 +80,7 @@ class NotesList extends StatelessWidget {
 
               // 2列以上の場合はGridViewを使用
               return GridView.builder(
-                cacheExtent: 500, // スクロール最適化
+                scrollCacheExtent: const ScrollCacheExtent.pixels(500),
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: crossAxisCount,

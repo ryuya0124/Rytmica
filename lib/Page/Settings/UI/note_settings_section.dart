@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:musical_note_calculator/l10n/app_localizations.dart';
 import 'package:musical_note_calculator/extensions/app_localizations_extension.dart';
+
 import '../../../ParamData/settings_model.dart';
 
 import 'settings_section_card.dart';
@@ -40,7 +41,7 @@ class NoteSettingsSection extends StatelessWidget {
             },
             contentPadding: EdgeInsets.zero,
           );
-        })
+        }),
       ],
     );
   }
@@ -107,7 +108,6 @@ class _CustomNotesContentState extends State<CustomNotesContent> {
   Widget _buildNoteInputSection(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
 
-
     return Column(
       children: [
         TextField(
@@ -132,15 +132,14 @@ class _CustomNotesContentState extends State<CustomNotesContent> {
         SizedBox(
           width: double.infinity,
           child: FilledButton.icon(
-            onPressed: (nameController.text.isNotEmpty &&
+            onPressed:
+                (nameController.text.isNotEmpty &&
                     valueController.text.isNotEmpty)
                 ? () {
                     final name = nameController.text;
                     final value = double.tryParse(valueController.text);
                     if (value != null && value > 0) {
-                      context
-                          .read<SettingsModel>()
-                          .addCustomNote(name, value);
+                      context.read<SettingsModel>().addCustomNote(name, value);
                       nameController.clear();
                       valueController.clear();
                       setState(() {});

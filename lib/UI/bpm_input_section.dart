@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:musical_note_calculator/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+
 import '../ParamData/settings_model.dart';
 
 class BpmInputSection extends StatelessWidget {
@@ -28,8 +29,9 @@ class BpmInputSection extends StatelessWidget {
             child: TextField(
               controller: bpmController,
               focusNode: bpmFocusNode,
-              keyboardType:
-                  const TextInputType.numberWithOptions(decimal: true),
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
               decoration: InputDecoration(
                 labelText: labelText,
                 labelStyle: TextStyle(color: colorScheme.onSurface),
@@ -38,7 +40,8 @@ class BpmInputSection extends StatelessWidget {
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                      color: colorScheme.onSurface.withValues(alpha: 0.5)),
+                    color: colorScheme.onSurface.withValues(alpha: 0.5),
+                  ),
                 ),
               ),
             ),
@@ -49,9 +52,11 @@ class BpmInputSection extends StatelessWidget {
             color: colorScheme.primary,
             onPressed: () {
               final currentValue = double.tryParse(bpmController.text) ?? 0;
-              bpmController.text = (currentValue +
-                      context.read<SettingsModel>().deltaValue)
-                  .toStringAsFixed(context.read<SettingsModel>().numDecimal);
+              bpmController.text =
+                  (currentValue + context.read<SettingsModel>().deltaValue)
+                      .toStringAsFixed(
+                        context.read<SettingsModel>().numDecimal,
+                      );
             },
             splashColor: colorScheme.primary.withValues(alpha: 0.2),
           ),
@@ -60,10 +65,12 @@ class BpmInputSection extends StatelessWidget {
             color: colorScheme.primary,
             onPressed: () {
               final currentValue = double.tryParse(bpmController.text) ?? 0;
-              bpmController.text = (currentValue -
-                      context.read<SettingsModel>().deltaValue)
-                  .clamp(0, double.infinity)
-                  .toStringAsFixed(context.read<SettingsModel>().numDecimal);
+              bpmController.text =
+                  (currentValue - context.read<SettingsModel>().deltaValue)
+                      .clamp(0, double.infinity)
+                      .toStringAsFixed(
+                        context.read<SettingsModel>().numDecimal,
+                      );
             },
             splashColor: colorScheme.primary.withValues(alpha: 0.2),
           ),

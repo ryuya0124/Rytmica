@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+
 import 'dart:math' as math;
+
 import 'metronome_painter.dart';
 
 class MetronomeVisualizer extends StatelessWidget {

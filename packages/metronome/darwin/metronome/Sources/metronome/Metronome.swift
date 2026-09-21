@@ -35,7 +35,7 @@ class Metronome {
             try audioSession.setCategory(
                 .playAndRecord,
                 mode: .videoRecording,
-                options: [.allowBluetooth, .allowBluetoothA2DP, .defaultToSpeaker, .mixWithOthers]
+                options: [.allowBluetoothHFP, .allowBluetoothA2DP, .defaultToSpeaker, .mixWithOthers]
             )
             
             try audioSession.setActive(true)
@@ -182,25 +182,21 @@ class Metronome {
         }
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            // let session = AVAudioSession.sharedInstance()
+            // let outputs = session.currentRoute.outputs
+            // print("Current audio outputs: \(outputs.map { $0.portType.rawValue })")
+            self.audioPlayerNode.stop()
+            self.audioEngine.stop()
+            self.audioEngine.reset()
+
             do {
-                // let session = AVAudioSession.sharedInstance()
-                // let outputs = session.currentRoute.outputs
-                // print("Current audio outputs: \(outputs.map { $0.portType.rawValue })")
-                self.audioPlayerNode.stop()
-                self.audioEngine.stop()
-                self.audioEngine.reset()
-
-                do {
-                    try self.audioEngine.start()
-                } catch {
-                    print("Audio engine failed to restart: \(error.localizedDescription)")
-                }
-
-                if wasPlaying {
-                    self.play()
-                }
+                try self.audioEngine.start()
             } catch {
-                print("Failed to handle audio route change: \(error.localizedDescription)")
+                print("Audio engine failed to restart: \(error.localizedDescription)")
+            }
+
+            if wasPlaying {
+                self.play()
             }
         }
     }

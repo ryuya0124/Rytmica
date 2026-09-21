@@ -170,7 +170,7 @@ class MetronomeWeb extends MetronomePlatform {
     }
     _scheduleTimer = web.window.setTimeout(
       _schedule.toJS,
-      (_scheduleInterval * 1000).round() as JSAny?,
+      (_scheduleInterval * 1000).round().toJS,
     );
   }
 

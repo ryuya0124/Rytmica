@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:musical_note_calculator/l10n/app_localizations.dart';
+
 import '../../../ParamData/settings_model.dart';
 import '../../../UI/numeric_input_column.dart';
 import 'settings_section_card.dart';
@@ -27,12 +28,14 @@ class _AdvancedSettingsSectionState extends State<AdvancedSettingsSection> {
     super.initState();
     final settingsModel = context.read<SettingsModel>();
     decimalValue = settingsModel.numDecimal;
-    decimalsController =
-        TextEditingController(text: decimalValue.toStringAsFixed(0));
+    decimalsController = TextEditingController(
+      text: decimalValue.toStringAsFixed(0),
+    );
 
     deltaValue = settingsModel.deltaValue;
     deltaValueController = TextEditingController(
-        text: deltaValue.toStringAsFixed(settingsModel.numDecimal));
+      text: deltaValue.toStringAsFixed(settingsModel.numDecimal),
+    );
   }
 
   @override

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:musical_note_calculator/l10n/app_localizations.dart';
+
 import '../Page/Settings/settings_page.dart';
 import 'pageAnimation.dart';
+
 import 'dart:io';
 
 class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
@@ -26,18 +28,13 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
       AppLocalizations.of(context)!.calculator,
       AppLocalizations.of(context)!.anmitu,
       AppLocalizations.of(context)!.metronome,
-      AppLocalizations.of(context)!.settings
+      AppLocalizations.of(context)!.settings,
     ];
 
     final colorScheme = Theme.of(context).colorScheme;
 
-    // タブレット判定（画面幅600px以上）
-    final isTablet = MediaQuery.of(context).size.width >= 600;
-
     // テキストの色をダークテーマ・ライトテーマに合わせて設定
     final titleTextColor = colorScheme.primary; // タイトルのテキスト色
-    final tabTextColor = colorScheme.onSurface; // タブ名のテキスト色
-
     // 設定画面以外
     if (selectedIndex != 4 && selectedIndex != 5) {
       return AppBar(
@@ -48,17 +45,15 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
           children: [
             Text(
               AppLocalizations.of(context)!.title,
-              style: Theme.of(context)
-                  .textTheme
-                  .titleLarge
+              style: Theme.of(context).textTheme.titleLarge
                   ?.copyWith(color: titleTextColor), // タイトルのテキスト色
             ),
-            // タブレットの場合はタブ名を非表示
 
+            // タブレットの場合はタブ名を非表示
           ],
         ),
         actions: [
-          if (actions != null) ...actions!,
+          ...?actions,
           IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () {
@@ -90,9 +85,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
         foregroundColor: colorScheme.primary, // アイコンの色をテーマの primary に
         title: Text(
           tabNames[selectedIndex], // 現在のタブ名を表示
-          style: Theme.of(context)
-              .textTheme
-              .titleLarge
+          style: Theme.of(context).textTheme.titleLarge
               ?.copyWith(color: titleTextColor), // 設定画面のタイトル色
         ),
         leading: IconButton(

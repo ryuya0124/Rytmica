@@ -1,30 +1,66 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
+import 'dart:ui';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:musical_note_calculator/main.dart';
+import 'package:musical_note_calculator/UI/adaptive_layout.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  Widget buildProbe(MediaQueryData data) {
+    return MediaQuery(
+      data: data,
+      child: Builder(
+        builder: (context) {
+          final layout = AdaptiveLayoutInfo.of(context);
+          return Directionality(
+            textDirection: TextDirection.ltr,
+            child: Text(
+              '${layout.sizeClass.name}|${layout.usesNavigationRail}|'
+              '${layout.supportsInlinePanel}|${layout.foldGap}',
+            ),
+          );
+        },
+      ),
+    );
+  }
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  testWidgets('uses compact navigation on a standard iPhone width', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildProbe(const MediaQueryData(size: Size(430, 932))),
+    );
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    expect(find.text('compact|false|false|0.0'), findsOneWidget);
+  });
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+  testWidgets('uses an adaptive rail when iPhone Duo is unfolded', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildProbe(const MediaQueryData(size: Size(900, 720))),
+    );
+
+    expect(find.text('medium|true|true|0.0'), findsOneWidget);
+  });
+
+  testWidgets('reserves the physical hinge reported by a dual display', (
+    tester,
+  ) async {
+    const hinge = DisplayFeature(
+      bounds: Rect.fromLTWH(448, 0, 4, 720),
+      type: DisplayFeatureType.hinge,
+      state: DisplayFeatureState.postureFlat,
+    );
+
+    await tester.pumpWidget(
+      buildProbe(
+        const MediaQueryData(
+          size: Size(900, 720),
+          displayFeatures: [hinge],
+        ),
+      ),
+    );
+
+    expect(find.text('medium|true|true|4.0'), findsOneWidget);
   });
 }

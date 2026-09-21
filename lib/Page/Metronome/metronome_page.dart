@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../UI/app_bar.dart';
 import 'metronome_content.dart';
 
@@ -7,11 +8,12 @@ class MetronomePage extends StatefulWidget {
   final String note;
   final String interval;
 
-  const MetronomePage(
-      {super.key,
-      required this.bpm,
-      required this.note,
-      required this.interval});
+  const MetronomePage({
+    super.key,
+    required this.bpm,
+    required this.note,
+    required this.interval,
+  });
 
   @override
   MetronomePageState createState() => MetronomePageState();
@@ -35,16 +37,16 @@ class MetronomePageState extends State<MetronomePage> {
             Navigator.of(context).pop({'switchToSplit': true});
           }
           if (mounted) {
-             setState(() {
-               _shouldPop = false;
-             });
+            setState(() {
+              _shouldPop = false;
+            });
           } else {
-             _shouldPop = false;
+            _shouldPop = false;
           }
         });
       }
     } else {
-        _shouldPop = false;
+      _shouldPop = false;
     }
 
     return Scaffold(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:musical_note_calculator/l10n/app_localizations.dart';
+
 import '../Logic/anmitsu_models.dart';
 
 /// 判定幅を図で表示するウィジェット
@@ -69,7 +70,10 @@ class JudgmentDiagram extends StatelessWidget {
   }
 
   Widget _buildLegend(
-      BuildContext context, ColorScheme colorScheme, AppLocalizations loc) {
+    BuildContext context,
+    ColorScheme colorScheme,
+    AppLocalizations loc,
+  ) {
     return Wrap(
       spacing: 16,
       runSpacing: 8,
@@ -91,7 +95,10 @@ class JudgmentDiagram extends StatelessWidget {
   }
 
   Widget _buildResultInfo(
-      BuildContext context, ColorScheme colorScheme, AppLocalizations loc) {
+    BuildContext context,
+    ColorScheme colorScheme,
+    AppLocalizations loc,
+  ) {
     final theme = Theme.of(context);
     final isPositive = result.anmituValue > 0;
 
@@ -132,7 +139,9 @@ class JudgmentDiagram extends StatelessWidget {
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
-                  isPositive ? Icons.check_circle_outline : Icons.cancel_outlined,
+                  isPositive
+                      ? Icons.check_circle_outline
+                      : Icons.cancel_outlined,
                   color: result.color,
                   size: 24,
                 ),
@@ -169,9 +178,7 @@ class JudgmentDiagram extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(
-              isPositive
-                  ? loc.anmitsuPossibleDesc
-                  : loc.anmitsuImpossibleDesc,
+              isPositive ? loc.anmitsuPossibleDesc : loc.anmitsuImpossibleDesc,
               style: theme.textTheme.bodySmall?.copyWith(
                 color: colorScheme.onSurfaceVariant,
               ),
@@ -308,7 +315,8 @@ class _JudgmentDiagramPainterVertical extends CustomPainter {
   final double note2CenterY;
   final double note2EarlyHeight;
   final double note2LateHeight;
-  final double overlapHeight; // Unused but kept for consistency with original or future use
+  final double
+  overlapHeight; // Unused but kept for consistency with original or future use
   final double overlapMs;
   final AnmituCalcResult result;
   final int decimals;
@@ -583,8 +591,10 @@ class _JudgmentDiagramPainterVertical extends CustomPainter {
 
     textPainter.paint(
       canvas,
-      Offset(x - textPainter.width / 2,
-          centerY - earlyHeight - 16 - textPainter.height / 2),
+      Offset(
+        x - textPainter.width / 2,
+        centerY - earlyHeight - 16 - textPainter.height / 2,
+      ),
     );
 
     // プリセットラベル（下部）

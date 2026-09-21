@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+
 import 'dart:io';
+
 import 'package:musical_note_calculator/l10n/app_localizations.dart';
+
 import '../../licence_page.dart';
 import '../../../UI/pageAnimation.dart';
 
@@ -77,19 +80,22 @@ class AppInfoSection extends StatelessWidget {
           context,
           icon: Icons.privacy_tip,
           label: loc.privacy_policy,
-          onTap: () => _launchUrl(context, "https://rytmica.ryuya-dev.net/privacy"),
+          onTap: () =>
+              _launchUrl(context, "https://rytmica.ryuya-dev.net/privacy"),
         ),
         _buildLinkItem(
           context,
           icon: Icons.article,
           label: loc.terms_of_service,
-          onTap: () => _launchUrl(context, "https://rytmica.ryuya-dev.net/terms"),
+          onTap: () =>
+              _launchUrl(context, "https://rytmica.ryuya-dev.net/terms"),
         ),
         _buildLinkItem(
           context,
           icon: Icons.support_agent,
           label: loc.support,
-          onTap: () => _launchUrl(context, "https://rytmica.ryuya-dev.net/support"),
+          onTap: () =>
+              _launchUrl(context, "https://rytmica.ryuya-dev.net/support"),
         ),
       ],
     );

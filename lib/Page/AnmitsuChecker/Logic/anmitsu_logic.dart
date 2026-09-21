@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:musical_note_calculator/l10n/app_localizations.dart';
+
 import '../../../ParamData/judgment.dart';
 import '../../../ParamData/notes.dart';
 import 'anmitsu_models.dart';
@@ -24,7 +25,10 @@ class AnmitsuLogic {
   }
 
   static double calculateAnmitsuValue(
-      double windowEarly, double windowLate, double noteLengthMs) {
+    double windowEarly,
+    double windowLate,
+    double noteLengthMs,
+  ) {
     final totalWindow = windowEarly + windowLate;
     return (totalWindow - noteLengthMs) / 2;
   }
@@ -52,8 +56,8 @@ class AnmitsuLogic {
     final keys = grouped.keys.toList();
     final resolvedGame =
         (selectedGame != null && grouped.containsKey(selectedGame))
-            ? selectedGame
-            : keys.first;
+        ? selectedGame
+        : keys.first;
     final presets = grouped[resolvedGame] ?? [];
 
     JudgmentPreset? resolvedEarly;
@@ -82,7 +86,9 @@ class AnmitsuLogic {
   }
 
   static JudgmentPreset? _findPresetById(
-      List<JudgmentPreset> presets, String? presetId) {
+    List<JudgmentPreset> presets,
+    String? presetId,
+  ) {
     if (presetId == null) return null;
     for (final preset in presets) {
       if (preset.id == presetId) {

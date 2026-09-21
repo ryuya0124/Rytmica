@@ -1,6 +1,8 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:metronome/metronome.dart';
+
 import '../../ParamData/notes.dart';
 import 'UI/metronome_visualizer.dart';
 import 'UI/metronome_display.dart';
@@ -42,7 +44,6 @@ class MetronomeContentState extends State<MetronomeContent>
   late AnimationController _animationController;
   late Animation<double> _animation;
 
-
   // 音源のパス
   final String strongTick = 'metronome/metronome_tick_strong_48k_mono.wav';
   final String weakTick = 'metronome/metronome_tick_weak_48k_mono.wav';
@@ -51,7 +52,7 @@ class MetronomeContentState extends State<MetronomeContent>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    
+
     // ウィジェットのパラメータで初期化
     note = widget.note;
     intervalTime = widget.interval;
@@ -88,9 +89,11 @@ class MetronomeContentState extends State<MetronomeContent>
       if (_currentQuarterBpm <= 0) {
         _currentQuarterBpm = 1;
       }
-      
+
       // アニメーション速度更新
-      _animationController.duration = Duration(milliseconds: (60000 / _currentQuarterBpm).round());
+      _animationController.duration = Duration(
+        milliseconds: (60000 / _currentQuarterBpm).round(),
+      );
       if (isPlaying) {
         _animationController.repeat(reverse: true);
         metronome.setBPM(_currentQuarterBpm.toInt());
@@ -178,16 +181,20 @@ class MetronomeContentState extends State<MetronomeContent>
     if (_currentQuarterBpm <= 0) {
       _currentQuarterBpm = 1;
     }
-    
+
     final beats = _currentBeats;
     metronome.setBPM(_currentQuarterBpm.toInt());
     metronome.setTimeSignature(beats);
-    debugPrint('Calling metronome.play() with BPM=${_currentQuarterBpm.toInt()}, beats=$beats');
+    debugPrint(
+      'Calling metronome.play() with BPM=${_currentQuarterBpm.toInt()}, beats=$beats',
+    );
     metronome.play();
     debugPrint('metronome.play() called');
 
     // アニメーション開始 (Duration設定 -> Repeat)
-    _animationController.duration = Duration(milliseconds: (60000 / _currentQuarterBpm).round());
+    _animationController.duration = Duration(
+      milliseconds: (60000 / _currentQuarterBpm).round(),
+    );
     _animationController.repeat(reverse: true);
 
     setState(() {
@@ -206,7 +213,7 @@ class MetronomeContentState extends State<MetronomeContent>
     // 現在のBPMに基づいて戻る時間を計算 (例: 4分音符の時間の半分)
     // 速いBPMなら速く、遅いBPMならゆっくり戻る
     final returnDurationMs = (30000 / _currentQuarterBpm).round();
-    
+
     _animationController.animateTo(
       0.5,
       // 極端に遅くならないように上限などを設けても良いが、まずはBPMに忠実に従う
@@ -256,7 +263,10 @@ class MetronomeContentState extends State<MetronomeContent>
                                   bpm: widget.bpm,
                                   note: note,
                                   intervalTime: intervalTime,
-                                  quarterNoteBpm: convertNoteDurationToBPM(widget.bpm, note),
+                                  quarterNoteBpm: convertNoteDurationToBPM(
+                                    widget.bpm,
+                                    note,
+                                  ),
                                 ),
                               ],
                             ),
@@ -283,7 +293,10 @@ class MetronomeContentState extends State<MetronomeContent>
                             bpm: widget.bpm,
                             note: note,
                             intervalTime: intervalTime,
-                            quarterNoteBpm: convertNoteDurationToBPM(widget.bpm, note),
+                            quarterNoteBpm: convertNoteDurationToBPM(
+                              widget.bpm,
+                              note,
+                            ),
                           ),
                           const SizedBox(height: 28),
                           _buildControls(),
@@ -298,39 +311,39 @@ class MetronomeContentState extends State<MetronomeContent>
   }
 
   Widget _buildControls() {
-      return MetronomeControls(
-        vol: vol,
-        isPlaying: isPlaying,
-        selectedBeatOption: selectedBeatOption,
-        customBeats: customBeats,
-        note: note,
-        beatOptions: beatOptions,
-        onVolumeChanged: (val) {
-          setState(() {
-            vol = val;
-          });
-          metronome.setVolume(vol);
-        },
-        onToggle: toggleMetronome,
-        onBeatOptionChanged: (val) {
-          setState(() {
-            selectedBeatOption = val;
-          });
-          if (isPlaying) {
-            stopMetronome();
-            startMetronome();
-          }
-        },
-        onCustomBeatsChanged: (val) {
-          setState(() {
-            customBeats = val;
-          });
-          if (isPlaying && val > 0) {
-            stopMetronome();
-            startMetronome();
-          }
-        },
-      );
+    return MetronomeControls(
+      vol: vol,
+      isPlaying: isPlaying,
+      selectedBeatOption: selectedBeatOption,
+      customBeats: customBeats,
+      note: note,
+      beatOptions: beatOptions,
+      onVolumeChanged: (val) {
+        setState(() {
+          vol = val;
+        });
+        metronome.setVolume(vol);
+      },
+      onToggle: toggleMetronome,
+      onBeatOptionChanged: (val) {
+        setState(() {
+          selectedBeatOption = val;
+        });
+        if (isPlaying) {
+          stopMetronome();
+          startMetronome();
+        }
+      },
+      onCustomBeatsChanged: (val) {
+        setState(() {
+          customBeats = val;
+        });
+        if (isPlaying && val > 0) {
+          stopMetronome();
+          startMetronome();
+        }
+      },
+    );
   }
 
   double convertNoteDurationToBPM(double bpm, String note) {

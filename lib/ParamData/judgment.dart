@@ -16,28 +16,28 @@ class JudgmentPreset {
     required this.earlyMs,
     required this.lateMs,
     this.isCustom = false,
-  })  : assert(earlyMs >= 0),
-        assert(lateMs >= 0);
+  }) : assert(earlyMs >= 0),
+       assert(lateMs >= 0);
 
   double get totalWindowMs => earlyMs + lateMs;
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'game': game,
-        'label': label,
-        'earlyMs': earlyMs,
-        'lateMs': lateMs,
-        'isCustom': isCustom,
-      };
+    'id': id,
+    'game': game,
+    'label': label,
+    'earlyMs': earlyMs,
+    'lateMs': lateMs,
+    'isCustom': isCustom,
+  };
 
   factory JudgmentPreset.fromJson(Map<String, dynamic> json) => JudgmentPreset(
-        id: json['id'] as String,
-        game: json['game'] as String,
-        label: json['label'] as String,
-        earlyMs: (json['earlyMs'] as num).toDouble(),
-        lateMs: (json['lateMs'] as num).toDouble(),
-        isCustom: json['isCustom'] as bool? ?? true,
-      );
+    id: json['id'] as String,
+    game: json['game'] as String,
+    label: json['label'] as String,
+    earlyMs: (json['earlyMs'] as num).toDouble(),
+    lateMs: (json['lateMs'] as num).toDouble(),
+    isCustom: json['isCustom'] as bool? ?? true,
+  );
 
   JudgmentPreset copyWith({
     String? id,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:musical_note_calculator/l10n/app_localizations.dart';
+
 import '../../../ParamData/settings_model.dart';
 import '../../../ParamData/judgment.dart';
 import 'settings_section_card.dart';
@@ -94,8 +95,10 @@ class JudgmentPresetContent extends StatelessWidget {
                               ),
                               IconButton(
                                 tooltip: loc.delete,
-                                icon: Icon(Icons.delete,
-                                    color: colorScheme.error),
+                                icon: Icon(
+                                  Icons.delete,
+                                  color: colorScheme.error,
+                                ),
                                 onPressed: () {
                                   context
                                       .read<SettingsModel>()
@@ -119,13 +122,14 @@ class JudgmentPresetContent extends StatelessWidget {
   void _showEditPresetDialog(BuildContext context, JudgmentPreset preset) {
     final loc = AppLocalizations.of(context)!;
 
-
     final gameController = TextEditingController(text: preset.game);
     final labelController = TextEditingController(text: preset.label);
-    final earlyController =
-        TextEditingController(text: preset.earlyMs.toString());
-    final lateController =
-        TextEditingController(text: preset.lateMs.toString());
+    final earlyController = TextEditingController(
+      text: preset.earlyMs.toString(),
+    );
+    final lateController = TextEditingController(
+      text: preset.lateMs.toString(),
+    );
     bool linkWindowValues = preset.earlyMs == preset.lateMs;
 
     showDialog(
@@ -181,7 +185,8 @@ class JudgmentPresetContent extends StatelessWidget {
                               border: const OutlineInputBorder(),
                             ),
                             keyboardType: const TextInputType.numberWithOptions(
-                                decimal: true),
+                              decimal: true,
+                            ),
                             onChanged: (text) {
                               if (linkWindowValues) {
                                 lateController.text = text;
@@ -200,7 +205,8 @@ class JudgmentPresetContent extends StatelessWidget {
                               ),
                               keyboardType:
                                   const TextInputType.numberWithOptions(
-                                      decimal: true),
+                                    decimal: true,
+                                  ),
                             ),
                           ),
                       ],
@@ -225,12 +231,12 @@ class JudgmentPresetContent extends StatelessWidget {
                         early != null &&
                         late != null) {
                       context.read<SettingsModel>().updateCustomJudgmentPreset(
-                            presetId: preset.id,
-                            game: game,
-                            label: label,
-                            earlyMs: early,
-                            lateMs: late,
-                          );
+                        presetId: preset.id,
+                        game: game,
+                        label: label,
+                        earlyMs: early,
+                        lateMs: late,
+                      );
                       Navigator.pop(context);
                     }
                   },
@@ -255,10 +261,12 @@ class CustomPresetForm extends StatefulWidget {
 class _CustomPresetFormState extends State<CustomPresetForm> {
   final TextEditingController presetGameController = TextEditingController();
   final TextEditingController presetLabelController = TextEditingController();
-  final TextEditingController presetEarlyController =
-      TextEditingController(text: '50');
-  final TextEditingController presetLateController =
-      TextEditingController(text: '50');
+  final TextEditingController presetEarlyController = TextEditingController(
+    text: '50',
+  );
+  final TextEditingController presetLateController = TextEditingController(
+    text: '50',
+  );
   bool linkWindowValues = true;
 
   @override
@@ -275,7 +283,8 @@ class _CustomPresetFormState extends State<CustomPresetForm> {
     final loc = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
 
-    final bool isButtonEnabled = presetGameController.text.trim().isNotEmpty &&
+    final bool isButtonEnabled =
+        presetGameController.text.trim().isNotEmpty &&
         presetLabelController.text.trim().isNotEmpty &&
         double.tryParse(presetEarlyController.text.trim()) != null &&
         (linkWindowValues ||
@@ -293,7 +302,8 @@ class _CustomPresetFormState extends State<CustomPresetForm> {
             ),
             enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                  color: colorScheme.onSurface.withValues(alpha: 0.5)),
+                color: colorScheme.onSurface.withValues(alpha: 0.5),
+              ),
             ),
           ),
           onChanged: (_) => setState(() {}),
@@ -308,7 +318,8 @@ class _CustomPresetFormState extends State<CustomPresetForm> {
             ),
             enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                  color: colorScheme.onSurface.withValues(alpha: 0.5)),
+                color: colorScheme.onSurface.withValues(alpha: 0.5),
+              ),
             ),
           ),
           onChanged: (_) => setState(() {}),
@@ -328,12 +339,13 @@ class _CustomPresetFormState extends State<CustomPresetForm> {
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(
-                        color:
-                            colorScheme.onSurface.withValues(alpha: 0.5)),
+                      color: colorScheme.onSurface.withValues(alpha: 0.5),
+                    ),
                   ),
                 ),
-                keyboardType:
-                    const TextInputType.numberWithOptions(decimal: true),
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
                 onChanged: (_) {
                   if (linkWindowValues) {
                     presetLateController.text = presetEarlyController.text;
@@ -354,12 +366,13 @@ class _CustomPresetFormState extends State<CustomPresetForm> {
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
-                          color:
-                              colorScheme.onSurface.withValues(alpha: 0.5)),
+                        color: colorScheme.onSurface.withValues(alpha: 0.5),
+                      ),
                     ),
                   ),
-                  keyboardType:
-                      const TextInputType.numberWithOptions(decimal: true),
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
                   onChanged: (_) => setState(() {}),
                 ),
               ),
@@ -387,8 +400,9 @@ class _CustomPresetFormState extends State<CustomPresetForm> {
                 ? () {
                     final game = presetGameController.text.trim();
                     final label = presetLabelController.text.trim();
-                    final early =
-                        double.tryParse(presetEarlyController.text.trim());
+                    final early = double.tryParse(
+                      presetEarlyController.text.trim(),
+                    );
                     final late = linkWindowValues
                         ? early
                         : double.tryParse(presetLateController.text.trim());
@@ -397,14 +411,12 @@ class _CustomPresetFormState extends State<CustomPresetForm> {
                         label.isNotEmpty &&
                         early != null &&
                         late != null) {
-                      context
-                          .read<SettingsModel>()
-                          .addCustomJudgmentPreset(
-                            game: game,
-                            label: label,
-                            earlyMs: early,
-                            lateMs: late,
-                          );
+                      context.read<SettingsModel>().addCustomJudgmentPreset(
+                        game: game,
+                        label: label,
+                        earlyMs: early,
+                        lateMs: late,
+                      );
 
                       // フォームのクリア
                       presetGameController.clear();

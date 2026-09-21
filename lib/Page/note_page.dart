@@ -1,17 +1,19 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:musical_note_calculator/l10n/app_localizations.dart';
 import 'package:musical_note_calculator/extensions/app_localizations_extension.dart';
+
 import '../ParamData/settings_model.dart';
 import '../UI/unit_dropdown.dart';
 import '../ParamData/notes.dart';
-import 'Metronome/metronome_page.dart';
 
 class NotePage extends StatefulWidget {
   final TextEditingController bpmController; // bpmControllerを保持
   final FocusNode bpmFocusNode; // bpmFocusNodeを保持
-  final void Function(double bpm, String note, String interval)? onMetronomeRequest;
+  final void Function(double bpm, String note, String interval)?
+  onMetronomeRequest;
 
   const NotePage({
     super.key,
@@ -47,7 +49,7 @@ class NotePageState extends State<NotePage> {
     selectedTimeScale = context.read<SettingsModel>().selectedTimeScale;
     bpmController.addListener(_calculateNotes);
     _notesStreamController = StreamController<List<Map<String, String>>>();
-    
+
     // 初期計算をトリガー
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _calculateNotes();
@@ -84,14 +86,19 @@ class NotePageState extends State<NotePage> {
                     child: Text(
                       AppLocalizations.of(context)!.error,
                       style: const TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold),
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                   );
                 }
                 if (snapshot.hasData && snapshot.data!.isNotEmpty) {
                   return buildNotesList(
-                      enabledNotes, appBarColor, snapshot.data!);
+                    enabledNotes,
+                    appBarColor,
+                    snapshot.data!,
+                  );
                 } else {
                   // データがない場合、縦方向にも中央にメッセージを表示
                   return Expanded(
@@ -99,14 +106,16 @@ class NotePageState extends State<NotePage> {
                       child: Text(
                         AppLocalizations.of(context)!.note_instruction,
                         style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                         textAlign: TextAlign.center,
                       ),
                     ),
                   );
                 }
               },
-            )
+            ),
           ],
         ),
       ),
@@ -121,7 +130,7 @@ class NotePageState extends State<NotePage> {
         builder: (context, constraints) {
           // 画面幅が狭い場合は縦並び、広い場合は横並び
           final isNarrow = constraints.maxWidth < 300;
-          
+
           if (isNarrow) {
             // 縦並び: テキスト左寄せ、ボタン右寄せ
             return Column(
@@ -129,7 +138,10 @@ class NotePageState extends State<NotePage> {
               children: [
                 Text(
                   AppLocalizations.of(context)!.timescale,
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 8),
                 Align(
@@ -149,7 +161,10 @@ class NotePageState extends State<NotePage> {
               children: [
                 Text(
                   AppLocalizations.of(context)!.timescale,
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(width: 10),
                 UnitDropdown(
@@ -165,8 +180,11 @@ class NotePageState extends State<NotePage> {
     );
   }
 
-  Widget buildNotesList(Map<String, bool> enabledNotes, Color appBarColor,
-      List<Map<String, String>> notes) {
+  Widget buildNotesList(
+    Map<String, bool> enabledNotes,
+    Color appBarColor,
+    List<Map<String, String>> notes,
+  ) {
     // 有効な音符のみをフィルタリング
     final filteredNotes = notes
         .where((note) => enabledNotes[note['name']] == true)
@@ -176,55 +194,65 @@ class NotePageState extends State<NotePage> {
       child: bpmController.text.isEmpty || filteredNotes.isEmpty
           ? Center(child: Text(AppLocalizations.of(context)!.note_instruction))
           : LayoutBuilder(
-                builder: (context, constraints) {
-                  // 画面幅（constraints.maxWidth）に基づいて列数を決定
-                  // カードの最小幅を基準に動的に計算
-                  final double width = constraints.maxWidth;
-                  const double minCardWidth = 280.0;
-                  final int crossAxisCount = (width / minCardWidth).floor().clamp(1, 100);
+              builder: (context, constraints) {
+                // 画面幅（constraints.maxWidth）に基づいて列数を決定
+                // カードの最小幅を基準に動的に計算
+                final double width = constraints.maxWidth;
+                const double minCardWidth = 280.0;
+                final int crossAxisCount = (width / minCardWidth).floor().clamp(
+                  1,
+                  100,
+                );
 
-                  // カラムごとにリストを分割して、それぞれのカラムで縦に並べる
-                  final List<List<Map<String, String>>> columns =
-                      List.generate(crossAxisCount, (_) => []);
+                // カラムごとにリストを分割して、それぞれのカラムで縦に並べる
+                final List<List<Map<String, String>>> columns = List.generate(
+                  crossAxisCount,
+                  (_) => [],
+                );
 
-                  for (var i = 0; i < filteredNotes.length; i++) {
-                    columns[i % crossAxisCount].add(filteredNotes[i]);
-                  }
+                for (var i = 0; i < filteredNotes.length; i++) {
+                  columns[i % crossAxisCount].add(filteredNotes[i]);
+                }
 
-                  return SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: List.generate(crossAxisCount, (colIndex) {
-                        return Expanded(
-                          child: Column(
-                            children: columns[colIndex].map((note) {
-                              return buildNoteCard(note, appBarColor, context);
-                            }).toList(),
-                          ),
-                        );
-                      }),
-                    ),
-                  );
-                },
-              ),
+                return SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: List.generate(crossAxisCount, (colIndex) {
+                      return Expanded(
+                        child: Column(
+                          children: columns[colIndex].map((note) {
+                            return buildNoteCard(note, appBarColor, context);
+                          }).toList(),
+                        ),
+                      );
+                    }),
+                  ),
+                );
+              },
+            ),
     );
   }
 
   // パフォーマンス最適化: 静的定数
   static const _cardBorderRadius = BorderRadius.all(Radius.circular(16));
   static const _iconBorderRadius = BorderRadius.all(Radius.circular(12));
-  static const _cardPadding = EdgeInsets.symmetric(horizontal: 16, vertical: 14);
+  static const _cardPadding = EdgeInsets.symmetric(
+    horizontal: 16,
+    vertical: 14,
+  );
   static const _cardMargin = EdgeInsets.symmetric(vertical: 6, horizontal: 16);
   static const _iconSize = 44.0;
   static const _frequencyIcon = Icon(Icons.graphic_eq_rounded, size: 24);
 
   Widget buildNoteCard(
-      Map<String, String> note, Color appBarColor, BuildContext context) {
+    Map<String, String> note,
+    Color appBarColor,
+    BuildContext context,
+  ) {
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     // noteマップから必要な情報を取得 (idがない場合はデフォルトで'4'を使用などの安全策)
-    final noteId = note['id'] ?? '4';
     final noteName = note['name']!;
     final duration = note['duration']!;
 
@@ -234,11 +262,11 @@ class NotePageState extends State<NotePage> {
         color: colorScheme.surfaceContainerHigh,
         borderRadius: _cardBorderRadius,
         border: Border.all(
-          color: colorScheme.outline.withOpacity(0.12),
+          color: colorScheme.outline.withValues(alpha: 0.12),
         ),
         boxShadow: [
           BoxShadow(
-            color: colorScheme.shadow.withOpacity(0.06),
+            color: colorScheme.shadow.withValues(alpha: 0.06),
             blurRadius: 10,
             offset: const Offset(0, 3),
           ),
@@ -296,7 +324,6 @@ class NotePageState extends State<NotePage> {
     );
   }
 
-
   void _calculateNotes() {
     final bpmInput = bpmController.text;
     if (bpmInput.isEmpty) {
@@ -313,10 +340,12 @@ class NotePageState extends State<NotePage> {
     final conversionFactor = selectedTimeScale == '1s'
         ? 60.0 // 1秒の場合は60
         : selectedTimeScale == '100ms'
-            ? 10 * 60 // 1ms
-            : selectedTimeScale == '10ms'
-                ? 100 * 60 // 1µs
-                : 60.0; // その他の場合は60.0
+        ? 10 *
+              60 // 1ms
+        : selectedTimeScale == '10ms'
+        ? 100 *
+              60 // 1µs
+        : 60.0; // その他の場合は60.0
 
     final notesList = notes.map((note) {
       // ノートの間隔を計算

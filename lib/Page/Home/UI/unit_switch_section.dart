@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:musical_note_calculator/l10n/app_localizations.dart';
+
 import '../../../UI/unit_dropdown.dart';
 
 class UnitSwitchSection extends StatelessWidget {
@@ -22,7 +23,7 @@ class UnitSwitchSection extends StatelessWidget {
         builder: (context, constraints) {
           // 画面幅が狭い場合は縦並び、広い場合は横並び
           final isNarrow = constraints.maxWidth < 300;
-          
+
           if (isNarrow) {
             // 縦並び: テキスト左寄せ、ボタン右寄せ
             return Column(
@@ -30,7 +31,10 @@ class UnitSwitchSection extends StatelessWidget {
               children: [
                 Text(
                   AppLocalizations.of(context)!.time_unit,
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 8),
                 Align(
@@ -50,7 +54,10 @@ class UnitSwitchSection extends StatelessWidget {
               children: [
                 Text(
                   AppLocalizations.of(context)!.time_unit,
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(width: 10),
                 UnitDropdown(

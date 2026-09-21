@@ -124,5 +124,5 @@ class Metronome {
   }
 
   @Deprecated('use tickStream instead')
-  void onListenTick(onEvent) {}
+  void onListenTick(void Function(dynamic event)? onEvent) {}
 }

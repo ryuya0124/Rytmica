@@ -64,7 +64,7 @@ class UnitDropdownState extends State<UnitDropdown> {
           return colorScheme.onSurfaceVariant;
         }),
         side: WidgetStateProperty.all(
-          BorderSide(color: colorScheme.outline.withOpacity(0.3)),
+          BorderSide(color: colorScheme.outline.withValues(alpha: 0.3)),
         ),
         shape: WidgetStateProperty.all(
           RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),

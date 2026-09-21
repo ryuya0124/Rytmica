@@ -189,15 +189,7 @@ platform :ios do
       UI.user_error!("❌ pubspec.yaml からバージョン情報を取得できませんでした。version: X.Y.Z+N の形式で指定されているか確認してください。")
     end
 
-    # pubspec.yamlのビルド番号をInfo.plistに直接設定（インクリメントなし）
-    update_info_plist(
-      plist_path: "Runner/Info.plist",
-      block: proc do |plist|
-        plist["CFBundleVersion"] = build_number
-        plist["CFBundleShortVersionString"] = version_name
-      end
-    )
-    UI.message("📝 Info.plist を更新: バージョン #{version_name}, ビルド番号 #{build_number}")
+    UI.message("📝 Flutterビルド変数を使用: バージョン #{version_name}, ビルド番号 #{build_number}")
 
     # ビルドキャッシュをクリーン（重要: 古いビルド結果を使わないようにする）
     UI.message("🧹 ビルドキャッシュをクリーン中...")
@@ -209,7 +201,8 @@ platform :ios do
       export_method: "app-store",
       output_directory: "../build/ios/ipa",
       output_name: "Rytmica.ipa",
-      clean: true
+      clean: true,
+      xcargs: "FLUTTER_BUILD_NAME=#{version_name} FLUTTER_BUILD_NUMBER=#{build_number}"
     )
 
     # ローカル用のApp Store Connect API認証設定

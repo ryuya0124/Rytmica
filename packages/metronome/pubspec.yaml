@@ -3,12 +3,6 @@ description: Efficient, accurate, cross-platform metronome; supports volume, BPM
 version: 2.0.7
 homepage: https://github.com/biner88/metronome
 issue_tracker: https://github.com/biner88/metronome/issues
-screenshots:
-  - description: 'metronome icon'
-    path: example/assets/metronome-left.png
-  - description: 'metronome screenshots'
-    path: screenshot/demo2.png
-
 environment:
   sdk: ">=3.0.0 <4.0.0"
   flutter: ">=3.10.0"

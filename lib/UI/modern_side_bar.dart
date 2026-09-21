@@ -90,17 +90,19 @@ class ModernSideBar extends StatelessWidget {
               // 今回は背景色（Container）で強調するMaterial 3スタイル
             ),
             padding: EdgeInsets.symmetric(
-                vertical: isExtended ? 16.0 : 8.0, // アイコンのみの時はコンパクトに
-                horizontal: isExtended ? 0 : 12.0, // アイコンのみの時は横にパディング
+              vertical: isExtended ? 16.0 : 8.0, // アイコンのみの時はコンパクトに
+              horizontal: isExtended ? 0 : 12.0, // アイコンのみの時は横にパディング
             ),
             child: LayoutBuilder(
               builder: (context, constraints) {
                 // 実際の幅に基づいてテキストを表示するか決定
                 // アニメーション中は幅が狭いのでテキストを非表示
                 final showText = constraints.maxWidth > 150;
-                
+
                 return Row(
-                  mainAxisSize: isExtended ? MainAxisSize.max : MainAxisSize.min,
+                  mainAxisSize: isExtended
+                      ? MainAxisSize.max
+                      : MainAxisSize.min,
                   mainAxisAlignment: isExtended
                       ? MainAxisAlignment.start
                       : MainAxisAlignment.center,

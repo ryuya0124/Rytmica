@@ -59,7 +59,8 @@ class SettingsSectionCard extends StatelessWidget {
                       ),
                       child: IconTheme(
                         data: IconThemeData(
-                            color: colorScheme.onPrimaryContainer),
+                          color: colorScheme.onPrimaryContainer,
+                        ),
                         child: icon != null
                             ? Icon(icon, size: _iconSize)
                             : _defaultIcon,

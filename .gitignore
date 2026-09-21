@@ -44,6 +44,8 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+/android/app/*.jks
+/release-assets/
 
 # l10nの自動生成ファイルを無視
 lib/l10n/app_localizations*.dart
