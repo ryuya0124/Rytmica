@@ -6,7 +6,7 @@ on:
       tag:
         description: GitHub Release tag
         required: true
-        default: 2.4.0
+        default: 2.5.0
         type: string
 
 permissions:
@@ -18,7 +18,7 @@ concurrency:
 
 env:
   FLUTTER_VERSION: 3.47.5
-  RELEASE_VERSION: 2.4.0
+  RELEASE_VERSION: ${{ inputs.tag }}
 
 jobs:
   build-android:
@@ -111,11 +111,19 @@ jobs:
       - name: Build Windows x64
         run: flutter build windows --release
 
+      - name: Build Microsoft Store MSIX
+        run: dart run msix:create --build-windows false
+
       - name: Package Windows portable build
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force release-assets | Out-Null
           Compress-Archive -Path "build/windows/x64/runner/Release/*" -DestinationPath "release-assets/Rytmica-Windows-x64-${env:RELEASE_VERSION}.zip"
+          $msix = Get-ChildItem -Path build/windows -Filter *.msix -Recurse | Select-Object -First 1
+          if (-not $msix) {
+            throw "Microsoft Store MSIX was not produced"
+          }
+          Copy-Item $msix.FullName "release-assets/Rytmica-Microsoft-Store-${env:RELEASE_VERSION}.msix"
 
       - name: Upload Windows asset
         uses: actions/upload-artifact@v4

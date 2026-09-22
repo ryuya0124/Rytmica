@@ -53,17 +53,22 @@ platform :ios do
     # 証明書を同期
     sync_certificates
 
-    # ビルド番号を自動インクリメント
-    increment_build_number(
-      xcodeproj: "Runner.xcodeproj"
-    )
+    project_root = File.expand_path("../..", __dir__)
+    pubspec_content = File.read(File.join(project_root, "pubspec.yaml"))
+    version_match = pubspec_content.match(/version:\s*(\d+\.\d+\.\d+)\+(\d+)/)
+    UI.user_error!("pubspec.yaml からバージョン情報を取得できませんでした") unless version_match
+    version_name = version_match[1]
+    build_number = version_match[2]
+    UI.message("📦 iOS バージョン #{version_name} (#{build_number}) をビルド")
 
     # IPAをビルド
     build_app(
       scheme: "Runner",
       export_method: "app-store",
       output_directory: "../build/ios/ipa",
-      output_name: "Rytmica.ipa"
+      output_name: "Rytmica.ipa",
+      clean: true,
+      xcargs: "FLUTTER_BUILD_NAME=#{version_name} FLUTTER_BUILD_NUMBER=#{build_number}"
     )
 
     UI.success("署名ありIPAビルド完了: build/ios/ipa/Rytmica.ipa")
