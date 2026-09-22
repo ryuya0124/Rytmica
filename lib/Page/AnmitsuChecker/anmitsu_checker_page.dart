@@ -31,12 +31,19 @@ class AnmituCheckerPageState extends State<AnmituCheckerPage> {
   String? selectedEarlyPresetId;
   String? selectedLatePresetId;
   bool isDotted = false;
-  int _selectedViewIndex = 0;
+  int _selectedViewIndex = const int.fromEnvironment(
+    'RYTMICA_SCREENSHOT_ANMITSU_VIEW',
+    defaultValue: 0,
+  );
 
   final TextEditingController noteController = TextEditingController(
     text: '16',
   );
   final FocusNode noteFocusNode = FocusNode();
+  final ScrollController _scrollController = ScrollController();
+  static const bool _screenshotScrollToResult = bool.fromEnvironment(
+    'RYTMICA_SCREENSHOT_SCROLL_RESULT',
+  );
 
   AnmituCalcResult? _calcResult;
   List<ResultRow> _resultRows = [];
@@ -49,7 +56,18 @@ class AnmituCheckerPageState extends State<AnmituCheckerPage> {
     super.initState();
     bpmController.addListener(_calculateAnmitu);
     noteController.addListener(_calculateAnmitu);
-    WidgetsBinding.instance.addPostFrameCallback((_) => _calculateAnmitu());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _calculateAnmitu();
+      if (_screenshotScrollToResult) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted && _scrollController.hasClients) {
+            _scrollController.jumpTo(
+              _scrollController.position.maxScrollExtent,
+            );
+          }
+        });
+      }
+    });
   }
 
   @override
@@ -58,6 +76,7 @@ class AnmituCheckerPageState extends State<AnmituCheckerPage> {
     noteController.removeListener(_calculateAnmitu);
     noteController.dispose();
     noteFocusNode.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -82,6 +101,7 @@ class AnmituCheckerPageState extends State<AnmituCheckerPage> {
           builder: (context, constraints) {
             final isWide = constraints.maxWidth >= 960;
             return SingleChildScrollView(
+              controller: _scrollController,
               padding: EdgeInsets.fromLTRB(
                 isWide ? 28 : 16,
                 20,

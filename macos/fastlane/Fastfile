@@ -5,6 +5,31 @@
 default_platform(:mac)
 
 platform :mac do
+  desc "2.5.0のリリースノートとスクリーンショットをApp Store Connectへ反映"
+  lane :upload_store_listing do
+    api_key = app_store_connect_api_key(
+      key_id: "7LK8SRK8KU",
+      issuer_id: "714bd8a7-7a2b-4efb-893d-c5eb74b71125",
+      key_filepath: "/Users/ryuya/Documents/apple_cert/AuthKey_7LK8SRK8KU.p8"
+    )
+
+    project_root = File.expand_path("../..", __dir__)
+    deliver(
+      api_key: api_key,
+      app_identifier: "net.ryuya-dev.mnc",
+      app_version: "2.5.0",
+      platform: "osx",
+      metadata_path: File.join(project_root, "fastlane/app-store/macos/metadata"),
+      screenshots_path: File.join(project_root, "fastlane/app-store/macos/screenshots"),
+      skip_binary_upload: true,
+      skip_metadata: false,
+      overwrite_screenshots: true,
+      submit_for_review: false,
+      run_precheck_before_submit: false,
+      force: true
+    )
+  end
+
   # ============================================================
   # 事前処理: 証明書とプロビジョニングプロファイルを取得
   # ============================================================

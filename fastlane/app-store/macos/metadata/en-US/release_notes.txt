@@ -1,0 +1,4 @@
+- Refreshed the main screens for clearer information and easier operation.
+- Improved the Anmitsu Checker results and timing diagram.
+- Optimized layouts for iPhone Duo, foldables, iPad, Mac, and Windows.
+- Added Android 17 and current SDK support, with stability improvements.

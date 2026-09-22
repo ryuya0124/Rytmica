@@ -30,8 +30,11 @@ if [[ -z "$apksigner_bin" || ! -x "$apksigner_bin" ]]; then
 fi
 
 expected="$(tr -d '[:space:]:' < "$expected_file" | tr '[:upper:]' '[:lower:]')"
-actual="$($apksigner_bin verify --print-certs "$apk_path" \
-  | awk -F ': ' '/Signer #1 certificate SHA-256 digest/ { print tolower($2); exit }')"
+certificate_output="$($apksigner_bin verify --print-certs "$apk_path" 2>&1)"
+actual="$(printf '%s\n' "$certificate_output" \
+  | sed -nE 's/.*SHA-256 digest:[[:space:]]*([0-9A-Fa-f]{64}).*/\1/p' \
+  | head -n 1 \
+  | tr '[:upper:]' '[:lower:]')"
 
 if [[ ! "$expected" =~ ^[0-9a-f]{64}$ ]]; then
   echo "Invalid expected SHA-256 fingerprint in $expected_file" >&2
@@ -39,6 +42,7 @@ if [[ ! "$expected" =~ ^[0-9a-f]{64}$ ]]; then
 fi
 if [[ ! "$actual" =~ ^[0-9a-f]{64}$ ]]; then
   echo "Could not read an APK signing certificate from $apk_path" >&2
+  printf '%s\n' "$certificate_output" >&2
   exit 1
 fi
 if [[ "$actual" != "$expected" ]]; then

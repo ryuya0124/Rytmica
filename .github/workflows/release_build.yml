@@ -43,7 +43,7 @@ jobs:
           cache: true
 
       - name: Install Android 17 SDK
-        run: '"$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-37.0" "build-tools;37.0.0"'
+        run: '"$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-37.0" "build-tools;37.0.0" "build-tools;36.1.0"'
 
       - name: Restore Android release key
         env:
@@ -65,7 +65,7 @@ jobs:
 
       - name: Verify Android signing identity
         run: |
-          APKSIGNER="$ANDROID_HOME/build-tools/37.0.0/apksigner" \
+          APKSIGNER="$ANDROID_HOME/build-tools/36.1.0/apksigner" \
             scripts/verify_android_signature.sh build/app/outputs/flutter-apk/app-release.apk
 
       - name: Prepare Android assets

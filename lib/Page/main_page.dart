@@ -23,7 +23,10 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  int _selectedIndex = 0; // 現在選択されているタブのインデックス
+  int _selectedIndex = const int.fromEnvironment(
+    'RYTMICA_SCREENSHOT_PAGE',
+    defaultValue: 0,
+  );
   late TextEditingController bpmController;
   late FocusNode bpmFocusNode;
   late List<Widget> _pages;
@@ -74,7 +77,9 @@ class _MainScreenState extends State<MainScreen> {
     super.initState();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     bpmFocusNode = FocusNode();
-    bpmController = TextEditingController();
+    bpmController = TextEditingController(
+      text: const String.fromEnvironment('RYTMICA_SCREENSHOT_BPM'),
+    );
 
     // 各タブに対応するページリスト
     // GlobalKeyを使って状態を保持し、レイアウト変更時のリビルドによるFocusNode破棄エラーを防ぐ
