@@ -18,64 +18,127 @@ class BpmInputSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final String labelText = label ?? AppLocalizations.of(context)!.bpm_input;
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
+    final labelText = label ?? AppLocalizations.of(context)!.bpm_input;
 
     return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              controller: bpmController,
-              focusNode: bpmFocusNode,
-              keyboardType: const TextInputType.numberWithOptions(
-                decimal: true,
-              ),
-              decoration: InputDecoration(
-                labelText: labelText,
-                labelStyle: TextStyle(color: colorScheme.onSurface),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: colorScheme.primary),
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1240),
+          child: Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: colors.surfaceContainerLow,
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(color: colors.outlineVariant),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 42,
+                  height: 42,
+                  decoration: BoxDecoration(
+                    color: colors.primaryContainer,
+                    borderRadius: BorderRadius.circular(13),
+                  ),
+                  child: Icon(Icons.speed_rounded, color: colors.primary),
                 ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: colorScheme.onSurface.withValues(alpha: 0.5),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: TextField(
+                    controller: bpmController,
+                    focusNode: bpmFocusNode,
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                    decoration: InputDecoration(
+                      labelText: labelText,
+                      suffixText: 'BPM',
+                      isDense: true,
+                      filled: true,
+                      fillColor: colors.surface,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(13),
+                        borderSide: BorderSide.none,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(13),
+                        borderSide: BorderSide(color: colors.outlineVariant),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(13),
+                        borderSide: BorderSide(color: colors.primary, width: 2),
+                      ),
+                    ),
                   ),
                 ),
-              ),
+                const SizedBox(width: 8),
+                _StepButton(
+                  icon: Icons.remove_rounded,
+                  tooltip: '-${context.read<SettingsModel>().deltaValue}',
+                  onPressed: () => _changeValue(context, -1),
+                ),
+                const SizedBox(width: 6),
+                _StepButton(
+                  icon: Icons.add_rounded,
+                  tooltip: '+${context.read<SettingsModel>().deltaValue}',
+                  onPressed: () => _changeValue(context, 1),
+                  emphasized: true,
+                ),
+              ],
             ),
           ),
-          const SizedBox(width: 8),
-          IconButton(
-            icon: const Icon(Icons.add),
-            color: colorScheme.primary,
-            onPressed: () {
-              final currentValue = double.tryParse(bpmController.text) ?? 0;
-              bpmController.text =
-                  (currentValue + context.read<SettingsModel>().deltaValue)
-                      .toStringAsFixed(
-                        context.read<SettingsModel>().numDecimal,
-                      );
-            },
-            splashColor: colorScheme.primary.withValues(alpha: 0.2),
-          ),
-          IconButton(
-            icon: const Icon(Icons.remove),
-            color: colorScheme.primary,
-            onPressed: () {
-              final currentValue = double.tryParse(bpmController.text) ?? 0;
-              bpmController.text =
-                  (currentValue - context.read<SettingsModel>().deltaValue)
-                      .clamp(0, double.infinity)
-                      .toStringAsFixed(
-                        context.read<SettingsModel>().numDecimal,
-                      );
-            },
-            splashColor: colorScheme.primary.withValues(alpha: 0.2),
-          ),
-        ],
+        ),
       ),
+    );
+  }
+
+  void _changeValue(BuildContext context, int direction) {
+    final settings = context.read<SettingsModel>();
+    final current = double.tryParse(bpmController.text) ?? 0;
+    bpmController.text = (current + settings.deltaValue * direction)
+        .clamp(0, double.infinity)
+        .toStringAsFixed(settings.numDecimal);
+    bpmController.selection = TextSelection.collapsed(
+      offset: bpmController.text.length,
+    );
+  }
+}
+
+class _StepButton extends StatelessWidget {
+  final IconData icon;
+  final String tooltip;
+  final VoidCallback onPressed;
+  final bool emphasized;
+
+  const _StepButton({
+    required this.icon,
+    required this.tooltip,
+    required this.onPressed,
+    this.emphasized = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    return IconButton.filledTonal(
+      onPressed: onPressed,
+      tooltip: tooltip,
+      style: IconButton.styleFrom(
+        backgroundColor: emphasized
+            ? colors.primaryContainer
+            : colors.surfaceContainerHighest,
+        foregroundColor: emphasized
+            ? colors.onPrimaryContainer
+            : colors.onSurfaceVariant,
+        minimumSize: const Size(44, 44),
+      ),
+      icon: Icon(icon),
     );
   }
 }

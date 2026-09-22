@@ -20,7 +20,7 @@ class NoteCard extends StatelessWidget {
     horizontal: 16,
     vertical: 14,
   );
-  static const _cardMargin = EdgeInsets.symmetric(vertical: 6, horizontal: 16);
+  static const _cardMargin = EdgeInsets.symmetric(vertical: 4, horizontal: 4);
   static const _iconSize = 44.0;
   // static const _musicIcon = Icon(Icons.music_note_rounded, size: 24); // Use directly
   // static const _arrowIcon = Icon(Icons.arrow_forward_ios_rounded, size: 16); // Use directly
@@ -33,18 +33,11 @@ class NoteCard extends StatelessWidget {
       child: Container(
         margin: _cardMargin,
         decoration: BoxDecoration(
-          color: colorScheme.surfaceContainerHigh,
+          color: colorScheme.surfaceContainerLow,
           borderRadius: _cardBorderRadius,
           border: Border.all(
-            color: colorScheme.outline.withValues(alpha: 0.12),
+            color: colorScheme.outlineVariant,
           ),
-          boxShadow: [
-            BoxShadow(
-              color: colorScheme.shadow.withValues(alpha: 0.06),
-              blurRadius: 10,
-              offset: const Offset(0, 3),
-            ),
-          ],
         ),
         child: Material(
           color: Colors.transparent,

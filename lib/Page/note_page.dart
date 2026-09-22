@@ -8,6 +8,7 @@ import 'package:musical_note_calculator/extensions/app_localizations_extension.d
 import '../ParamData/settings_model.dart';
 import '../UI/unit_dropdown.dart';
 import '../ParamData/notes.dart';
+import '../UI/page_intro_banner.dart';
 
 class NotePage extends StatefulWidget {
   final TextEditingController bpmController; // bpmControllerを保持
@@ -38,6 +39,7 @@ class NotePageState extends State<NotePage> {
     setState(() {
       selectedTimeScale = newUnit;
     });
+    context.read<SettingsModel>().setTimeScale(newUnit);
     _calculateNotes();
   }
 
@@ -75,6 +77,19 @@ class NotePageState extends State<NotePage> {
       child: Scaffold(
         body: Column(
           children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 1240),
+                  child: PageIntroBanner(
+                    icon: Icons.repeat_rounded,
+                    title: AppLocalizations.of(context)!.note_count,
+                    subtitle: AppLocalizations.of(context)!.notePageSubtitle,
+                  ),
+                ),
+              ),
+            ),
             buildUnitSwitchSection(context),
             // StreamBuilderを使用して状態を監視
             StreamBuilder<List<Map<String, String>>>(
@@ -124,58 +139,40 @@ class NotePageState extends State<NotePage> {
 
   // ユニット切り替えセクション
   Widget buildUnitSwitchSection(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          // 画面幅が狭い場合は縦並び、広い場合は横並び
-          final isNarrow = constraints.maxWidth < 300;
-
-          if (isNarrow) {
-            // 縦並び: テキスト左寄せ、ボタン右寄せ
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1240),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            decoration: BoxDecoration(
+              color: colors.surfaceContainerLow,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: colors.outlineVariant),
+            ),
+            child: Row(
               children: [
-                Text(
-                  AppLocalizations.of(context)!.timescale,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+                Icon(Icons.timelapse_rounded, color: colors.primary, size: 20),
+                const SizedBox(width: 9),
+                Expanded(
+                  child: Text(
+                    AppLocalizations.of(context)!.timescale,
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
-                const SizedBox(height: 8),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: UnitDropdown(
-                    selectedUnit: selectedTimeScale,
-                    units: units,
-                    onChanged: _handleUnitChange, // 選択時のコールバックを設定
-                  ),
-                ),
-              ],
-            );
-          } else {
-            // 横並び: 全体右寄せ
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Text(
-                  AppLocalizations.of(context)!.timescale,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(width: 10),
                 UnitDropdown(
                   selectedUnit: selectedTimeScale,
                   units: units,
-                  onChanged: _handleUnitChange, // 選択時のコールバックを設定
+                  onChanged: _handleUnitChange,
                 ),
               ],
-            );
-          }
-        },
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -201,7 +198,7 @@ class NotePageState extends State<NotePage> {
                 const double minCardWidth = 280.0;
                 final int crossAxisCount = (width / minCardWidth).floor().clamp(
                   1,
-                  100,
+                  4,
                 );
 
                 // カラムごとにリストを分割して、それぞれのカラムで縦に並べる
@@ -215,18 +212,27 @@ class NotePageState extends State<NotePage> {
                 }
 
                 return SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: List.generate(crossAxisCount, (colIndex) {
-                      return Expanded(
-                        child: Column(
-                          children: columns[colIndex].map((note) {
-                            return buildNoteCard(note, appBarColor, context);
-                          }).toList(),
-                        ),
-                      );
-                    }),
+                  padding: const EdgeInsets.fromLTRB(12, 6, 12, 24),
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 1240),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: List.generate(crossAxisCount, (colIndex) {
+                          return Expanded(
+                            child: Column(
+                              children: columns[colIndex].map((note) {
+                                return buildNoteCard(
+                                  note,
+                                  appBarColor,
+                                  context,
+                                );
+                              }).toList(),
+                            ),
+                          );
+                        }),
+                      ),
+                    ),
                   ),
                 );
               },
@@ -241,7 +247,7 @@ class NotePageState extends State<NotePage> {
     horizontal: 16,
     vertical: 14,
   );
-  static const _cardMargin = EdgeInsets.symmetric(vertical: 6, horizontal: 16);
+  static const _cardMargin = EdgeInsets.symmetric(vertical: 4, horizontal: 4);
   static const _iconSize = 44.0;
   static const _frequencyIcon = Icon(Icons.graphic_eq_rounded, size: 24);
 
@@ -259,18 +265,11 @@ class NotePageState extends State<NotePage> {
     return Container(
       margin: _cardMargin,
       decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHigh,
+        color: colorScheme.surfaceContainerLow,
         borderRadius: _cardBorderRadius,
         border: Border.all(
-          color: colorScheme.outline.withValues(alpha: 0.12),
+          color: colorScheme.outlineVariant,
         ),
-        boxShadow: [
-          BoxShadow(
-            color: colorScheme.shadow.withValues(alpha: 0.06),
-            blurRadius: 10,
-            offset: const Offset(0, 3),
-          ),
-        ],
       ),
       child: Padding(
         padding: _cardPadding,
@@ -368,6 +367,9 @@ class NotePageState extends State<NotePage> {
   }
 
   String _formatDuration(double duration) {
-    return '${duration.toStringAsFixed(context.read<SettingsModel>().numDecimal)} 回';
+    final value = duration.toStringAsFixed(
+      context.read<SettingsModel>().numDecimal,
+    );
+    return AppLocalizations.of(context)!.noteCountValue(value);
   }
 }

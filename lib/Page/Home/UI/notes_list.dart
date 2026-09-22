@@ -61,40 +61,50 @@ class NotesList extends StatelessWidget {
               const double minCardWidth = 280.0;
               final int crossAxisCount = (width / minCardWidth).floor().clamp(
                 1,
-                100,
+                4,
               );
+              final contentWidth = constraints.maxWidth.clamp(0.0, 1240.0);
 
               if (crossAxisCount == 1) {
-                // 1列の場合は従来のListViewを使用
-                return ListView.builder(
-                  scrollCacheExtent: const ScrollCacheExtent.pixels(500),
-                  itemCount: filteredNotes.length,
-                  itemBuilder: (context, index) {
-                    return NoteCard(
-                      note: filteredNotes[index],
-                      onTap: () => onNoteTap(filteredNotes[index]),
-                    );
-                  },
+                return Center(
+                  child: SizedBox(
+                    width: contentWidth,
+                    child: ListView.builder(
+                      padding: const EdgeInsets.fromLTRB(12, 6, 12, 24),
+                      scrollCacheExtent: const ScrollCacheExtent.pixels(500),
+                      itemCount: filteredNotes.length,
+                      itemBuilder: (context, index) {
+                        return NoteCard(
+                          note: filteredNotes[index],
+                          onTap: () => onNoteTap(filteredNotes[index]),
+                        );
+                      },
+                    ),
+                  ),
                 );
               }
 
-              // 2列以上の場合はGridViewを使用
-              return GridView.builder(
-                scrollCacheExtent: const ScrollCacheExtent.pixels(500),
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: crossAxisCount,
-                  childAspectRatio: 2.8, // カードのアスペクト比
-                  crossAxisSpacing: 8,
-                  mainAxisSpacing: 8,
+              return Center(
+                child: SizedBox(
+                  width: contentWidth,
+                  child: GridView.builder(
+                    scrollCacheExtent: const ScrollCacheExtent.pixels(500),
+                    padding: const EdgeInsets.fromLTRB(12, 6, 12, 24),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: crossAxisCount,
+                      childAspectRatio: 3.25,
+                      crossAxisSpacing: 8,
+                      mainAxisSpacing: 8,
+                    ),
+                    itemCount: filteredNotes.length,
+                    itemBuilder: (context, index) {
+                      return NoteCard(
+                        note: filteredNotes[index],
+                        onTap: () => onNoteTap(filteredNotes[index]),
+                      );
+                    },
+                  ),
                 ),
-                itemCount: filteredNotes.length,
-                itemBuilder: (context, index) {
-                  return NoteCard(
-                    note: filteredNotes[index],
-                    onTap: () => onNoteTap(filteredNotes[index]),
-                  );
-                },
               );
             },
           );

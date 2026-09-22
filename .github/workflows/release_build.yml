@@ -63,6 +63,11 @@ jobs:
           flutter build apk --release
           flutter build appbundle --release
 
+      - name: Verify Android signing identity
+        run: |
+          APKSIGNER="$ANDROID_HOME/build-tools/37.0.0/apksigner" \
+            scripts/verify_android_signature.sh build/app/outputs/flutter-apk/app-release.apk
+
       - name: Prepare Android assets
         run: |
           mkdir -p release-assets

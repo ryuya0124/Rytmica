@@ -1,51 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:musical_note_calculator/l10n/app_localizations.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
-class LicencePage extends StatefulWidget {
+class LicencePage extends StatelessWidget {
   const LicencePage({super.key});
 
   @override
-  LicencePageState createState() => LicencePageState();
-}
-
-class LicencePageState extends State<LicencePage> {
-  late String appName;
-  String appVersion = "2.0.0";
-  //Icon? appIcon; // null許容型に変更
-  //final int _selectedIndex = 5;
-
-  @override
-  void initState() {
-    super.initState();
-    _getAppInfo();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // AppLocalizationsをdidChangeDependencies内で呼び出す
-    appName = AppLocalizations.of(context)!.title;
-  }
-
-  // アプリ情報を非同期で取得
-  Future<void> _getAppInfo() async {
-    setState(() {
-      //appName = packageInfo.appName;
-      //appVersion = packageInfo.version;
-      //appIcon = Icon(Icons.car_repair); // アイコンを設定
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: LicensePage(
-        applicationName: appName, // アプリ名
-        applicationVersion: appVersion, // アプリバージョン
-        applicationIcon: const Icon(Icons.car_repair), // アプリアイコン
-        applicationLegalese:
-            'MIT License Copyright (c) 2025 ryuya0124', // 著作権表示
-      ),
+    final loc = AppLocalizations.of(context)!;
+    return FutureBuilder<PackageInfo>(
+      future: PackageInfo.fromPlatform(),
+      builder: (context, snapshot) {
+        final package = snapshot.data;
+        final version = package == null
+            ? ''
+            : '${package.version} (${package.buildNumber})';
+        return LicensePage(
+          applicationName: loc.title,
+          applicationVersion: version,
+          applicationIcon: ClipRRect(
+            borderRadius: BorderRadius.circular(18),
+            child: Image.asset(
+              'assets/icon/icon/icon.jpg',
+              width: 72,
+              height: 72,
+              fit: BoxFit.cover,
+            ),
+          ),
+          applicationLegalese: 'MIT License © 2024–2026 ryuya0124',
+        );
+      },
     );
   }
 }

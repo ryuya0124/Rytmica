@@ -100,23 +100,25 @@ class SettingsPageState extends State<SettingsPage> {
             }
 
             // 小画面: 従来の縦並びレイアウト
-            return const Padding(
-              padding: EdgeInsets.all(16.0),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    DisplaySettingsSection(),
-                    SizedBox(height: 40),
-                    NoteSettingsSection(),
-                    SizedBox(height: 40),
-                    AdvancedSettingsSection(),
-                    SizedBox(height: 40),
-                    JudgmentSettingsSection(),
-                    SizedBox(height: 40),
-                    AppInfoSection(),
-                    SizedBox(height: 20),
-                  ],
+            return SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 760),
+                  child: const Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      DisplaySettingsSection(),
+                      SizedBox(height: 8),
+                      NoteSettingsSection(),
+                      SizedBox(height: 8),
+                      JudgmentSettingsSection(),
+                      SizedBox(height: 8),
+                      AdvancedSettingsSection(),
+                      SizedBox(height: 8),
+                      AppInfoSection(),
+                    ],
+                  ),
                 ),
               ),
             );
@@ -217,8 +219,13 @@ class SettingsPageState extends State<SettingsPage> {
     AppLocalizations loc,
   ) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
-      child: _buildSelectedCategoryContent(context, colorScheme),
+      padding: const EdgeInsets.fromLTRB(24, 24, 24, 32),
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 840),
+          child: _buildSelectedCategoryContent(context, colorScheme),
+        ),
+      ),
     );
   }
 

@@ -8,6 +8,7 @@ import 'package:musical_note_calculator/extensions/app_localizations_extension.d
 
 import '../ParamData/notes.dart';
 import '../ParamData/settings_model.dart';
+import '../UI/page_intro_banner.dart';
 
 class CalculatorPage extends StatefulWidget {
   final TextEditingController bpmController; // bpmControllerを保持
@@ -97,7 +98,7 @@ class CalculatorPageState extends State<CalculatorPage> {
     horizontal: 16,
     vertical: 14,
   );
-  static const _cardMargin = EdgeInsets.symmetric(vertical: 6, horizontal: 16);
+  static const _cardMargin = EdgeInsets.symmetric(vertical: 4, horizontal: 4);
   static const _iconSize = 44.0;
   static const _calcIcon = Icon(Icons.calculate_rounded, size: 24);
   static const _speedIcon = Icon(Icons.speed_rounded, size: 14);
@@ -108,18 +109,11 @@ class CalculatorPageState extends State<CalculatorPage> {
     return Container(
       margin: _cardMargin,
       decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHigh,
+        color: colorScheme.surfaceContainerLow,
         borderRadius: _cardBorderRadius,
         border: Border.all(
-          color: colorScheme.outline.withValues(alpha: 0.12),
+          color: colorScheme.outlineVariant,
         ),
-        boxShadow: [
-          BoxShadow(
-            color: colorScheme.shadow.withValues(alpha: 0.06),
-            blurRadius: 10,
-            offset: const Offset(0, 3),
-          ),
-        ],
       ),
       child: Padding(
         padding: _cardPadding,
@@ -217,9 +211,9 @@ class CalculatorPageState extends State<CalculatorPage> {
         shape: const RoundedRectangleBorder(
           borderRadius: _cardBorderRadius,
         ),
-        color: colorScheme.surfaceContainer,
+        color: colorScheme.surfaceContainerLow,
         clipBehavior: Clip.antiAlias,
-        margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+        margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 5),
         child: StreamBuilder<bool>(
           stream: _getExpansionStream(title),
           initialData: false,
@@ -262,12 +256,28 @@ class CalculatorPageState extends State<CalculatorPage> {
     return Scaffold(
       body: Column(
         children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 1240),
+                child: PageIntroBanner(
+                  icon: Icons.swap_horiz_rounded,
+                  title: AppLocalizations.of(context)!.calculator,
+                  subtitle: AppLocalizations.of(context)!
+                      .calculatorPageSubtitle,
+                ),
+              ),
+            ),
+          ),
           Expanded(
             child: StreamBuilder<Map<String, List<Map<String, String>>>>(
               stream: _notesStreamController.stream,
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
-                  return const Center(child: Text('エラーが発生しました'));
+                  return Center(
+                    child: Text(AppLocalizations.of(context)!.error),
+                  );
                 }
 
                 if (snapshot.hasData && snapshot.data!.isNotEmpty) {
@@ -297,12 +307,13 @@ class CalculatorPageState extends State<CalculatorPage> {
                       final int crossAxisCount =
                           (constraints.maxWidth / minCardWidth).floor().clamp(
                             1,
-                            100,
+                            3,
                           );
 
                       if (crossAxisCount == 1) {
                         // 1列の場合は従来のListViewを使用
                         return ListView(
+                          padding: const EdgeInsets.fromLTRB(12, 6, 12, 24),
                           scrollCacheExtent: const ScrollCacheExtent.pixels(
                             500,
                           ),
@@ -330,23 +341,30 @@ class CalculatorPageState extends State<CalculatorPage> {
                       }
 
                       return SingleChildScrollView(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: List.generate(crossAxisCount, (colIndex) {
-                            return Expanded(
-                              child: Column(
-                                children: columns[colIndex].map((entry) {
-                                  return _buildNoteGroup(
-                                    entry.key,
-                                    entry.value,
-                                    enabledNotes,
-                                    context,
-                                  );
-                                }).toList(),
-                              ),
-                            );
-                          }),
+                        padding: const EdgeInsets.fromLTRB(12, 6, 12, 24),
+                        child: Center(
+                          child: ConstrainedBox(
+                            constraints: const BoxConstraints(maxWidth: 1240),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: List.generate(crossAxisCount, (
+                                colIndex,
+                              ) {
+                                return Expanded(
+                                  child: Column(
+                                    children: columns[colIndex].map((entry) {
+                                      return _buildNoteGroup(
+                                        entry.key,
+                                        entry.value,
+                                        enabledNotes,
+                                        context,
+                                      );
+                                    }).toList(),
+                                  ),
+                                );
+                              }),
+                            ),
+                          ),
                         ),
                       );
                     },

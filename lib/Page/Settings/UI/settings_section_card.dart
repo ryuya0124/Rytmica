@@ -25,24 +25,17 @@ class SettingsSectionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     return RepaintBoundary(
-      child: Container(
-        margin: margin ?? const EdgeInsets.only(bottom: 16),
-        decoration: BoxDecoration(
+      child: Padding(
+        padding: margin ?? const EdgeInsets.only(bottom: 16),
+        child: Material(
           color: colorScheme.surfaceContainerLow,
-          borderRadius: _cardBorderRadius,
-          border: Border.all(
-            color: colorScheme.outline.withValues(alpha: 0.1),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: colorScheme.shadow.withValues(alpha: 0.05),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
+          shape: RoundedRectangleBorder(
+            borderRadius: _cardBorderRadius,
+            side: BorderSide(
+              color: colorScheme.outlineVariant,
             ),
-          ],
-        ),
-        child: ClipRRect(
-          borderRadius: _cardBorderRadius,
+          ),
+          clipBehavior: Clip.antiAlias,
           child: Padding(
             padding: _cardPadding,
             child: Column(

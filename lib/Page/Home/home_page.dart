@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:musical_note_calculator/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 import '../../ParamData/settings_model.dart';
@@ -9,6 +10,7 @@ import '../../ParamData/notes.dart';
 import 'UI/unit_switch_section.dart';
 import 'UI/notes_list.dart';
 import '../../UI/adaptive_layout.dart';
+import '../../UI/page_intro_banner.dart';
 
 class HomePage extends StatefulWidget {
   final TextEditingController bpmController; // bpmControllerを保持
@@ -73,6 +75,19 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
         backgroundColor: colorScheme.surface,
         body: Column(
           children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 1240),
+                  child: PageIntroBanner(
+                    icon: Icons.timer_outlined,
+                    title: AppLocalizations.of(context)!.note_spacing,
+                    subtitle: AppLocalizations.of(context)!.homePageSubtitle,
+                  ),
+                ),
+              ),
+            ),
             UnitSwitchSection(
               selectedUnit: selectedUnit,
               units: units,
@@ -126,9 +141,9 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
   void _handleUnitChange(String newUnit) {
-    // selectedUnitの変更を直接StreamControllerに反映
-    selectedUnit = newUnit;
-    _calculateNotes(); // ユニット変更後にノートの計算を再実行
+    setState(() => selectedUnit = newUnit);
+    context.read<SettingsModel>().setUnit(newUnit);
+    _calculateNotes();
   }
 
   void _calculateNotes() {

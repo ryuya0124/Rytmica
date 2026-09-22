@@ -25,11 +25,11 @@ class AnmitsuLogic {
   }
 
   static double calculateAnmitsuValue(
-    double windowEarly,
-    double windowLate,
+    double earlierNoteLateWindow,
+    double laterNoteEarlyWindow,
     double noteLengthMs,
   ) {
-    final totalWindow = windowEarly + windowLate;
+    final totalWindow = earlierNoteLateWindow + laterNoteEarlyWindow;
     return (totalWindow - noteLengthMs) / 2;
   }
 
@@ -109,6 +109,8 @@ class AnmitsuLogic {
 
     if (earlyPreset == null ||
         latePreset == null ||
+        !bpm.isFinite ||
+        !noteType.isFinite ||
         bpm <= 0 ||
         noteType <= 0) {
       return null;
@@ -120,21 +122,32 @@ class AnmitsuLogic {
       noteType,
       isDotted: isDotted,
     );
+    if (!quarterNoteLengthMs.isFinite ||
+        !noteLengthMs.isFinite ||
+        noteLengthMs <= 0) {
+      return null;
+    }
 
-    final double windowEarly = earlyPreset.earlyMs;
-    final double windowLate = latePreset.lateMs;
-    final totalWindow = windowEarly + windowLate;
-    final anmituValue = (totalWindow - noteLengthMs) / 2;
+    // A simultaneous hit must be late enough for the earlier note and early
+    // enough for the later note. The opposite sides of both judgment windows
+    // do not participate in their intersection.
+    final earlierNoteLateWindow = earlyPreset.lateMs;
+    final laterNoteEarlyWindow = latePreset.earlyMs;
+    final overlapDurationMs =
+        earlierNoteLateWindow + laterNoteEarlyWindow - noteLengthMs;
+    final anmituValue = overlapDurationMs / 2;
     final color = getResultColor(anmituValue);
 
     return AnmituCalcResult(
       gameName: selection.game ?? '',
       earlyPresetLabel: earlyPreset.label,
       latePresetLabel: latePreset.label,
-      windowEarly: windowEarly,
-      windowLate: windowLate,
-      totalWindow: totalWindow,
+      earlierNoteEarlyWindow: earlyPreset.earlyMs,
+      earlierNoteLateWindow: earlierNoteLateWindow,
+      laterNoteEarlyWindow: laterNoteEarlyWindow,
+      laterNoteLateWindow: latePreset.lateMs,
       noteLengthMs: noteLengthMs,
+      overlapDurationMs: overlapDurationMs,
       anmituValue: anmituValue,
       color: color,
     );

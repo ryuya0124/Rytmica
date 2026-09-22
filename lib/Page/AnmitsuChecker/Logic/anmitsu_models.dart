@@ -33,10 +33,12 @@ class AnmituCalcResult {
   final String gameName;
   final String earlyPresetLabel;
   final String latePresetLabel;
-  final double windowEarly;
-  final double windowLate;
-  final double totalWindow;
+  final double earlierNoteEarlyWindow;
+  final double earlierNoteLateWindow;
+  final double laterNoteEarlyWindow;
+  final double laterNoteLateWindow;
   final double noteLengthMs;
+  final double overlapDurationMs;
   final double anmituValue;
   final Color color;
 
@@ -44,11 +46,20 @@ class AnmituCalcResult {
     required this.gameName,
     required this.earlyPresetLabel,
     required this.latePresetLabel,
-    required this.windowEarly,
-    required this.windowLate,
-    required this.totalWindow,
+    required this.earlierNoteEarlyWindow,
+    required this.earlierNoteLateWindow,
+    required this.laterNoteEarlyWindow,
+    required this.laterNoteLateWindow,
     required this.noteLengthMs,
+    required this.overlapDurationMs,
     required this.anmituValue,
     required this.color,
   });
+
+  bool get isPossible => overlapDurationMs > 0;
+
+  double get relevantWindowTotal =>
+      earlierNoteLateWindow + laterNoteEarlyWindow;
+
+  double get shortfallMs => overlapDurationMs < 0 ? -overlapDurationMs : 0;
 }

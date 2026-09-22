@@ -9,10 +9,24 @@ def releaseKeystorePassword = System.getenv("ANDROID_KEYSTORE_PASSWORD")
 def releaseKeyAlias = System.getenv("ANDROID_KEY_ALIAS")
 def releaseKeyPassword = System.getenv("ANDROID_KEY_PASSWORD")
 def hasReleaseSigning = releaseKeystorePath != null &&
+    !releaseKeystorePath.isBlank() &&
     releaseKeystorePassword != null &&
+    !releaseKeystorePassword.isBlank() &&
     releaseKeyAlias != null &&
+    !releaseKeyAlias.isBlank() &&
     releaseKeyPassword != null &&
+    !releaseKeyPassword.isBlank() &&
     rootProject.file(releaseKeystorePath).exists()
+def releaseBuildRequested = gradle.startParameter.taskNames.any {
+    it.toLowerCase().contains("release")
+}
+
+if (releaseBuildRequested && !hasReleaseSigning) {
+    throw new GradleException(
+        "Release signing is required. Set ANDROID_KEYSTORE_PATH, " +
+        "ANDROID_KEYSTORE_PASSWORD, ANDROID_KEY_ALIAS, and ANDROID_KEY_PASSWORD."
+    )
+}
 
 android {
     namespace = "net.ryuya_dev.mnc"
@@ -51,10 +65,18 @@ android {
     }
 
     buildTypes {
+        debug {
+            // Keep development installs alongside the GitHub/App Store build,
+            // whose persistent release signature must never be replaced.
+            applicationIdSuffix = ".debug"
+            versionNameSuffix = "-dev"
+        }
         release {
-            // CI/GitHub Releases use the persistent release key. Keep the debug
-            // fallback so local release-mode development remains convenient.
-            signingConfig = hasReleaseSigning ? signingConfigs.release : signingConfigs.debug
+            // Never silently publish a debug-signed build. Release tasks fail
+            // above when the persistent Rytmica key is unavailable.
+            if (hasReleaseSigning) {
+                signingConfig = signingConfigs.release
+            }
         }
     }
 }

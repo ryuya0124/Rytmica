@@ -109,6 +109,35 @@
   "overlapArea": "重なり範囲",
   "anmitsuPossibleDesc": "判定幅が重なっているため、餡蜜が可能です",
   "anmitsuImpossibleDesc": "判定幅が重なっていないため、餡蜜は不可能です",
+  "anmitsuPageSubtitle": "2つのノーツを同時押しできるタイミング幅を計算します",
+  "anmitsuHowTo": "先のノーツの遅判定と、後のノーツの早判定が重なるかを確認します。BPMは画面上部から変更できます。",
+  "earlierNote": "先のノーツ",
+  "laterNote": "後のノーツ",
+  "earlierNotePreset": "先のノーツの判定",
+  "laterNotePreset": "後のノーツの判定",
+  "relevantLateWindow": "先のノーツ・遅判定",
+  "relevantEarlyWindow": "後のノーツ・早判定",
+  "actualOverlap": "有効な重なり幅",
+  "anmitsuPossible": "餡蜜可能",
+  "anmitsuImpossible": "餡蜜不可",
+  "millisecondsShort": "{value} ms不足",
+  "@millisecondsShort": {
+    "placeholders": {
+      "value": { "type": "String" }
+    }
+  },
+  "noteSubdivision": "音符の分母",
+  "quickSelect": "クイック選択",
+  "currentBpm": "現在のBPM",
+  "homePageSubtitle": "BPMから各音符の長さを確認。カードを押すとメトロノームで再生できます。",
+  "notePageSubtitle": "指定した時間内に各音符が何回入るかを一覧で確認します。",
+  "calculatorPageSubtitle": "基準となる音符から、同じ速さになる別の音符のBPMへ換算します。",
+  "noteCountValue": "{value} 回",
+  "@noteCountValue": {
+    "placeholders": {
+      "value": { "type": "String" }
+    }
+  },
   "privacy_policy": "プライバシーポリシー",
   "support": "サポート",
   "terms_of_service": "利用規約",

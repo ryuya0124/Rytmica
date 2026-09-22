@@ -137,7 +137,7 @@ class AppInfoSection extends StatelessWidget {
   }
 
   Future<void> _moveGithub(BuildContext context) async {
-    _launchUrl(context, "https://github.com/ryuya0124/musical_note_calculator");
+    _launchUrl(context, "https://github.com/ryuya0124/Rytmica");
   }
 
   Future<void> _launchUrl(BuildContext context, String urlString) async {

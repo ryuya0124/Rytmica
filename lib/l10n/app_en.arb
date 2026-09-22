@@ -109,6 +109,35 @@
   "overlapArea": "Overlap Area",
   "anmitsuPossibleDesc": "The judgment windows overlap, so anmitsu is possible",
   "anmitsuImpossibleDesc": "The judgment windows do not overlap, so anmitsu is impossible",
+  "anmitsuPageSubtitle": "Calculate the timing range where two notes can be hit together",
+  "anmitsuHowTo": "Checks whether the late window of the earlier note overlaps the early window of the later note. Change BPM at the top of the screen.",
+  "earlierNote": "Earlier note",
+  "laterNote": "Later note",
+  "earlierNotePreset": "Earlier note judgment",
+  "laterNotePreset": "Later note judgment",
+  "relevantLateWindow": "Earlier note · late window",
+  "relevantEarlyWindow": "Later note · early window",
+  "actualOverlap": "Usable overlap",
+  "anmitsuPossible": "Anmitsu possible",
+  "anmitsuImpossible": "Anmitsu impossible",
+  "millisecondsShort": "{value} ms short",
+  "@millisecondsShort": {
+    "placeholders": {
+      "value": { "type": "String" }
+    }
+  },
+  "noteSubdivision": "Note subdivision",
+  "quickSelect": "Quick select",
+  "currentBpm": "Current BPM",
+  "homePageSubtitle": "See each note duration from the BPM. Tap a card to play it in the metronome.",
+  "notePageSubtitle": "See how many times each note fits into the selected time span.",
+  "calculatorPageSubtitle": "Convert a base note into the BPM of an equivalent note value.",
+  "noteCountValue": "{value} times",
+  "@noteCountValue": {
+    "placeholders": {
+      "value": { "type": "String" }
+    }
+  },
   "privacy_policy": "Privacy Policy",
   "support": "Support",
   "terms_of_service": "Terms of Service",
