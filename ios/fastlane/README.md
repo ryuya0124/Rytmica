@@ -63,6 +63,22 @@ TestFlightにビルドをアップロード
 
 App Store Connectにビルドをアップロード
 
+### ios upload_store_listing
+
+```sh
+[bundle exec] fastlane ios upload_store_listing
+```
+
+2.5.0のリリースノートとスクリーンショットをApp Store Connectへ反映
+
+### ios update_testflight_notes
+
+```sh
+[bundle exec] fastlane ios update_testflight_notes
+```
+
+2.5.0 (34) のTestFlightテスト内容を日本語・英語で更新
+
 ### ios local_testflight
 
 ```sh

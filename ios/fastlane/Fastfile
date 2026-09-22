@@ -195,6 +195,35 @@ platform :ios do
     )
   end
 
+  desc "2.5.0 (34) のTestFlightテスト内容を日本語・英語で更新"
+  lane :update_testflight_notes do
+    api_key = app_store_connect_api_key(
+      key_id: "7LK8SRK8KU",
+      issuer_id: "714bd8a7-7a2b-4efb-893d-c5eb74b71125",
+      key_filepath: "/Users/ryuya/Documents/apple_cert/AuthKey_7LK8SRK8KU.p8"
+    )
+
+    project_root = File.expand_path("../..", __dir__)
+    pilot(
+      api_key: api_key,
+      app_identifier: "net.ryuya-dev.mnc",
+      app_platform: "ios",
+      app_version: "2.5.0",
+      build_number: "34",
+      distribute_only: true,
+      skip_submission: true,
+      distribute_external: false,
+      localized_build_info: {
+        "ja" => {
+          whats_new: File.read(File.join(project_root, "fastlane/app-store/ios/metadata/ja/release_notes.txt"))
+        },
+        "en-US" => {
+          whats_new: File.read(File.join(project_root, "fastlane/app-store/ios/metadata/en-US/release_notes.txt"))
+        }
+      }
+    )
+  end
+
   # ============================================================
   # ローカル環境用: TestFlightへのビルド+アップロード
   # ============================================================

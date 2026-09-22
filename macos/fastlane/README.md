@@ -15,6 +15,22 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 ## Mac
 
+### mac upload_store_listing
+
+```sh
+[bundle exec] fastlane mac upload_store_listing
+```
+
+2.5.0のリリースノートとスクリーンショットをApp Store Connectへ反映
+
+### mac update_testflight_notes
+
+```sh
+[bundle exec] fastlane mac update_testflight_notes
+```
+
+2.5.0 (34) のTestFlightテスト内容を日本語・英語で更新
+
 ### mac sync_certificates
 
 ```sh

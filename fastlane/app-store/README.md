@@ -12,6 +12,8 @@ Rytmica 2.5.0 の App Store Connect 用メタデータとスクリーンショ�
 ```sh
 (cd ios && fastlane ios upload_store_listing)
 (cd macos && fastlane mac upload_store_listing)
+(cd ios && fastlane ios update_testflight_notes)
+(cd macos && fastlane mac update_testflight_notes)
 ```
 
 撮影専用の初期画面・BPM・餡蜜チェッカー表示は、製品ビルドへ影響しない `--dart-define` で指定します。
