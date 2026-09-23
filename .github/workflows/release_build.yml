@@ -6,8 +6,12 @@ on:
       tag:
         description: GitHub Release tag
         required: true
-        default: 2.5.0
         type: string
+      submit_to_microsoft_store:
+        description: Submit the Windows MSIX to Microsoft Store after the GitHub Release
+        required: true
+        default: true
+        type: boolean
 
 permissions:
   contents: write
@@ -161,3 +165,90 @@ jobs:
             - Windows: Microsoft Storeまたはこのリリースのポータブル版
             - Android: このリリースのAPK
           files: release-assets/*
+
+  publish-microsoft-store:
+    name: Submit Windows MSIX to Microsoft Store
+    needs: publish
+    if: ${{ inputs.submit_to_microsoft_store && inputs.tag != '2.5.0' }}
+    runs-on: windows-latest
+    environment: microsoft-store
+
+    steps:
+      - name: Download Windows release assets
+        uses: actions/download-artifact@v4
+        with:
+          name: windows-release
+          path: release-assets
+
+      - name: Verify Store package identity and release version
+        shell: pwsh
+        run: |
+          $tag = $env:RELEASE_VERSION
+          if ($tag -notmatch '^\d+\.\d+\.\d+$') {
+            throw "Release tag must use major.minor.patch for Store submission: $tag"
+          }
+          $package = Join-Path $PWD "release-assets/Rytmica-Microsoft-Store-$tag.msix"
+          if (-not (Test-Path -LiteralPath $package)) {
+            throw "Microsoft Store MSIX not found: $package"
+          }
+          Add-Type -AssemblyName System.IO.Compression.FileSystem
+          $archive = [System.IO.Compression.ZipFile]::OpenRead($package)
+          try {
+            $entry = $archive.GetEntry('AppxManifest.xml')
+            if ($null -eq $entry) { throw 'MSIX has no AppxManifest.xml' }
+            $stream = $entry.Open()
+            $reader = [System.IO.StreamReader]::new($stream)
+            try {
+              [xml]$manifest = $reader.ReadToEnd()
+            } finally {
+              $reader.Dispose()
+            }
+          } finally {
+            $archive.Dispose()
+          }
+          $identity = $manifest.Package.Identity
+          if ($identity.Name -ne 'ryuya.Rytmica' -or
+              $identity.Publisher -ne 'CN=2492F63A-A943-4F47-BCBE-6BCFF558B3D9' -or
+              $identity.ProcessorArchitecture -ne 'x64') {
+            throw 'MSIX identity, publisher, or architecture does not match the existing Store app'
+          }
+          $packageVersion = [version]$identity.Version
+          if ($packageVersion.Major -ne [int]$tag.Split('.')[0] -or
+              $packageVersion.Minor -ne [int]$tag.Split('.')[1] -or
+              $packageVersion.Build -ne [int]$tag.Split('.')[2]) {
+            throw "MSIX version $packageVersion does not match release tag $tag"
+          }
+          if ($packageVersion -le [version]'2.5.0.0') {
+            throw "MSIX version $packageVersion is not newer than the manually submitted 2.5.0.0"
+          }
+          Write-Host "Verified Store package $($identity.Name) $packageVersion ($($identity.ProcessorArchitecture))"
+
+      - name: Set up Microsoft Store Developer CLI
+        uses: microsoft/microsoft-store-apppublisher@v1.4
+
+      - name: Configure Microsoft Store credentials
+        shell: pwsh
+        env:
+          AZURE_AD_TENANT_ID: ${{ secrets.AZURE_AD_TENANT_ID }}
+          AZURE_AD_APPLICATION_CLIENT_ID: ${{ secrets.AZURE_AD_APPLICATION_CLIENT_ID }}
+          AZURE_AD_APPLICATION_SECRET: ${{ secrets.AZURE_AD_APPLICATION_SECRET }}
+          SELLER_ID: ${{ secrets.SELLER_ID }}
+        run: |
+          foreach ($name in @('AZURE_AD_TENANT_ID', 'AZURE_AD_APPLICATION_CLIENT_ID', 'AZURE_AD_APPLICATION_SECRET', 'SELLER_ID')) {
+            if ([string]::IsNullOrWhiteSpace([Environment]::GetEnvironmentVariable($name))) {
+              throw "Required Microsoft Store secret is missing: $name"
+            }
+          }
+          msstore reconfigure `
+            --tenantId $env:AZURE_AD_TENANT_ID `
+            --sellerId $env:SELLER_ID `
+            --clientId $env:AZURE_AD_APPLICATION_CLIENT_ID `
+            --clientSecret $env:AZURE_AD_APPLICATION_SECRET
+          if ($LASTEXITCODE -ne 0) { throw 'Microsoft Store CLI authentication failed' }
+
+      - name: Submit MSIX for certification
+        shell: pwsh
+        run: |
+          $package = Join-Path $PWD "release-assets/Rytmica-Microsoft-Store-$env:RELEASE_VERSION.msix"
+          msstore publish $package -id 9N7HMK8TN36X
+          if ($LASTEXITCODE -ne 0) { throw 'Microsoft Store submission failed' }
