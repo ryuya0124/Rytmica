@@ -8,13 +8,14 @@ Store CLI の公式手順: <https://learn.microsoft.com/en-us/windows/apps/publi
 ## 設定の進捗（2026-09-23）
 
 - Store 製品 `9N7HMK8TN36X` の 2.5.0 は手動提出済みで、Partner Center では審査中。自動提出は実行していない。
-- 既存の Store 開発者アカウントは個人の Microsoft アカウント。別途作成した Microsoft Entra テナントはまだこの Partner Center アカウントに関連付けられていない。`ryuya-dev.net` は Entra でドメイン所有権を確認済み（Cloudflare DNS の TXT レコード）。既存のメール用 DNS レコードは変更していない。
+- 既存の Store 個人開発者アカウントに、新設した Microsoft Entra テナント `ryuyadev.onmicrosoft.com` を関連付け済み。Partner Center の完了画面で Entra 管理者への Account admin 権限付与を確認した。`ryuya-dev.net` は Entra でドメイン所有権を確認済み（Cloudflare DNS の TXT レコード）。既存のメール用 DNS レコードは変更していない。
 - Entra には Rytmica 専用のシングルテナント アプリ `Rytmica Microsoft Store Release` を登録済み。他のアプリの配信用資格情報と共有しない。
 - 同アプリのクライアントシークレットは 24 か月で発行済み。有効期限は **2028-09-22**。Microsoft の仕様上、カスタム指定でもクライアントシークレットの上限は 24 か月で、無期限にはできない。
 - GitHub の [`microsoft-store` Environment](https://github.com/ryuya0124/Rytmica/settings/environments) には下記 4 種の Secrets を登録済み。Seller ID は既存の Partner Center 個人開発者アカウントの「Legal info → Developer → Publisher IDs」で確認した。資格情報の値はこのリポジトリに記録しない。
-- **残作業:** Partner Center の「Tenants」で Entra テナントを関連付ける。Entra アカウントで Partner Center にサインインし、「User management」の Microsoft Entra applications に上記アプリを追加して Manager ロールを付与する。その後、新しいリリースで認証・提出を検証する。2.5.0 は再提出しない。
+- Partner Center の「User management → Microsoft Entra applications」に上記アプリを追加し、`Manager(Windows)` ロールが付いたことを一覧で確認済み。
+- **残作業:** 次の新しいリリースで Store CLI の認証・提出を検証する。2.5.0 は再提出しない。
 
-Partner Center の個人アカウントから「Associate Microsoft Entra ID」を押した際、2026-09-23 時点で `You are not authorized for this action` が表示された。関連付け成功は未確認なので、Entra アプリの存在や GitHub Secrets の登録だけで自動提出可能とは判断しない。
+最初の関連付け操作では `You are not authorized for this action` が表示されたが、個人開発者アカウントで再サインインしてやり直したところ成功した。Entra 管理者で入り直した「User management → Users」では `Global admin, Manager(Windows)` を確認済み。アプリの権限と GitHub Secrets は揃ったが、Store CLI の認証・提出実行は未検証。2.5.0 の既存審査を妨げないよう、このバージョンでの自動提出テストは行わない。
 
 ## 初回設定
 
