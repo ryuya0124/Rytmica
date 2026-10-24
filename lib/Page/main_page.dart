@@ -127,174 +127,177 @@ class _MainScreenState extends State<MainScreen> {
     // Let Flutter select a usable sub-screen when a physical hinge or a
     // separating fold exists. The continuous iPhone Duo display uses the
     // whole window, with its asymmetric camera/status-bar insets.
-    return DisplayFeatureSubScreen(
-      child: SafeArea(
-        top: false,
-        bottom: false,
-        child: LayoutBuilder(
-          builder: (context, viewport) {
-            final layout = AdaptiveLayoutInfo(
-              size: Size(viewport.maxWidth, viewport.maxHeight),
-              displayFeatures: const [],
-            );
-            final useRail = layout.usesNavigationRail;
-            final extended = layout.usesExtendedNavigationRail;
-            final colors = Theme.of(context).colorScheme;
-            final destinations = _destinations(context);
-            final railWidth = useRail ? (extended ? 241.0 : 89.0) : 0.0;
-            final panelWidth = layout.supportsInlinePanel
-                ? math.min(400.0, viewport.maxWidth - railWidth - 360.0)
-                : viewport.maxWidth;
-            final inlinePanel =
-                _showMetronomePanel && layout.supportsInlinePanel;
-            final overlayPanel = _showMetronomePanel && !inlinePanel;
+    return ColoredBox(
+      color: Theme.of(context).colorScheme.surface,
+      child: DisplayFeatureSubScreen(
+        child: SafeArea(
+          top: false,
+          bottom: false,
+          child: LayoutBuilder(
+            builder: (context, viewport) {
+              final layout = AdaptiveLayoutInfo(
+                size: Size(viewport.maxWidth, viewport.maxHeight),
+                displayFeatures: const [],
+              );
+              final useRail = layout.usesNavigationRail;
+              final extended = layout.usesExtendedNavigationRail;
+              final colors = Theme.of(context).colorScheme;
+              final destinations = _destinations(context);
+              final railWidth = useRail ? (extended ? 241.0 : 89.0) : 0.0;
+              final panelWidth = layout.supportsInlinePanel
+                  ? math.min(400.0, viewport.maxWidth - railWidth - 360.0)
+                  : viewport.maxWidth;
+              final inlinePanel =
+                  _showMetronomePanel && layout.supportsInlinePanel;
+              final overlayPanel = _showMetronomePanel && !inlinePanel;
 
-            // Keep the scaffold, input, and page subtree at the same element
-            // positions on resize. Folding must not dispose page controllers,
-            // selection, scroll positions, focus, or the playing metronome.
-            return Scaffold(
-              appBar: AppBarWidget(
-                selectedIndex: _selectedIndex,
-                actions: [
-                  if (_selectedIndex == 0 || _showMetronomePanel)
-                    IconButton(
-                      key: const ValueKey('metronome-toggle'),
-                      icon: Icon(
-                        _showMetronomePanel
-                            ? Icons.close
-                            : Icons.av_timer_outlined,
-                      ),
-                      onPressed: _toggleMetronomePanel,
-                      tooltip: AppLocalizations.of(context)!.metronome,
-                    ),
-                ],
-              ),
-              body: SafeArea(
-                top: false,
-                child: Stack(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(
-                        right: inlinePanel ? panelWidth : 0,
-                      ),
-                      child: ExcludeFocus(
-                        excluding: overlayPanel,
-                        child: ExcludeSemantics(
-                          excluding: overlayPanel,
-                          child: IgnorePointer(
-                            ignoring: overlayPanel,
-                            child: Row(
-                              children: [
-                                Offstage(
-                                  offstage: !useRail,
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      ModernSideBar(
-                                        selectedIndex: _selectedIndex,
-                                        onDestinationSelected: _onTabSelected,
-                                        isExtended: extended,
-                                        destinations: destinations,
-                                      ),
-                                      VerticalDivider(
-                                        width: 1,
-                                        thickness: 1,
-                                        color: colors.outlineVariant,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Column(
-                                    children: [
-                                      if (useRail &&
-                                          !extended &&
-                                          viewport.maxHeight >= 600)
-                                        Padding(
-                                          padding: const EdgeInsets.all(16),
-                                          child: Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: Text(
-                                              destinations[_selectedIndex]
-                                                  .label,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .titleLarge,
-                                            ),
-                                          ),
-                                        ),
-                                      // A key preserves this subtree when the
-                                      // optional heading above is inserted.
-                                      Expanded(
-                                        key: const ValueKey('main-workflow'),
-                                        child: Column(
-                                          children: [
-                                            BpmInputSection(
-                                              bpmController: bpmController,
-                                              bpmFocusNode: bpmFocusNode,
-                                            ),
-                                            Expanded(
-                                              child: LayoutBuilder(
-                                                builder: (context, bounds) {
-                                                  return SingleChildScrollView(
-                                                    child: SizedBox(
-                                                      height: math.max(
-                                                        bounds.maxHeight,
-                                                        520,
-                                                      ),
-                                                      child: IndexedStack(
-                                                        index: _selectedIndex,
-                                                        children: _pages,
-                                                      ),
-                                                    ),
-                                                  );
-                                                },
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+              // Keep the scaffold, input, and page subtree at the same element
+              // positions on resize. Folding must not dispose page controllers,
+              // selection, scroll positions, focus, or the playing metronome.
+              return Scaffold(
+                appBar: AppBarWidget(
+                  selectedIndex: _selectedIndex,
+                  actions: [
+                    if (_selectedIndex == 0 || _showMetronomePanel)
+                      IconButton(
+                        key: const ValueKey('metronome-toggle'),
+                        icon: Icon(
+                          _showMetronomePanel
+                              ? Icons.close
+                              : Icons.av_timer_outlined,
                         ),
-                      ),
-                    ),
-                    if (_showMetronomePanel)
-                      Positioned(
-                        key: const ValueKey('metronome-panel'),
-                        top: 0,
-                        bottom: 0,
-                        right: 0,
-                        width: panelWidth,
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            color: colors.surface,
-                            border: Border(
-                              left: BorderSide(color: colors.outlineVariant),
-                            ),
-                          ),
-                          child: MetronomeContent(
-                            bpm: _metronomeBpm,
-                            note: _metronomeNote,
-                            interval: _metronomeInterval,
-                          ),
-                        ),
+                        onPressed: _toggleMetronomePanel,
+                        tooltip: AppLocalizations.of(context)!.metronome,
                       ),
                   ],
                 ),
-              ),
-              bottomNavigationBar: useRail
-                  ? null
-                  : BottomNavigationBarWidget(
-                      selectedIndex: _selectedIndex,
-                      onTabSelected: _onTabSelected,
-                    ),
-            );
-          },
+                body: SafeArea(
+                  top: false,
+                  child: Stack(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(
+                          right: inlinePanel ? panelWidth : 0,
+                        ),
+                        child: ExcludeFocus(
+                          excluding: overlayPanel,
+                          child: ExcludeSemantics(
+                            excluding: overlayPanel,
+                            child: IgnorePointer(
+                              ignoring: overlayPanel,
+                              child: Row(
+                                children: [
+                                  Offstage(
+                                    offstage: !useRail,
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        ModernSideBar(
+                                          selectedIndex: _selectedIndex,
+                                          onDestinationSelected: _onTabSelected,
+                                          isExtended: extended,
+                                          destinations: destinations,
+                                        ),
+                                        VerticalDivider(
+                                          width: 1,
+                                          thickness: 1,
+                                          color: colors.outlineVariant,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Column(
+                                      children: [
+                                        if (useRail &&
+                                            !extended &&
+                                            viewport.maxHeight >= 600)
+                                          Padding(
+                                            padding: const EdgeInsets.all(16),
+                                            child: Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: Text(
+                                                destinations[_selectedIndex]
+                                                    .label,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .titleLarge,
+                                              ),
+                                            ),
+                                          ),
+                                        // A key preserves this subtree when the
+                                        // optional heading above is inserted.
+                                        Expanded(
+                                          key: const ValueKey('main-workflow'),
+                                          child: Column(
+                                            children: [
+                                              BpmInputSection(
+                                                bpmController: bpmController,
+                                                bpmFocusNode: bpmFocusNode,
+                                              ),
+                                              Expanded(
+                                                child: LayoutBuilder(
+                                                  builder: (context, bounds) {
+                                                    return SingleChildScrollView(
+                                                      child: SizedBox(
+                                                        height: math.max(
+                                                          bounds.maxHeight,
+                                                          520,
+                                                        ),
+                                                        child: IndexedStack(
+                                                          index: _selectedIndex,
+                                                          children: _pages,
+                                                        ),
+                                                      ),
+                                                    );
+                                                  },
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      if (_showMetronomePanel)
+                        Positioned(
+                          key: const ValueKey('metronome-panel'),
+                          top: 0,
+                          bottom: 0,
+                          right: 0,
+                          width: panelWidth,
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              color: colors.surface,
+                              border: Border(
+                                left: BorderSide(color: colors.outlineVariant),
+                              ),
+                            ),
+                            child: MetronomeContent(
+                              bpm: _metronomeBpm,
+                              note: _metronomeNote,
+                              interval: _metronomeInterval,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+                bottomNavigationBar: useRail
+                    ? null
+                    : BottomNavigationBarWidget(
+                        selectedIndex: _selectedIndex,
+                        onTabSelected: _onTabSelected,
+                      ),
+              );
+            },
+          ),
         ),
       ),
     );
