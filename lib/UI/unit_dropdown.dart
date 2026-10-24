@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// セグメントボタンスタイルの単位選択ウィジェット
 class UnitDropdown extends StatefulWidget {
@@ -51,6 +51,7 @@ class UnitDropdownState extends State<UnitDropdown> {
         widget.onChanged(newSelection.first);
       },
       style: ButtonStyle(
+        minimumSize: WidgetStateProperty.all(const Size(40, 40)),
         backgroundColor: WidgetStateProperty.resolveWith<Color?>((states) {
           if (states.contains(WidgetState.selected)) {
             return colorScheme.primaryContainer;

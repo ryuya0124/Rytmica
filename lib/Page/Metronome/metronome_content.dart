@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:metronome/metronome.dart';
 
 import '../../ParamData/notes.dart';
@@ -122,7 +122,8 @@ class MetronomeContentState extends State<MetronomeContent>
 
   @override
   void dispose() {
-    stopMetronome();
+    // dispose must not schedule an animation or call setState.
+    metronome.stop();
     metronome.destroy();
     _isPlayingController.close();
     _animationController.dispose();
@@ -149,7 +150,7 @@ class MetronomeContentState extends State<MetronomeContent>
         break;
 
       case AppLifecycleState.detached:
-        dispose();
+        _handleBackgroundTransition();
         break;
 
       case AppLifecycleState.hidden:

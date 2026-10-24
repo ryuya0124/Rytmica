@@ -16,10 +16,11 @@ license: MIT
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 2.5.0+34
+version: 2.5.1+35
 
 environment:
   sdk: ^3.13.0
+  flutter: ">=3.47.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -32,24 +33,23 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
+  material_ui: ^1.8.0
+  cupertino_ui: ^1.1.4
 
   provider: ^6.1.5+1
-  shared_preferences: ^2.5.3
-  url_launcher: ^6.3.2
+  shared_preferences: ^2.5.6
+  url_launcher: ^6.3.3
   animations: ^3.0.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.8
+  cupertino_icons: ^2.0.0
   path_provider: ^2.1.6
   metronome:
     path: ./packages/metronome
   intl: ^0.20.3
-  # 2.x targets the standalone material_ui package. Flutter's MaterialApp
-  # still consumes flutter/material.dart ColorScheme, so use the latest
-  # compatible dynamic_color line until that migration is complete.
-  dynamic_color: ^1.9.0
-  package_info_plus: ^10.2.1
+  dynamic_color: ^2.1.0
+  package_info_plus: ^10.2.2
 
 dev_dependencies:
   flutter_test:
@@ -133,7 +133,7 @@ msix_config:
   publisher_display_name: ryuya
   identity_name: ryuya.Rytmica
   publisher: CN=2492F63A-A943-4F47-BCBE-6BCFF558B3D9
-  version: 2.5.34.0
+  version: 2.5.35.0
   logo_path: assets/icon/windows/icon-256.png
   store_logo_path: assets/icon/windows/icon-256.png
   install_certificate: false

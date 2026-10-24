@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -120,7 +121,7 @@ class AppInfoSection extends StatelessWidget {
   }
 
   void _navigateToLicense(BuildContext context) {
-    if (Platform.isIOS) {
+    if (!kIsWeb && Platform.isIOS) {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const LicencePage()),
