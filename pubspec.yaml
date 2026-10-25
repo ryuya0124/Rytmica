@@ -133,7 +133,8 @@ msix_config:
   publisher_display_name: ryuya
   identity_name: ryuya.Rytmica
   publisher: CN=2492F63A-A943-4F47-BCBE-6BCFF558B3D9
-  version: 2.5.36.0
+  msix_version: 2.5.1.0
+  languages: en-us, ja-jp
   logo_path: assets/icon/windows/icon-256.png
   store_logo_path: assets/icon/windows/icon-256.png
   install_certificate: false
