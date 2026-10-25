@@ -5,7 +5,21 @@ Rytmica の Microsoft Store 製品 ID は `9N7HMK8TN36X`。GitHub Actions の
 MSIX をビルドし、GitHub Release の作成後に Microsoft Store の審査へ提出する。
 Store CLI の公式手順: <https://learn.microsoft.com/en-us/windows/apps/publish/msstore-dev-cli/github-actions>
 
-## 設定の進捗（2026-09-23）
+## 提出状況（2026-10-25）
+
+2.5.1.0 を提出し、Partner Center API で `Certification`（審査中）を確認した。
+提出 ID は `1152921505702224622`。承認後は自動公開する設定。
+
+- [提出 workflow](https://github.com/ryuya0124/Rytmica/actions/runs/40150706753)
+- [提出後の状態確認](https://github.com/ryuya0124/Rytmica/actions/runs/40151618695)
+
+[`Windows_build.yml`](../.github/workflows/Windows_build.yml) の `store_action` で
+`build`（ビルドのみ）、`inspect`（提出状態の取得）、`submit`（ビルドと提出）を選べる。
+[`microsoft_store.ps1`](../scripts/microsoft_store.ps1) は製品 ID・発行者・バージョン・
+無料価格設定を検証し、既存の保留中の提出がある場合は上書きせず停止する。
+提出済みバージョンの再実行は `inspect` を選ぶ。
+
+## 初期設定の記録（2026-09-23）
 
 - Store 製品 `9N7HMK8TN36X` の 2.5.0 は手動提出済みで、Partner Center では審査中。自動提出は実行していない。
 - 既存の Store 個人開発者アカウントに、新設した Microsoft Entra テナント `ryuyadev.onmicrosoft.com` を関連付け済み。Partner Center の完了画面で Entra 管理者への Account admin 権限付与を確認した。`ryuya-dev.net` は Entra でドメイン所有権を確認済み（Cloudflare DNS の TXT レコード）。既存のメール用 DNS レコードは変更していない。
@@ -13,7 +27,7 @@ Store CLI の公式手順: <https://learn.microsoft.com/en-us/windows/apps/publi
 - 同アプリのクライアントシークレットは 24 か月で発行済み。有効期限は **2028-09-22**。Microsoft の仕様上、カスタム指定でもクライアントシークレットの上限は 24 か月で、無期限にはできない。
 - GitHub の [`microsoft-store` Environment](https://github.com/ryuya0124/Rytmica/settings/environments) には下記 4 種の Secrets を登録済み。Seller ID は既存の Partner Center 個人開発者アカウントの「Legal info → Developer → Publisher IDs」で確認した。資格情報の値はこのリポジトリに記録しない。
 - Partner Center の「User management → Microsoft Entra applications」に上記アプリを追加し、`Manager(Windows)` ロールが付いたことを一覧で確認済み。
-- **残作業:** 次の新しいリリースで Store CLI の認証・提出を検証する。2.5.0 は再提出しない。
+- 当時の残作業だった Store CLI の認証・提出は、上記 2.5.1.0 で検証済み。2.5.0 は再提出していない。
 
 最初の関連付け操作では `You are not authorized for this action` が表示されたが、個人開発者アカウントで再サインインしてやり直したところ成功した。Entra 管理者で入り直した「User management → Users」では `Global admin, Manager(Windows)` を確認済み。アプリの権限と GitHub Secrets は揃ったが、Store CLI の認証・提出実行は未検証。2.5.0 の既存審査を妨げないよう、このバージョンでの自動提出テストは行わない。
 
@@ -34,7 +48,7 @@ Store CLI の公式手順: <https://learn.microsoft.com/en-us/windows/apps/publi
 
 ## リリース時
 
-1. `pubspec.yaml` の Flutter バージョンと `msix_config.version` を更新する。
+1. `pubspec.yaml` のアプリバージョンと `msix_config.msix_version` を更新する。
    MSIX の最初の 3 桁は `major.minor.patch` のリリースタグと一致させる。
 2. `Publish GitHub Release` workflow を実行し、新しいタグを指定する。
    `submit_to_microsoft_store` は既定で有効。
@@ -44,7 +58,7 @@ Store CLI の公式手順: <https://learn.microsoft.com/en-us/windows/apps/publi
 
 2.5.0 は 2026-09-23 に手動提出済みなので、workflow からの Store 再提出を禁止している。
 このタグで workflow を再実行しても Store 提出ジョブは動かない。
-2.5.0 の審査が完了するまでは、新しいタグの自動提出も実行しない。
+2.5.0 は公開済み。現在の 2.5.1.0 の審査が終わるまでは、新しい提出を実行しない。
 `msstore publish` は保留中の下書き提出を作り直す場合があるため、
 Partner Center に編集中の下書きがあるときも先に内容を確認する。
 Store 提出を見送るリリースでは `submit_to_microsoft_store` を無効にする。
