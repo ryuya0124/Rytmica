@@ -12,7 +12,7 @@ on:
         description: APK architecture
         type: choice
         default: universal
-        options: [universal, armeabi-v7a, arm64-v8a, x86_64]
+        options: [universal, armeabi-v7a, arm64-v8a, x86_64, all]
 
 permissions:
   contents: read
@@ -68,7 +68,12 @@ jobs:
         ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
         ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
         ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
-      run: bash scripts/build_android_apk.sh '${{ inputs.abi || 'universal' }}' release-assets
+      run: |
+        if [[ '${{ inputs.abi }}' == all ]]; then
+          bash scripts/build_android_release.sh release-assets
+        else
+          bash scripts/build_android_apk.sh '${{ inputs.abi || 'universal' }}' release-assets
+        fi
 
     - name: Build unsigned F-Droid release
       if: ${{ inputs.distribution == 'fdroid' }}
@@ -80,4 +85,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: rytmica-android-${{ inputs.distribution || 'github' }}
-        path: release-assets/*.apk
+        path: release-assets/*

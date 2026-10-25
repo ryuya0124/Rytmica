@@ -13,6 +13,19 @@ subprojects {
     project.evaluationDependsOn(":app")
 }
 
+// package:jni embeds a build ID derived from temporary compiler paths. Its
+// executable sections already match across builders; omit that non-runtime
+// identifier so F-Droid can verify the original developer-signed APK exactly.
+subprojects { dependencyProject ->
+    dependencyProject.plugins.withId("com.android.library") {
+        if (dependencyProject.name == "jni") {
+            dependencyProject.android.defaultConfig.externalNativeBuild.cmake.arguments(
+                "-DCMAKE_SHARED_LINKER_FLAGS=-Wl,--build-id=none"
+            )
+        }
+    }
+}
+
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }
