@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
@@ -6,7 +6,6 @@ import 'Page/main_page.dart'; // MainScreenのインポート
 import 'ParamData/settings_model.dart'; // SettingsModelのインポート
 
 import 'package:musical_note_calculator/l10n/app_localizations.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 
 import 'Theme/custom_theme.dart';
@@ -126,16 +125,14 @@ class MyApp extends StatelessWidget {
 
             return MaterialApp(
               localizationsDelegates: const [
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
                 AppLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
+                ...GlobalMaterialLocalizations.delegates,
               ],
               supportedLocales: const [
                 Locale('en', 'US'),
                 Locale('ja', 'JP'),
               ],
-              title: 'MyApp',
+              title: 'Rytmica',
               theme:
                   context.read<SettingsModel>().useMaterialYou &&
                       isDynamicColorAvailable

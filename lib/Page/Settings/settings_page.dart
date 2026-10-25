@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:musical_note_calculator/l10n/app_localizations.dart';
 
 import '../../UI/app_bar.dart';
@@ -75,54 +75,57 @@ class SettingsPageState extends State<SettingsPage> {
       },
       child: Scaffold(
         appBar: AppBarWidget(selectedIndex: _selectedIndex),
-        body: LayoutBuilder(
-          builder: (context, constraints) {
-            // 800dp以上でマスターディテールレイアウト
-            final isWideScreen = constraints.maxWidth >= 800;
+        body: SafeArea(
+          top: false,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              // 800dp以上でマスターディテールレイアウト
+              final isWideScreen = constraints.maxWidth >= 800;
 
-            if (isWideScreen) {
-              return Row(
-                children: [
-                  // 左側：カテゴリナビゲーション
-                  _buildCategoryNavigation(context, colorScheme, loc),
-                  // 区切り線
-                  VerticalDivider(
-                    thickness: 1,
-                    width: 1,
-                    color: colorScheme.outlineVariant,
-                  ),
-                  // 右側：選択したカテゴリの詳細
-                  Expanded(
-                    child: _buildCategoryDetail(context, colorScheme, loc),
-                  ),
-                ],
-              );
-            }
+              if (isWideScreen) {
+                return Row(
+                  children: [
+                    // 左側：カテゴリナビゲーション
+                    _buildCategoryNavigation(context, colorScheme, loc),
+                    // 区切り線
+                    VerticalDivider(
+                      thickness: 1,
+                      width: 1,
+                      color: colorScheme.outlineVariant,
+                    ),
+                    // 右側：選択したカテゴリの詳細
+                    Expanded(
+                      child: _buildCategoryDetail(context, colorScheme, loc),
+                    ),
+                  ],
+                );
+              }
 
-            // 小画面: 従来の縦並びレイアウト
-            return SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
-              child: Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 760),
-                  child: const Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      DisplaySettingsSection(),
-                      SizedBox(height: 8),
-                      NoteSettingsSection(),
-                      SizedBox(height: 8),
-                      JudgmentSettingsSection(),
-                      SizedBox(height: 8),
-                      AdvancedSettingsSection(),
-                      SizedBox(height: 8),
-                      AppInfoSection(),
-                    ],
+              // 小画面: 従来の縦並びレイアウト
+              return SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
+                child: Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 760),
+                    child: const Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        DisplaySettingsSection(),
+                        SizedBox(height: 8),
+                        NoteSettingsSection(),
+                        SizedBox(height: 8),
+                        JudgmentSettingsSection(),
+                        SizedBox(height: 8),
+                        AdvancedSettingsSection(),
+                        SizedBox(height: 8),
+                        AppInfoSection(),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
     );

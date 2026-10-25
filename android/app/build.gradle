@@ -20,8 +20,21 @@ def hasReleaseSigning = releaseKeystorePath != null &&
 def releaseBuildRequested = gradle.startParameter.taskNames.any {
     it.toLowerCase().contains("release")
 }
+// F-Droid builds from source and signs the APK on its own infrastructure.
+// This opt-in is only for producing an unsigned package for that pipeline.
+def fdroidBuild = providers.gradleProperty("fdroid").getOrElse("false") == "true"
+// All channels use the same increasing version-code scheme. Reserve one digit
+// for ABI variants so next release's universal APK can update every variant.
+def releaseAbi = providers.gradleProperty("rytmicaAbi").getOrElse("universal")
+def abiVersionOffsets = ["universal": 0, "armeabi-v7a": 1, "arm64-v8a": 2, "x86_64": 3]
+if (!abiVersionOffsets.containsKey(releaseAbi)) {
+    throw new GradleException("Unsupported Rytmica ABI: " + releaseAbi)
+}
+if (fdroidBuild && hasReleaseSigning) {
+    throw new GradleException("F-Droid builds must not use the upstream release key.")
+}
 
-if (releaseBuildRequested && !hasReleaseSigning) {
+if (releaseBuildRequested && !hasReleaseSigning && !fdroidBuild) {
     throw new GradleException(
         "Release signing is required. Set ANDROID_KEYSTORE_PATH, " +
         "ANDROID_KEYSTORE_PASSWORD, ANDROID_KEY_ALIAS, and ANDROID_KEY_PASSWORD."
@@ -47,7 +60,7 @@ android {
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = 24
         targetSdk = 37
-        versionCode = flutter.versionCode
+        versionCode = flutter.versionCode.toInteger() * 10 + abiVersionOffsets[releaseAbi]
         versionName = flutter.versionName
         // サポートする言語を指定（OS設定画面での言語選択を有効化）
         resConfigs "en", "ja"

@@ -2,9 +2,23 @@ name: Flutter Windows Build
 
 on:
   workflow_dispatch:
+    inputs:
+      store_action:
+        description: Microsoft Store action
+        type: choice
+        default: build
+        options: [build, inspect, submit]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: rytmica-windows-store
+  cancel-in-progress: false
 
 jobs:
   build:
+    if: ${{ inputs.store_action != 'inspect' }}
     runs-on: windows-latest
 
     steps:
@@ -24,13 +38,25 @@ jobs:
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.38.3'
+        flutter-version: '3.47.8'
 
     - name: Install dependencies
       run: flutter pub get
 
     - name: Build Windows app (release)
       run: flutter build windows --release
+
+    - name: Build Microsoft Store package
+      if: ${{ inputs.store_action == 'submit' }}
+      run: dart run msix:create --build-windows false
+
+    - name: Upload Microsoft Store package
+      if: ${{ inputs.store_action == 'submit' }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: rytmica-store-msix
+        path: build/windows/x64/runner/Release/Rytmica.msix
+        if-no-files-found: error
 
     - name: Upload Windows executable as artifact
       uses: actions/upload-artifact@v4
@@ -39,3 +65,34 @@ jobs:
         path: build\windows\x64\runner\Release\
         if-no-files-found: warn
         include-hidden-files: true
+
+  microsoft-store:
+    needs: build
+    if: ${{ always() && (inputs.store_action == 'inspect' || (inputs.store_action == 'submit' && needs.build.result == 'success')) }}
+    runs-on: windows-latest
+    environment: microsoft-store
+    env:
+      AZURE_AD_TENANT_ID: ${{ secrets.AZURE_AD_TENANT_ID }}
+      AZURE_AD_APPLICATION_CLIENT_ID: ${{ secrets.AZURE_AD_APPLICATION_CLIENT_ID }}
+      AZURE_AD_APPLICATION_SECRET: ${{ secrets.AZURE_AD_APPLICATION_SECRET }}
+      SELLER_ID: ${{ secrets.SELLER_ID }}
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/download-artifact@v4
+      if: ${{ inputs.store_action == 'submit' }}
+      with:
+        name: rytmica-store-msix
+        path: store-package
+    - uses: microsoft/microsoft-store-apppublisher@v1.4
+      if: ${{ inputs.store_action == 'submit' }}
+    - name: Inspect or submit Microsoft Store update
+      shell: pwsh
+      env:
+        STORE_ACTION: ${{ inputs.store_action }}
+      run: ./scripts/microsoft_store.ps1 -Mode $env:STORE_ACTION -PackagePath store-package/Rytmica.msix
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: microsoft-store-status
+        path: store-status/*.json
+        if-no-files-found: ignore

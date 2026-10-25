@@ -1,12 +1,12 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:musical_note_calculator/l10n/app_localizations.dart';
 import 'package:musical_note_calculator/extensions/app_localizations_extension.dart';
 
 import '../ParamData/settings_model.dart';
-import '../UI/unit_dropdown.dart';
+import 'Home/UI/unit_switch_section.dart';
 import '../ParamData/notes.dart';
 import '../UI/page_intro_banner.dart';
 
@@ -139,41 +139,12 @@ class NotePageState extends State<NotePage> {
 
   // ユニット切り替えセクション
   Widget buildUnitSwitchSection(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1240),
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-            decoration: BoxDecoration(
-              color: colors.surfaceContainerLow,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: colors.outlineVariant),
-            ),
-            child: Row(
-              children: [
-                Icon(Icons.timelapse_rounded, color: colors.primary, size: 20),
-                const SizedBox(width: 9),
-                Expanded(
-                  child: Text(
-                    AppLocalizations.of(context)!.timescale,
-                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
-                UnitDropdown(
-                  selectedUnit: selectedTimeScale,
-                  units: units,
-                  onChanged: _handleUnitChange,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
+    return UnitSwitchSection(
+      label: AppLocalizations.of(context)!.timescale,
+      icon: Icons.timelapse_rounded,
+      selectedUnit: selectedTimeScale,
+      units: units,
+      onChanged: _handleUnitChange,
     );
   }
 

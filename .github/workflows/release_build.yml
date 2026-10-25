@@ -10,7 +10,7 @@ on:
       submit_to_microsoft_store:
         description: Submit the Windows MSIX to Microsoft Store after the GitHub Release
         required: true
-        default: true
+        default: false
         type: boolean
 
 permissions:
@@ -21,13 +21,37 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  FLUTTER_VERSION: 3.47.5
+  FLUTTER_VERSION: 3.47.8
   RELEASE_VERSION: ${{ inputs.tag }}
 
 jobs:
+  validate:
+    name: Validate release source and version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Match release tag to source
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import os, re
+          from pathlib import Path
+          version = re.search(r'^version: ([0-9]+\.[0-9]+\.[0-9]+)\+', Path('pubspec.yaml').read_text(), re.M).group(1)
+          if os.environ['RELEASE_VERSION'] != version:
+              raise SystemExit(f'Release tag must match pubspec version {version}')
+          PY
+          existing=$(git ls-remote --tags origin "refs/tags/$RELEASE_VERSION" "refs/tags/$RELEASE_VERSION^{}" | tail -1 | cut -f1)
+          if [[ -n "$existing" && "$existing" != "$GITHUB_SHA" ]]; then
+            echo 'Existing tag points to another source commit' >&2
+            exit 1
+          fi
+
   build-android:
     name: Android 17 APK / AAB
+    needs: validate
     runs-on: ubuntu-latest
+    env:
+      PUB_CACHE: /home/runner/work/Rytmica/Rytmica/.pub-cache
 
     steps:
       - name: Checkout repository
@@ -55,7 +79,7 @@ jobs:
         run: base64 --decode <<< "$KEYSTORE_BASE64" > android/app/rytmica-release.jks
 
       - name: Install dependencies
-        run: flutter pub get
+        run: flutter pub get --enforce-lockfile
 
       - name: Build signed APK and AAB
         env:
@@ -64,19 +88,12 @@ jobs:
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: |
-          flutter build apk --release
-          flutter build appbundle --release
+          bash scripts/build_android_release.sh release-assets
 
       - name: Verify Android signing identity
         run: |
           APKSIGNER="$ANDROID_HOME/build-tools/36.1.0/apksigner" \
             scripts/verify_android_signature.sh build/app/outputs/flutter-apk/app-release.apk
-
-      - name: Prepare Android assets
-        run: |
-          mkdir -p release-assets
-          cp build/app/outputs/flutter-apk/app-release.apk "release-assets/Rytmica-Android-${RELEASE_VERSION}.apk"
-          cp build/app/outputs/bundle/release/app-release.aab "release-assets/Rytmica-Android-${RELEASE_VERSION}.aab"
 
       - name: Upload Android assets
         uses: actions/upload-artifact@v4
@@ -87,6 +104,7 @@ jobs:
 
   build-windows-x64:
     name: Windows x64 portable
+    needs: validate
     runs-on: windows-latest
 
     steps:
@@ -154,6 +172,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ inputs.tag }}
+          target_commitish: ${{ github.sha }}
+          draft: true
           name: Rytmica ${{ inputs.tag }}
           generate_release_notes: true
           fail_on_unmatched_files: true

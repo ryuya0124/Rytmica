@@ -4,8 +4,15 @@
 
 default_platform(:mac)
 
+def rytmica_release_version
+  source = File.read(File.expand_path("../../pubspec.yaml", __dir__))
+  match = source.match(/^version:\s*(\d+\.\d+\.\d+)\+(\d+)\s*$/)
+  UI.user_error!("pubspec.yaml のバージョンを確認してください") unless match
+  match.captures
+end
+
 platform :mac do
-  desc "2.5.0のリリースノートとスクリーンショットをApp Store Connectへ反映"
+  desc "現在のバージョンのリリースノートとスクリーンショットをApp Store Connectへ反映"
   lane :upload_store_listing do
     api_key = app_store_connect_api_key(
       key_id: "7LK8SRK8KU",
@@ -17,7 +24,7 @@ platform :mac do
     deliver(
       api_key: api_key,
       app_identifier: "net.ryuya-dev.mnc",
-      app_version: "2.5.0",
+      app_version: rytmica_release_version[0],
       platform: "osx",
       metadata_path: File.join(project_root, "fastlane/app-store/macos/metadata"),
       screenshots_path: File.join(project_root, "fastlane/app-store/macos/screenshots"),
@@ -30,7 +37,7 @@ platform :mac do
     )
   end
 
-  desc "2.5.0 (34) のTestFlightテスト内容を日本語・英語で更新"
+  desc "現在のビルドのTestFlightテスト内容を日本語・英語で更新"
   lane :update_testflight_notes do
     api_key = app_store_connect_api_key(
       key_id: "7LK8SRK8KU",
@@ -43,8 +50,8 @@ platform :mac do
       api_key: api_key,
       app_identifier: "net.ryuya-dev.mnc",
       app_platform: "osx",
-      app_version: "2.5.0",
-      build_number: "34",
+      app_version: rytmica_release_version[0],
+      build_number: rytmica_release_version[1],
       distribute_only: true,
       skip_submission: true,
       distribute_external: false,

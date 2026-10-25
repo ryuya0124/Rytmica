@@ -39,6 +39,14 @@ flutter build appbundle --release
 scripts/verify_android_signature.sh build/app/outputs/flutter-apk/app-release.apk
 ```
 
+`bash scripts/build_android_release.sh release-assets` builds and verifies the
+universal APK, three ABI APKs, and AAB. From 2.5.1, Android version codes use the
+pubspec build number times 10, plus 0 (universal), 1 (armeabi-v7a), 2 (arm64-v8a),
+or 3 (x86_64). Build 36 therefore becomes 360–363 on Android. The next build's
+universal code 370 is higher than every previous ABI code, allowing updates
+between GitHub and F-Droid without replacing the signing key. iOS/macOS still
+use pubspec build 36. Do not change these offsets independently per channel.
+
 Never place passwords in shell history, source files, Gradle files, or CI logs.
 
 Debug builds use the separate application ID `net.ryuya_dev.mnc.debug` and the

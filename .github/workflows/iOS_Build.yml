@@ -18,11 +18,17 @@ jobs:
   # ============================================================
   build-unsigned:
     name: 署名なしIPAビルド
-    runs-on: macos-latest
+    runs-on: xcode-27
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
+
+    - name: Verify iPhone Duo SDK
+      run: |
+        xcodebuild -version
+        SDK_VERSION=$(xcrun --sdk iphoneos --show-sdk-version)
+        ruby -e 'abort "iOS 27.1 SDK or newer is required" if Gem::Version.new(ARGV[0]) < Gem::Version.new("27.1")' "$SDK_VERSION"
 
     - name: Cache Flutter SDK
       uses: actions/cache@v4
@@ -37,7 +43,7 @@ jobs:
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.47.5'
+        flutter-version: '3.47.8'
 
     - name: Install dependencies
       run: flutter pub get
@@ -65,11 +71,17 @@ jobs:
   # ============================================================
   build-signed-and-upload:
     name: 署名ありIPAビルド & TestFlightアップロード
-    runs-on: macos-latest
+    runs-on: xcode-27
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
+
+    - name: Verify iPhone Duo SDK
+      run: |
+        xcodebuild -version
+        SDK_VERSION=$(xcrun --sdk iphoneos --show-sdk-version)
+        ruby -e 'abort "iOS 27.1 SDK or newer is required" if Gem::Version.new(ARGV[0]) < Gem::Version.new("27.1")' "$SDK_VERSION"
 
     - name: Cache Flutter SDK
       uses: actions/cache@v4
@@ -84,7 +96,7 @@ jobs:
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.47.5'
+        flutter-version: '3.47.8'
 
     - name: Install dependencies
       run: flutter pub get
@@ -98,7 +110,7 @@ jobs:
     - name: Install Fastlane
       run: |
         cd ios
-        gem install bundler -v 2.5.0
+        gem install bundler -v 4.0.23
         bundle config set --local path 'vendor/bundle'
         bundle install
 

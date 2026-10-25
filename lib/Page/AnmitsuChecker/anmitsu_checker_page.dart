@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:musical_note_calculator/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
@@ -235,8 +235,10 @@ class AnmituCheckerPageState extends State<AnmituCheckerPage> {
               color: colors.surface.withValues(alpha: .74),
               borderRadius: BorderRadius.circular(16),
             ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
+            child: Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              crossAxisAlignment: WrapCrossAlignment.center,
               children: [
                 Icon(Icons.speed_rounded, color: colors.primary),
                 const SizedBox(width: 10),

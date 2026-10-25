@@ -1,5 +1,6 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:material_ui/material_ui.dart';
 
 import 'dart:io';
 
@@ -11,7 +12,7 @@ Future<T?> pushPage<T>(
   WidgetBuilder builder, {
   String? name,
 }) {
-  if (Platform.isAndroid) {
+  if (kIsWeb || Platform.isAndroid) {
     return Navigator.push<T>(
       context,
       MaterialPageRoute<T>(
@@ -35,7 +36,7 @@ Future<T?> pushDialog<T>(
   String? name,
 }) {
   final nav = Navigator.of(context, rootNavigator: true);
-  if (Platform.isAndroid) {
+  if (kIsWeb || Platform.isAndroid) {
     return nav.push<T>(
       MaterialPageRoute<T>(
         builder: builder,

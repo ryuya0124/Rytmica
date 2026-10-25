@@ -1,0 +1,33 @@
+{
+  "version": "2.5.1",
+  "binarySource": "7854a0b0d9ca1870beaf268b892240a7bc567db7",
+  "githubRun": 40157519331,
+  "fdroidImage": "registry.gitlab.com/fdroid/fdroidserver@sha256:1ea8bef1820bff06c2974e31b4fc4c79c364cd24231b86e71fa4b926797e0dac",
+  "fdroidServer": "2d1e622fbbce7eec379453983435e5b14bea22b5",
+  "variants": [
+    {
+      "abi": "armeabi-v7a",
+      "versionCode": 361,
+      "bytes": 19837800,
+      "sha256": "25682C35DB7EF3E8C6DA8D8D311441D38BD5B797FC7F15A3D70817346EAFDF07",
+      "signatureVerified": true,
+      "byteIdentical": true
+    },
+    {
+      "abi": "arm64-v8a",
+      "versionCode": 362,
+      "bytes": 22352908,
+      "sha256": "12DFFE1824F2214BDAA988A00642177D89EB99286BE2E7B46E6B256BA08BA58D",
+      "signatureVerified": true,
+      "byteIdentical": true
+    },
+    {
+      "abi": "x86_64",
+      "versionCode": 363,
+      "bytes": 23844368,
+      "sha256": "F6D408C77B2B7DF6543C3689221C530F00D88E3318503185D950943820E69379",
+      "signatureVerified": true,
+      "byteIdentical": true
+    }
+  ]
+}

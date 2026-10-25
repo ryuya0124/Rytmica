@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:musical_note_calculator/l10n/app_localizations.dart';
 import 'package:flutter/services.dart';
 

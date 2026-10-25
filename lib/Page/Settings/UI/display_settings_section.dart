@@ -1,6 +1,7 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:provider/provider.dart';
 import 'package:musical_note_calculator/l10n/app_localizations.dart';
 
@@ -41,7 +42,9 @@ class DisplaySettingsSection extends StatelessWidget {
           ),
         ),
         // Material You セクション (Androidのみ)
-        if (Platform.isAndroid && !settingsModel.isDynamicColorAvailable)
+        if (!kIsWeb &&
+            Platform.isAndroid &&
+            !settingsModel.isDynamicColorAvailable)
           SettingsSectionCard(
             title: loc.materialYou,
             child: SwitchListTile(

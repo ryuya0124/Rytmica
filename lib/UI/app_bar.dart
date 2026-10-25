@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:musical_note_calculator/l10n/app_localizations.dart';
 
 import '../Page/Settings/settings_page.dart';
@@ -56,11 +57,14 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
               child: Icon(Icons.music_note_rounded, color: colorScheme.primary),
             ),
             const SizedBox(width: 10),
-            Text(
-              AppLocalizations.of(context)!.title,
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                color: colorScheme.onSurface,
-                fontWeight: FontWeight.w800,
+            Flexible(
+              child: Text(
+                AppLocalizations.of(context)!.title,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  color: colorScheme.onSurface,
+                  fontWeight: FontWeight.w800,
+                ),
               ),
             ),
 
@@ -72,7 +76,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
           IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () {
-              if (Platform.isIOS) {
+              if (!kIsWeb && Platform.isIOS) {
                 // iOSの場合
                 Navigator.push(
                   context,

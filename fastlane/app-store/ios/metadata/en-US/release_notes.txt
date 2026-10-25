@@ -1,4 +1,4 @@
-- Refreshed the main screens for clearer information and easier operation.
-- Improved the Anmitsu Checker results and timing diagram.
-- Optimized layouts for iPhone Duo, foldables, iPad, Mac, and Windows.
-- Added Android 17 and current SDK support, with stability improvements.
+- Preserve input and the selected tab when folding, rotating, or resizing the app.
+- Keep the metronome playing across screen size changes.
+- Improve unit controls, settings headings, and camera safe areas on compact screens.
+- Update Flutter and dependencies for improved stability.
