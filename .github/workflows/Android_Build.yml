@@ -79,7 +79,12 @@ jobs:
       if: ${{ inputs.distribution == 'fdroid' }}
       env:
         ORG_GRADLE_PROJECT_fdroid: 'true'
-      run: bash scripts/build_android_apk.sh '${{ inputs.abi || 'universal' }}' release-assets
+      run: |
+        if [[ '${{ inputs.abi }}' == all ]]; then
+          bash scripts/build_android_release.sh release-assets
+        else
+          bash scripts/build_android_apk.sh '${{ inputs.abi || 'universal' }}' release-assets
+        fi
 
     - name: Upload APK as artifact
       uses: actions/upload-artifact@v4

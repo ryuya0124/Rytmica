@@ -5,9 +5,15 @@
 Android application ID は `net.ryuya_dev.mnc`。
 
 2026-10-25 に [掲載申請 MR !54059](https://gitlab.com/fdroid/fdroiddata/-/merge_requests/54059)
-をドラフトで作成した。フォークの CI は GitLab の追加本人確認で実行されず、
-MR に運営側ランナーの実行依頼を記載している。F-Droid でのビルド・スキャン、
-署名方式と再現ビルド、ABI 分割、対応するリリースタグは掲載前の確認事項。
+を作成した。フォークの CI は GitLab の追加本人確認で実行されず、
+MR に運営側ランナーの実行依頼を記載している。
+
+F-Droid 公式ビルド環境イメージで、ARM32・ARM64・x86_64 のソーススキャンと
+ビルドが通過した。各 APK に GitHub CI 成果物の公開署名をコピーし、既存の署名証明書での
+検証と SHA-256 の完全一致を確認している。
+[検証記録](release-validation/android-2.5.1.json) に環境と各 APK のハッシュを記録した。
+JNI ライブラリの一時パスに依存するビルド ID を除去し、アプリのビルドパスと
+PUB_CACHE のパスを揃えて再現可能にしている。公式 GitLab CI と掲載審査は別途必要。
 
 署名なしのリリース APK は、JDK 21、Flutter 3.47.8、Android SDK 37.0、
 NDK r28c を用意し、以下で生成する。Android のビルドツールは
@@ -40,7 +46,10 @@ GitHub Actions の `Flutter Android Build` で `distribution: fdroid` と `abi` 
 次回の通常版 370 はこれらすべてを更新できる。自動更新側も同じ `VercodeOperation` を使う。
 詳細は [Android signing](ANDROID_SIGNING.md) を参照。
 
-F-Droid 独自署名と GitHub の本番署名は異なるため、そのままでは相互に更新できない。
-既存の本番署名を使うには [再現ビルド](https://f-droid.org/docs/Reproducible_Builds/) の検証と
-公開済み APK の指定が必要となる。申請レビューでこの方式を確定してから掲載する。
-本番の秘密鍵・パスワードを fdroiddata に渡さない。
+申請は [再現ビルド](https://f-droid.org/docs/Reproducible_Builds/) と
+ビルドごとの `binary` URL、`AllowedAPKSigningKeys` を使う。
+F-Droid が一致を検証できた開発者署名の APK のみを配布する構成とし、
+GitHub 版と同じ署名鍵を維持する。本番の秘密鍵・パスワードは fdroiddata に渡さない。
+
+`Publish GitHub Release` はまずドラフトを作る。ビルド・署名・再現性の検証後に公開する。
+Microsoft Store はすでに 2.5.1.0 が公開済みのため、このリリースから再提出しない。
