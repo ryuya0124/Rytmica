@@ -51,5 +51,10 @@ GitHub Actions の `Flutter Android Build` で `distribution: fdroid` と `abi` 
 F-Droid が一致を検証できた開発者署名の APK のみを配布する構成とし、
 GitHub 版と同じ署名鍵を維持する。本番の秘密鍵・パスワードは fdroiddata に渡さない。
 
+2.5.1 の再現ビルド APK は `Rytmica-FDroid-Android-<ABI>-2.5.1.apk` として
+既存の GitHub Release に追加する。通常版と同じ署名・バージョン番号を使い、
+JNI のビルド ID だけを再現可能にした専用成果物を区別する。
+以後のリリーススクリプトも F-Droid 用のファイル名を生成する。
+
 `Publish GitHub Release` はまずドラフトを作る。ビルド・署名・再現性の検証後に公開する。
 Microsoft Store はすでに 2.5.1.0 が公開済みのため、このリリースから再提出しない。
