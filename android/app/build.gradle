@@ -20,8 +20,14 @@ def hasReleaseSigning = releaseKeystorePath != null &&
 def releaseBuildRequested = gradle.startParameter.taskNames.any {
     it.toLowerCase().contains("release")
 }
+// F-Droid builds from source and signs the APK on its own infrastructure.
+// This opt-in is only for producing an unsigned package for that pipeline.
+def fdroidBuild = providers.gradleProperty("fdroid").getOrElse("false") == "true"
+if (fdroidBuild && hasReleaseSigning) {
+    throw new GradleException("F-Droid builds must not use the upstream release key.")
+}
 
-if (releaseBuildRequested && !hasReleaseSigning) {
+if (releaseBuildRequested && !hasReleaseSigning && !fdroidBuild) {
     throw new GradleException(
         "Release signing is required. Set ANDROID_KEYSTORE_PATH, " +
         "ANDROID_KEYSTORE_PASSWORD, ANDROID_KEY_ALIAS, and ANDROID_KEY_PASSWORD."

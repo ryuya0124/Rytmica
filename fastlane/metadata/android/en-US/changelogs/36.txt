@@ -1,0 +1,1 @@
+Preserve inputs, the selected tab and metronome playback across screen size changes. Improve unit controls and settings headings on compact screens, and camera safe areas on foldables. Update Flutter and dependencies.

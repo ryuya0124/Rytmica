@@ -1,0 +1,10 @@
+Rytmica helps musicians and rhythm game players understand note durations and timing.
+
+• Convert BPM into note durations in seconds, milliseconds or microseconds
+• Calculate how many notes fit into a given time
+• Convert between BPM and note values
+• Compare note timing against rhythm game judgment windows
+• Practice with an adjustable metronome
+• Customize note values and judgment presets
+
+The interface adapts to compact screens, landscape and foldable devices. English and Japanese are supported. Calculations and the metronome work offline, without an account. The app is free and open source, with no advertising or analytics SDKs.
