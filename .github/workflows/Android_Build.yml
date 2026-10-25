@@ -8,6 +8,11 @@ on:
         type: choice
         default: github
         options: [github, fdroid]
+      abi:
+        description: APK architecture
+        type: choice
+        default: universal
+        options: [universal, armeabi-v7a, arm64-v8a, x86_64]
 
 permissions:
   contents: read
@@ -15,6 +20,8 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest  # AndroidビルドはLinux環境で実行
+    env:
+      PUB_CACHE: /home/runner/work/Rytmica/Rytmica/.pub-cache
 
     steps:
     - name: Checkout repository
@@ -61,27 +68,16 @@ jobs:
         ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
         ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
         ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
-      run: |
-        flutter build apk --release
-        APKSIGNER="$ANDROID_HOME/build-tools/36.1.0/apksigner" scripts/verify_android_signature.sh build/app/outputs/flutter-apk/app-release.apk
+      run: bash scripts/build_android_apk.sh '${{ inputs.abi || 'universal' }}' release-assets
 
     - name: Build unsigned F-Droid release
       if: ${{ inputs.distribution == 'fdroid' }}
       env:
         ORG_GRADLE_PROJECT_fdroid: 'true'
-      run: |
-        flutter build apk --release
-        if "$ANDROID_HOME/build-tools/36.1.0/apksigner" verify build/app/outputs/flutter-apk/app-release.apk; then
-          echo 'F-Droid package must be unsigned' >&2
-          exit 1
-        fi
-        "$ANDROID_HOME/build-tools/36.1.0/aapt" dump badging build/app/outputs/flutter-apk/app-release.apk | head -1
-
-    - name: Rename APK file
-      run: mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/Rytmica.apk  # APKの名前を変更
+      run: bash scripts/build_android_apk.sh '${{ inputs.abi || 'universal' }}' release-assets
 
     - name: Upload APK as artifact
       uses: actions/upload-artifact@v4
       with:
         name: rytmica-android-${{ inputs.distribution || 'github' }}
-        path: build/app/outputs/flutter-apk/Rytmica.apk  # 変更後のAPKをアップロード
+        path: release-assets/*.apk
