@@ -38,4 +38,4 @@ else
 fi
 mkdir -p "$output_dir"
 cp "$apk" "$output_dir/$asset"
-printf '%s\n' "$badging" | head -1
+printf '%s\n' "${badging%%$'\n'*}"

@@ -7,11 +7,11 @@ Store CLI の公式手順: <https://learn.microsoft.com/en-us/windows/apps/publi
 
 ## 提出状況（2026-10-25）
 
-2.5.1.0 を提出し、Partner Center API で `Certification`（審査中）を確認した。
-提出 ID は `1152921505702224622`。承認後は自動公開する設定。
+2.5.1.0 を提出し、Partner Center API で `Published`（公開済み）を確認した。
+提出 ID は `1152921505702224622`。
 
 - [提出 workflow](https://github.com/ryuya0124/Rytmica/actions/runs/40150706753)
-- [提出後の状態確認](https://github.com/ryuya0124/Rytmica/actions/runs/40151618695)
+- [公開状態の確認](https://github.com/ryuya0124/Rytmica/actions/runs/40155462794)
 
 [`Windows_build.yml`](../.github/workflows/Windows_build.yml) の `store_action` で
 `build`（ビルドのみ）、`inspect`（提出状態の取得）、`submit`（ビルドと提出）を選べる。
@@ -58,7 +58,7 @@ Store CLI の公式手順: <https://learn.microsoft.com/en-us/windows/apps/publi
 
 2.5.0 は 2026-09-23 に手動提出済みなので、workflow からの Store 再提出を禁止している。
 このタグで workflow を再実行しても Store 提出ジョブは動かない。
-2.5.0 は公開済み。現在の 2.5.1.0 の審査が終わるまでは、新しい提出を実行しない。
+2.5.0 と 2.5.1.0 は公開済み。同じバージョンを再提出しない。
 `msstore publish` は保留中の下書き提出を作り直す場合があるため、
 Partner Center に編集中の下書きがあるときも先に内容を確認する。
 Store 提出を見送るリリースでは `submit_to_microsoft_store` を無効にする。
