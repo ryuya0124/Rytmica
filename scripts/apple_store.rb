@@ -41,6 +41,13 @@ def inspect_status
   puts JSON.generate(kind: 'builds', builds: builds['data'].map { |b| {id: b['id'], **b['attributes'].select { |k, _| %w[version processingState uploadedDate expired].include?(k) }, release: release_versions[b.dig('relationships', 'preReleaseVersion', 'data', 'id')]} })
   reviews = api('get', "/v1/reviewSubmissions?filter%5Bapp%5D=#{APP_ID}&limit=10")
   puts JSON.generate(kind: 'reviews', submissions: reviews['data'].map { |r| {id: r['id'], **r['attributes']} })
+  infos = api('get', "/v1/apps/#{APP_ID}/appInfos?limit=200")['data']
+  infos.each do |info|
+    rating = api('get', "/v1/appInfos/#{info['id']}/ageRatingDeclaration")['data']
+    puts JSON.generate(kind: 'age_rating', app_info_id: info['id'],
+      app_info_state: info['attributes']['appStoreState'], rating_id: rating['id'],
+      controls: rating['attributes'].select { |k, _| %w[socialMedia messagingAndChat userGeneratedContent advertising].include?(k) })
+  end
 end
 
 def release_version
