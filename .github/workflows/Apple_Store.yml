@@ -1,0 +1,38 @@
+name: App Store status and submission
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: App Store action
+        type: choice
+        default: inspect
+        options: [inspect]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: rytmica-apple-store
+  cancel-in-progress: false
+
+jobs:
+  app-store:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+      - name: Inspect App Store versions and builds
+        env:
+          APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          APP_STORE_CONNECT_API_KEY_CONTENT: ${{ secrets.APP_STORE_CONNECT_API_KEY_CONTENT }}
+          STORE_ACTION: ${{ inputs.action }}
+        run: ruby scripts/apple_store.rb "$STORE_ACTION" | tee apple-store-status.jsonl
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: apple-store-status
+          path: apple-store-status.jsonl
