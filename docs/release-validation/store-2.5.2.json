@@ -1,0 +1,65 @@
+{
+  "verifiedOn": "2026-11-03",
+  "releaseVersion": "2.5.2",
+  "build": 38,
+  "appSourceCommit": "dca0c03456a3940a149736fa251aca5242ba1041",
+  "mergedPullRequest": "https://github.com/ryuya0124/Rytmica/pull/2",
+  "githubRelease": "https://github.com/ryuya0124/Rytmica/releases/tag/2.5.2",
+  "githubAssets": 11,
+  "androidVersionCodes": [
+    380,
+    381,
+    382,
+    383
+  ],
+  "androidCanonicalSignatureVerified": true,
+  "uploadedAssetHashesVerified": true,
+  "flutterTests": 31,
+  "appleSubmissionGuardTests": 10,
+  "appleVersions": [
+    {
+      "platform": "MAC_OS",
+      "versionString": "2.5.2",
+      "appStoreState": "WAITING_FOR_REVIEW"
+    },
+    {
+      "platform": "IOS",
+      "versionString": "2.5.2",
+      "appStoreState": "WAITING_FOR_REVIEW"
+    }
+  ],
+  "appleBuilds": [
+    {
+      "id": "808b06eb-dda4-43ec-a86d-4478c257e7fa",
+      "version": "38",
+      "processingState": "VALID",
+      "platform": "MAC_OS"
+    },
+    {
+      "id": "0b49e097-9ce9-44cc-bed9-e44f0f955acb",
+      "version": "38",
+      "processingState": "VALID",
+      "platform": "IOS"
+    }
+  ],
+  "previousMacReviewWithdrawnWithOwnerApproval": true,
+  "microsoftStore": {
+    "productId": "9N7HMK8TN36X",
+    "packageVersion": "2.5.2.0",
+    "status": "Certification",
+    "submittedPackageSha256": "46DC64E94E7A2B3BF734CF453215D01269BAE81C4630862E5267C3682C6FD626",
+    "submissionId": "1152921505702302368"
+  },
+  "fdroid": "Deferred at owner request",
+  "workflows": {
+    "finalAppleInspection": 41586225285,
+    "iosBuild": 41584009411,
+    "macosSubmission": 41586056871,
+    "microsoftSubmission": 41584006939,
+    "finalMicrosoftInspection": 41586228382,
+    "releaseBuild": 41584004450,
+    "macosBuild": 41584012022,
+    "iosSubmission": 41585859750
+  },
+  "releasePublication": "GitHub Actions release creation hit a token permission error; the verified assets were published with the existing authenticated owner account."
+}
