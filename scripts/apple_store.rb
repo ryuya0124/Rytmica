@@ -31,7 +31,7 @@ def api(method, path, body = nil)
   response.body.to_s.empty? ? {} : JSON.parse(response.body)
 end
 
-if ARGV.first.nil? || ARGV.first == 'inspect'
+def inspect_status
   app = api('get', "/v1/apps/#{APP_ID}")['data']
   abort 'Unexpected bundle ID' unless app['attributes']['bundleId'] == 'net.ryuya-dev.mnc'
   versions = api('get', "/v1/apps/#{APP_ID}/appStoreVersions?limit=10")['data']
@@ -41,6 +41,147 @@ if ARGV.first.nil? || ARGV.first == 'inspect'
   puts JSON.generate(kind: 'builds', builds: builds['data'].map { |b| {id: b['id'], **b['attributes'].select { |k, _| %w[version processingState uploadedDate expired].include?(k) }, release: release_versions[b.dig('relationships', 'preReleaseVersion', 'data', 'id')]} })
   reviews = api('get', "/v1/reviewSubmissions?filter%5Bapp%5D=#{APP_ID}&limit=10")
   puts JSON.generate(kind: 'reviews', submissions: reviews['data'].map { |r| {id: r['id'], **r['attributes']} })
-else
-  abort 'Unsupported action'
+end
+
+def release_version
+  source = File.read(File.expand_path('../pubspec.yaml', __dir__))
+  match = source.match(/^version:\s*(\d+\.\d+\.\d+)\+(\d+)\s*$/)
+  raise 'Invalid release version' unless match
+  match.captures
+end
+
+# Returns a status rather than canceling another version's review. The caller
+# can safely retry after build processing or an earlier review has completed.
+def submit_update(platform)
+  raise 'Unsupported platform' unless %w[IOS MAC_OS].include?(platform)
+  version_name, build_number = release_version
+  app = api('get', "/v1/apps/#{APP_ID}")['data']
+  raise 'Unexpected bundle ID' unless app['attributes']['bundleId'] == 'net.ryuya-dev.mnc'
+  versions = api('get', "/v1/apps/#{APP_ID}/appStoreVersions?limit=200")['data']
+  versions = versions.select { |v| v['attributes']['platform'] == platform }
+  target = versions.find { |v| v['attributes']['versionString'] == version_name }
+  if target && %w[WAITING_FOR_REVIEW IN_REVIEW PENDING_APPLE_RELEASE PENDING_DEVELOPER_RELEASE READY_FOR_SALE].include?(target['attributes']['appStoreState'])
+    linked = api('get', "/v1/appStoreVersions/#{target['id']}/build")['data']
+    raise 'Submitted version has a different build' unless linked && linked['attributes']['version'] == build_number
+    return {platform: platform, version: version_name, build: build_number,
+            status: target['attributes']['appStoreState'], already_submitted: true}
+  end
+  previous = versions.find do |v|
+    v['attributes']['versionString'] != version_name &&
+      %w[WAITING_FOR_REVIEW IN_REVIEW PENDING_APPLE_RELEASE PENDING_DEVELOPER_RELEASE].include?(v['attributes']['appStoreState'])
+  end
+  if previous
+    return {platform: platform, version: version_name, status: 'BLOCKED_BY_EXISTING_REVIEW',
+            previous_version: previous['attributes']['versionString'],
+            previous_state: previous['attributes']['appStoreState']}
+  end
+  builds = api('get', "/v1/builds?filter%5Bapp%5D=#{APP_ID}&filter%5Bversion%5D=#{build_number}&limit=200&include=preReleaseVersion")
+  releases = (builds['included'] || []).map { |v| [v['id'], v['attributes']] }.to_h
+  build = builds['data'].find do |b|
+    release = releases[b.dig('relationships', 'preReleaseVersion', 'data', 'id')]
+    b['attributes']['version'] == build_number && release &&
+      release['version'] == version_name && release['platform'] == platform
+  end
+  raise 'Matching uploaded build is missing or still processing' unless build &&
+    build['attributes']['processingState'] == 'VALID' && !build['attributes']['expired']
+  published = versions.find { |v| v['attributes']['appStoreState'] == 'READY_FOR_SALE' }
+  raise 'Published version is required to preserve listing and review details' unless published
+  if target
+    raise 'Version is not editable' unless %w[PREPARE_FOR_SUBMISSION DEVELOPER_REJECTED REJECTED].include?(target['attributes']['appStoreState'])
+  else
+    target = api('post', '/v1/appStoreVersions', data: {
+      type: 'appStoreVersions', attributes: {
+        versionString: version_name, platform: platform,
+        releaseType: published['attributes']['releaseType'],
+        copyright: published['attributes']['copyright']
+      }.reject { |_, v| v.nil? },
+      relationships: {app: {data: {type: 'apps', id: APP_ID}}}
+    })['data']
+  end
+  source_locales = api('get', "/v1/appStoreVersions/#{published['id']}/appStoreVersionLocalizations?limit=200")['data']
+  target_locales = api('get', "/v1/appStoreVersions/#{target['id']}/appStoreVersionLocalizations?limit=200")['data']
+  metadata_root = File.expand_path("../fastlane/app-store/#{platform == 'IOS' ? 'ios' : 'macos'}/metadata", __dir__)
+  %w[ja en-US].each do |locale|
+    notes = File.read(File.join(metadata_root, locale, 'release_notes.txt')).strip
+    raise 'Release notes are missing' if notes.empty?
+    localization = target_locales.find { |l| l['attributes']['locale'] == locale }
+    if localization
+      api('patch', "/v1/appStoreVersionLocalizations/#{localization['id']}", data: {
+        type: 'appStoreVersionLocalizations', id: localization['id'], attributes: {whatsNew: notes}
+      })
+    else
+      source = source_locales.find { |l| l['attributes']['locale'] == locale }
+      raise "Published #{locale} listing is missing" unless source
+      attrs = source['attributes'].select { |k, v| %w[locale description keywords marketingUrl supportUrl promotionalText].include?(k) && !v.nil? }
+      attrs['whatsNew'] = notes
+      localization = api('post', '/v1/appStoreVersionLocalizations', data: {
+        type: 'appStoreVersionLocalizations', attributes: attrs,
+        relationships: {appStoreVersion: {data: {type: 'appStoreVersions', id: target['id']}}}
+      })['data']
+    end
+    screenshots = api('get', "/v1/appStoreVersionLocalizations/#{localization['id']}/appScreenshotSets?include=appScreenshots&limit=200")
+    raise "#{locale} screenshots were not carried over; listing needs attention" unless
+      (screenshots['included'] || []).any? { |s| s['type'] == 'appScreenshots' }
+  end
+  # New versions normally inherit these details. Copy only if absent, without
+  # printing the private reviewer contact information or changing it.
+  detail = api('get', "/v1/appStoreVersions/#{target['id']}/appStoreReviewDetail")['data']
+  unless detail
+    source = api('get', "/v1/appStoreVersions/#{published['id']}/appStoreReviewDetail")['data']
+    raise 'Existing review contact is missing' unless source
+    attrs = source['attributes'].select { |k, v| %w[contactFirstName contactLastName contactPhone contactEmail demoAccountRequired demoAccountName demoAccountPassword notes].include?(k) && !v.nil? }
+    api('post', '/v1/appStoreReviewDetails', data: {type: 'appStoreReviewDetails', attributes: attrs,
+      relationships: {appStoreVersion: {data: {type: 'appStoreVersions', id: target['id']}}}})
+  end
+  if build['attributes']['usesNonExemptEncryption'].nil?
+    plist = File.read(File.expand_path("../#{platform == 'IOS' ? 'ios' : 'macos'}/Runner/Info.plist", __dir__))
+    raise 'Export compliance needs review' unless plist.match?(/<key>ITSAppUsesNonExemptEncryption<\/key>\s*<false\s*\/>/)
+    api('patch', "/v1/builds/#{build['id']}", data: {type: 'builds', id: build['id'], attributes: {usesNonExemptEncryption: false}})
+  end
+  api('patch', "/v1/appStoreVersions/#{target['id']}/relationships/build", data: {type: 'builds', id: build['id']})
+  linked = api('get', "/v1/appStoreVersions/#{target['id']}/build")['data']
+  raise 'Selected build does not match release' unless linked && linked['id'] == build['id']
+  reviews = api('get', "/v1/reviewSubmissions?filter%5Bapp%5D=#{APP_ID}&limit=200")['data']
+  open_reviews = reviews.select { |r| r['attributes']['platform'] == platform && !%w[COMPLETE CANCELED].include?(r['attributes']['state']) }
+  raise 'Unexpected existing review submission; refusing to replace it' if open_reviews.length > 1 ||
+    open_reviews.any? { |r| r['attributes']['state'] != 'READY_FOR_REVIEW' }
+  review = open_reviews.first || api('post', '/v1/reviewSubmissions', data: {
+    type: 'reviewSubmissions', attributes: {platform: platform},
+    relationships: {app: {data: {type: 'apps', id: APP_ID}}}
+  })['data']
+  items = api('get', "/v1/reviewSubmissions/#{review['id']}/items?include=appStoreVersion&limit=200")
+  item_versions = (items['included'] || []).select { |i| i['type'] == 'appStoreVersions' }.map { |i| i['id'] }
+  raise 'Review contains unrelated items; refusing to change them' unless items['data'].empty? ||
+    (items['data'].length == 1 && item_versions == [target['id']])
+  if items['data'].empty?
+    api('post', '/v1/reviewSubmissionItems', data: {type: 'reviewSubmissionItems', relationships: {
+      reviewSubmission: {data: {type: 'reviewSubmissions', id: review['id']}},
+      appStoreVersion: {data: {type: 'appStoreVersions', id: target['id']}}
+    }})
+  end
+  ready = false
+  10.times do
+    latest = api('get', "/v1/appStoreVersions/#{target['id']}")['data']
+    ready = latest['attributes']['appVersionState'] == 'READY_FOR_REVIEW'
+    break if ready
+    sleep 5
+  end
+  raise 'Version has not become ready for review' unless ready
+  api('patch', "/v1/reviewSubmissions/#{review['id']}", data: {
+    type: 'reviewSubmissions', id: review['id'], attributes: {submitted: true}
+  })
+  final = api('get', "/v1/reviewSubmissions/#{review['id']}")['data']
+  raise 'Submission did not enter the review queue' unless %w[WAITING_FOR_REVIEW IN_REVIEW].include?(final['attributes']['state'])
+  {platform: platform, version: version_name, build: build_number, review_id: review['id'], status: final['attributes']['state']}
+end
+
+if $PROGRAM_NAME == __FILE__
+  case ARGV.first || 'inspect'
+  when 'inspect'
+    inspect_status
+  when 'submit'
+    puts JSON.generate(kind: 'submission', **submit_update(ARGV[1] || 'IOS'))
+  else
+    abort 'Unsupported action'
+  end
 end

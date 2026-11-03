@@ -7,7 +7,12 @@ on:
         description: App Store action
         type: choice
         default: inspect
-        options: [inspect]
+        options: [inspect, submit]
+      platform:
+        description: App Store platform
+        type: choice
+        default: IOS
+        options: [IOS, MAC_OS]
 
 permissions:
   contents: read
@@ -24,13 +29,16 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.2'
-      - name: Inspect App Store versions and builds
+      - name: Verify submission guards without network access
+        run: ruby test/apple_store_test.rb
+      - name: Inspect or submit the current App Store release
         env:
           APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
           APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
           APP_STORE_CONNECT_API_KEY_CONTENT: ${{ secrets.APP_STORE_CONNECT_API_KEY_CONTENT }}
           STORE_ACTION: ${{ inputs.action }}
-        run: ruby scripts/apple_store.rb "$STORE_ACTION" | tee apple-store-status.jsonl
+          STORE_PLATFORM: ${{ inputs.platform }}
+        run: ruby scripts/apple_store.rb "$STORE_ACTION" "$STORE_PLATFORM" | tee apple-store-status.jsonl
       - uses: actions/upload-artifact@v4
         if: always()
         with:
