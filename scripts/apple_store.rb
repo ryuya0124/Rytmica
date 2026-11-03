@@ -83,6 +83,8 @@ def submit_update(platform)
       release['version'] == version_name && release['platform'] == platform
   end
   raise 'Matching uploaded build is missing or still processing' unless build &&
+    build['attributes']['processingState'] != 'PROCESSING'
+  raise 'Matching build is invalid or expired' unless
     build['attributes']['processingState'] == 'VALID' && !build['attributes']['expired']
   published = versions.find { |v| v['attributes']['appStoreState'] == 'READY_FOR_SALE' }
   raise 'Published version is required to preserve listing and review details' unless published
@@ -180,7 +182,19 @@ if $PROGRAM_NAME == __FILE__
   when 'inspect'
     inspect_status
   when 'submit'
-    puts JSON.generate(kind: 'submission', **submit_update(ARGV[1] || 'IOS'))
+    deadline = Time.now + 900
+    loop do
+      begin
+        puts JSON.generate(kind: 'submission', **submit_update(ARGV[1] || 'IOS'))
+        break
+      rescue => error
+        raise unless error.message == 'Matching uploaded build is missing or still processing' && Time.now < deadline
+        puts JSON.generate(kind: 'waiting', platform: ARGV[1] || 'IOS',
+                           status: 'WAITING_FOR_BUILD_PROCESSING')
+        $stdout.flush
+        sleep 30
+      end
+    end
   else
     abort 'Unsupported action'
   end
