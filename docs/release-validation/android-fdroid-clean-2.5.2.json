@@ -1,0 +1,83 @@
+{
+  "version": "2.5.2",
+  "source_commit": "dca0c03456a3940a149736fa251aca5242ba1041",
+  "apksigtool_commit": "82b7be08f9f39c584a82b26a620be641a1227428",
+  "independent_source_rebuild_verified": true,
+  "apks": [
+    {
+      "abi": "armeabi-v7a",
+      "versionCode": 381,
+      "versionName": "2.5.2",
+      "original_asset": "Rytmica-FDroid-Android-armeabi-v7a-2.5.2.apk",
+      "original_sha256": "f7243e2f2e84a2ea2836e40ad55625d3a4dea8443e2422b1d4f3c0b6a7c1a2b2",
+      "clean_asset": "Rytmica-FDroid-Clean-Android-armeabi-v7a-2.5.2.apk",
+      "clean_sha256": "a753e8b4f3d4998c4ff385b9f68b7d82c0584cd020f0d3cdec725fecd0f33cae",
+      "removed_block_ids": [
+        "0x504b4453"
+      ],
+      "remaining_block_ids": [
+        "0x7109871a",
+        "0x42726577"
+      ],
+      "signature_blocks_unchanged": true,
+      "zip_entries_unchanged": 324,
+      "canonical_certificate_sha256": "e6eb4dad8c4db1649c9b75a8f5a374e2b7682428d148f961ed6327c22c5bbd78",
+      "apksigner_verified": true,
+      "zipalign_16k_verified": true,
+      "independent_unsigned_sha256": "578cf63eb714fe04d5b94621328edfe91f8034405eed57a9c47d144f9686071a",
+      "independent_reproduced_sha256": "a753e8b4f3d4998c4ff385b9f68b7d82c0584cd020f0d3cdec725fecd0f33cae",
+      "independent_rebuild_byte_for_byte_verified": true
+    },
+    {
+      "abi": "arm64-v8a",
+      "versionCode": 382,
+      "versionName": "2.5.2",
+      "original_asset": "Rytmica-FDroid-Android-arm64-v8a-2.5.2.apk",
+      "original_sha256": "8893211fbce7ac3f863222ad49bef9796be7662433ffb20dd609c89d553f7c35",
+      "clean_asset": "Rytmica-FDroid-Clean-Android-arm64-v8a-2.5.2.apk",
+      "clean_sha256": "796775354de99e40ff05d521194d99b158fb9f3f0792f7500a2ab6fc38bba315",
+      "removed_block_ids": [
+        "0x504b4453"
+      ],
+      "remaining_block_ids": [
+        "0x7109871a",
+        "0x42726577"
+      ],
+      "signature_blocks_unchanged": true,
+      "zip_entries_unchanged": 324,
+      "canonical_certificate_sha256": "e6eb4dad8c4db1649c9b75a8f5a374e2b7682428d148f961ed6327c22c5bbd78",
+      "apksigner_verified": true,
+      "zipalign_16k_verified": true,
+      "independent_unsigned_sha256": "d18fae52da39d6dddb90d30682638eab55cb9b95e496cf9d81f976f34990bdd6",
+      "independent_reproduced_sha256": "796775354de99e40ff05d521194d99b158fb9f3f0792f7500a2ab6fc38bba315",
+      "independent_rebuild_byte_for_byte_verified": true
+    },
+    {
+      "abi": "x86_64",
+      "versionCode": 383,
+      "versionName": "2.5.2",
+      "original_asset": "Rytmica-FDroid-Android-x86_64-2.5.2.apk",
+      "original_sha256": "e1d68244fd8dca7c27c7aa1ec09bb76ae0da67f75aa2205914348fc4bb4e72d3",
+      "clean_asset": "Rytmica-FDroid-Clean-Android-x86_64-2.5.2.apk",
+      "clean_sha256": "2bebff118c3a56d3f8283472e5f912b47f26163666d90c589e7555f7f3833762",
+      "removed_block_ids": [
+        "0x504b4453"
+      ],
+      "remaining_block_ids": [
+        "0x7109871a",
+        "0x42726577"
+      ],
+      "signature_blocks_unchanged": true,
+      "zip_entries_unchanged": 324,
+      "canonical_certificate_sha256": "e6eb4dad8c4db1649c9b75a8f5a374e2b7682428d148f961ed6327c22c5bbd78",
+      "apksigner_verified": true,
+      "zipalign_16k_verified": true,
+      "independent_unsigned_sha256": "5ab6dd08e58bd91ab4e6dc32fcd7fd4568292679c82bc5f218cb0cd65783a020",
+      "independent_reproduced_sha256": "2bebff118c3a56d3f8283472e5f912b47f26163666d90c589e7555f7f3833762",
+      "independent_rebuild_byte_for_byte_verified": true
+    }
+  ],
+  "recipe_source_commit": "72d570e1990fc8b17faf7ff9b62f3159e3ce8701",
+  "independent_build_workflow": "https://github.com/ryuya0124/Rytmica/actions/runs/41592067405",
+  "official_fdroid_pipeline_for_2_5_2_passed": false
+}

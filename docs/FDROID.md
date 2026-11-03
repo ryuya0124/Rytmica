@@ -5,8 +5,20 @@
 Android application ID は `net.ryuya_dev.mnc`。
 
 2026-10-25 に [掲載申請 MR !54059](https://gitlab.com/fdroid/fdroiddata/-/merge_requests/54059)
-を作成した。フォークの CI は GitLab の追加本人確認で実行されず、
-MR に運営側ランナーの実行依頼を記載している。
+を作成した。メンテナーが実行した [公式 CI](https://gitlab.com/fdroid/fdroiddata/-/pipelines/2986212718)
+ではビルド・ソース検査・lint・schema などが成功し、`check apk` だけが
+公開 APK の暗号化された `Dependency metadata` 署名ブロックを検出して失敗した。
+
+2026-11-03 に APK の `dependenciesInfo.includeInApk` を無効化した。
+Play 向け AAB の依存関係情報は保持する。既存の 2.5.2 配布ファイルは変更せず、
+追加ブロックだけを除去した `Rytmica-FDroid-Clean-Android-<ABI>-2.5.2.apk` を公開した。
+ZIP 内の全エントリーと署名ブロックが元 APK と同一で、正規証明書による
+`apksigner` 検証と 16 KB アラインメント検証を通過している。
+今後のリリーススクリプトもこのファイル名を生成する。
+[独立した署名なし Linux ビルド](https://github.com/ryuya0124/Rytmica/actions/runs/41592067405)
+も成功し、公開署名を戻した 3 種類の APK は修正版とバイト単位で一致した。
+[2.5.2 の検証記録](release-validation/android-fdroid-clean-2.5.2.json) を参照。
+更新した申請に対する公式 F-Droid CI と掲載審査は、これとは別に必要。
 
 F-Droid 公式ビルド環境イメージで、ARM32・ARM64・x86_64 のソーススキャンと
 ビルドが通過した。各 APK に GitHub CI 成果物の公開署名をコピーし、既存の署名証明書での
@@ -23,7 +35,7 @@ AGP 9.1.0 は現在配布されている SDK 37.0 をクリーン環境で解決
 ```sh
 flutter pub get --enforce-lockfile
 ORG_GRADLE_PROJECT_fdroid=true flutter build apk --release
-# 例: ARM64 だけの APK（Android versionCode 362）
+# 例: 2.5.2 の ARM64 だけの APK（Android versionCode 382）
 ORG_GRADLE_PROJECT_fdroid=true flutter build apk --release --split-per-abi --target-platform=android-arm64 -PrytmicaAbi=arm64-v8a
 ```
 
@@ -42,8 +54,8 @@ GitHub Actions の `Flutter Android Build` で `distribution: fdroid` と `abi` 
 初回申請は完全なコミット SHA に固定し、将来の更新はタグと `pubspec.yaml` から取得する。
 
 2.5.1 以降は Android の versionCode を `pubspec のビルド番号 × 10 + ABI 番号` に揃える。
-通常版は 360、ARM32 は 361、ARM64 は 362、x86_64 は 363。
-次回の通常版 370 はこれらすべてを更新できる。自動更新側も同じ `VercodeOperation` を使う。
+2.5.2 の通常版は 380、ARM32 は 381、ARM64 は 382、x86_64 は 383。
+次回の通常版 390 はこれらすべてを更新できる。自動更新側も同じ `VercodeOperation` を使う。
 詳細は [Android signing](ANDROID_SIGNING.md) を参照。
 
 申請は [再現ビルド](https://f-droid.org/docs/Reproducible_Builds/) と
@@ -57,4 +69,3 @@ JNI のビルド ID だけを再現可能にした専用成果物を区別する
 以後のリリーススクリプトも F-Droid 用のファイル名を生成する。
 
 `Publish GitHub Release` はまずドラフトを作る。ビルド・署名・再現性の検証後に公開する。
-Microsoft Store はすでに 2.5.1.0 が公開済みのため、このリリースから再提出しない。
