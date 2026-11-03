@@ -4,6 +4,7 @@ import 'package:musical_note_calculator/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 import '../../ParamData/judgment.dart';
+import '../../UI/judgment_preset_details.dart';
 import '../../ParamData/settings_model.dart';
 import 'Logic/anmitsu_logic.dart';
 import 'Logic/anmitsu_models.dart';
@@ -374,6 +375,7 @@ class AnmituCheckerPageState extends State<AnmituCheckerPage> {
     }
 
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         DropdownButtonFormField<String>(
           key: ValueKey('game-${selection.game}'),
@@ -384,7 +386,12 @@ class AnmituCheckerPageState extends State<AnmituCheckerPage> {
             border: const OutlineInputBorder(),
           ),
           items: grouped.keys
-              .map((game) => DropdownMenuItem(value: game, child: Text(game)))
+              .map(
+                (game) => DropdownMenuItem(
+                  value: game,
+                  child: Text(game, overflow: TextOverflow.ellipsis),
+                ),
+              )
               .toList(),
           onChanged: (value) {
             if (value == null) return;
@@ -415,6 +422,13 @@ class AnmituCheckerPageState extends State<AnmituCheckerPage> {
             _calculateAnmitu();
           },
         ),
+        if (selection.earlyPreset != null) ...[
+          const SizedBox(height: 6),
+          JudgmentPresetDetails(
+            preset: selection.earlyPreset!,
+            decimals: context.read<SettingsModel>().numDecimal,
+          ),
+        ],
         const SizedBox(height: 14),
         DropdownButtonFormField<String>(
           key: ValueKey('later-${selection.game}-${selection.latePreset?.id}'),
@@ -432,6 +446,18 @@ class AnmituCheckerPageState extends State<AnmituCheckerPage> {
             _calculateAnmitu();
           },
         ),
+        if (selection.latePreset != null) ...[
+          const SizedBox(height: 6),
+          JudgmentPresetDetails(
+            preset: selection.latePreset!,
+            decimals: context.read<SettingsModel>().numDecimal,
+          ),
+        ],
+        const SizedBox(height: 12),
+        Text(
+          loc.preset_reference_caption,
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
       ],
     );
   }
@@ -441,7 +467,15 @@ class AnmituCheckerPageState extends State<AnmituCheckerPage> {
         .map(
           (preset) => DropdownMenuItem(
             value: preset.id,
-            child: Text(preset.label, overflow: TextOverflow.ellipsis),
+            child: Tooltip(
+              message: preset.labelFor(
+                Localizations.localeOf(context).languageCode,
+              ),
+              child: Text(
+                preset.labelFor(Localizations.localeOf(context).languageCode),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
           ),
         )
         .toList();
@@ -575,6 +609,7 @@ class AnmituCheckerPageState extends State<AnmituCheckerPage> {
       bpm: double.tryParse(bpmController.text) ?? 0,
       noteType: double.tryParse(noteController.text) ?? 0,
       isDotted: isDotted,
+      languageCode: Localizations.localeOf(context).languageCode,
     );
     final loc = AppLocalizations.of(context)!;
 
@@ -684,9 +719,12 @@ class _SectionCard extends StatelessWidget {
                   ),
                 ),
               ),
-              ?trailing,
             ],
           ),
+          if (trailing != null) ...[
+            const SizedBox(height: 8),
+            Align(alignment: Alignment.centerLeft, child: trailing!),
+          ],
           const SizedBox(height: 18),
           child,
         ],

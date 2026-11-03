@@ -4,6 +4,7 @@ import 'package:musical_note_calculator/l10n/app_localizations.dart';
 
 import '../../../ParamData/settings_model.dart';
 import '../../../ParamData/judgment.dart';
+import '../../../UI/judgment_preset_details.dart';
 import 'settings_section_card.dart';
 
 class JudgmentSettingsSection extends StatelessWidget {
@@ -15,6 +16,8 @@ class JudgmentSettingsSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Text(loc.preset_reference_caption),
+        const SizedBox(height: 8),
         SettingsSectionCard(
           title: loc.judgment_presets,
           child: const JudgmentPresetContent(),
@@ -62,11 +65,10 @@ class JudgmentPresetContent extends StatelessWidget {
                 children: entry.value
                     .map(
                       (preset) => ListTile(
-                        title: Text(preset.label),
-                        subtitle: Text(
-                          preset.isCustom
-                              ? 'Late +${preset.lateMs.toStringAsFixed(decimals)} ms / Early -${preset.earlyMs.toStringAsFixed(decimals)} ms | ${loc.total_window_label}: ${preset.totalWindowMs.toStringAsFixed(decimals)} ms'
-                              : 'Late +${preset.lateMs.toStringAsFixed(decimals)} ms / Early -${preset.earlyMs.toStringAsFixed(decimals)} ms',
+                        title: Text(preset.labelFor(loc.localeName)),
+                        subtitle: JudgmentPresetDetails(
+                          preset: preset,
+                          decimals: decimals,
                         ),
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,

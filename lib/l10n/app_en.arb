@@ -85,6 +85,14 @@
   "otherOption": "Other",
   "beatLabel": "Beats",
   "judgment_presets": "Judgment presets",
+  "preset_reference_caption": "Early/late values are one-sided limits. “Or better” includes higher grades. Overlap is a timing estimate; it does not simulate contact, holding or candidate-note selection.",
+  "preset_window_range": "Early −{early} ms / Late +{late} ms",
+  "@preset_window_range": {
+    "placeholders": {
+      "early": { "type": "String" },
+      "late": { "type": "String" }
+    }
+  },
   "judgment_name_label": "Judgment name",
   "no_presets_available": "No presets available yet",
   "custom_preset_section_title": "Custom Judgment Preset",

@@ -103,6 +103,7 @@ class AnmitsuLogic {
     required double bpm,
     required double noteType,
     required bool isDotted,
+    String languageCode = 'ja',
   }) {
     final earlyPreset = selection.earlyPreset;
     final latePreset = selection.latePreset ?? earlyPreset;
@@ -140,8 +141,8 @@ class AnmitsuLogic {
 
     return AnmituCalcResult(
       gameName: selection.game ?? '',
-      earlyPresetLabel: earlyPreset.label,
-      latePresetLabel: latePreset.label,
+      earlyPresetLabel: earlyPreset.labelFor(languageCode),
+      latePresetLabel: latePreset.labelFor(languageCode),
       earlierNoteEarlyWindow: earlyPreset.earlyMs,
       earlierNoteLateWindow: earlierNoteLateWindow,
       laterNoteEarlyWindow: laterNoteEarlyWindow,
