@@ -57,6 +57,26 @@ def release_version
   match.captures
 end
 
+def complete_age_rating
+  facts = JSON.parse(File.read(File.expand_path('../fastlane/app-store/age-rating-facts.json', __dir__)))
+  infos = api('get', "/v1/apps/#{APP_ID}/appInfos?limit=200")['data']
+  info = infos.find { |i| i['attributes']['appStoreState'] == 'PREPARE_FOR_SUBMISSION' } ||
+    infos.find { |i| i['attributes']['appStoreState'] == 'IN_REVIEW' }
+  raise 'No current editable/review app information found for age declaration' unless info
+  rating = api('get', "/v1/appInfos/#{info['id']}/ageRatingDeclaration")['data']
+  missing = facts.reject do |key, value|
+    current = rating['attributes'][key]
+    raise 'Age declaration conflicts with checked-in app facts' unless current.nil? || current == value
+    current == value
+  end
+  return if missing.empty?
+  api('patch', "/v1/ageRatingDeclarations/#{rating['id']}", data: {
+    type: 'ageRatingDeclarations', id: rating['id'], attributes: missing
+  })
+  updated = api('get', "/v1/appInfos/#{info['id']}/ageRatingDeclaration")['data']
+  raise 'Age declaration update was not confirmed' unless facts.all? { |k, v| updated['attributes'][k] == v }
+end
+
 # Returns a status rather than canceling another version's review. The caller
 # can safely retry after build processing or an earlier review has completed.
 def submit_update(platform)
@@ -93,6 +113,7 @@ def submit_update(platform)
     build['attributes']['processingState'] != 'PROCESSING'
   raise 'Matching build is invalid or expired' unless
     build['attributes']['processingState'] == 'VALID' && !build['attributes']['expired']
+  complete_age_rating
   published = versions.find { |v| v['attributes']['appStoreState'] == 'READY_FOR_SALE' }
   raise 'Published version is required to preserve listing and review details' unless published
   if target
