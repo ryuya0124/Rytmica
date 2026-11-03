@@ -167,6 +167,7 @@ def submit_update(platform)
   source_locales = api('get', "/v1/appStoreVersions/#{published['id']}/appStoreVersionLocalizations?limit=200")['data']
   target_locales = api('get', "/v1/appStoreVersions/#{target['id']}/appStoreVersionLocalizations?limit=200")['data']
   metadata_root = File.expand_path("../fastlane/app-store/#{platform == 'IOS' ? 'ios' : 'macos'}/metadata", __dir__)
+  screenshot_locales = []
   %w[ja en-US].each do |locale|
     notes = File.read(File.join(metadata_root, locale, 'release_notes.txt')).strip
     raise 'Release notes are missing' if notes.empty?
@@ -186,9 +187,12 @@ def submit_update(platform)
       })['data']
     end
     screenshots = api('get', "/v1/appStoreVersionLocalizations/#{localization['id']}/appScreenshotSets?include=appScreenshots&limit=200")
-    raise "#{locale} screenshots were not carried over; listing needs attention" unless
+    screenshot_locales << locale if
       (screenshots['included'] || []).any? { |s| s['type'] == 'appScreenshots' }
   end
+  # Secondary locales can inherit screenshots from the primary locale. The
+  # existing Mac listing intentionally uses Japanese screenshots for English.
+  raise 'Primary-locale screenshots are missing' unless screenshot_locales.include?(app['attributes']['primaryLocale'])
   # New versions normally inherit these details. Copy only if absent, without
   # printing the private reviewer contact information or changing it.
   detail = api('get', "/v1/appStoreVersions/#{target['id']}/appStoreReviewDetail")['data']
