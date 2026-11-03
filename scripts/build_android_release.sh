@@ -9,6 +9,7 @@ for abi in universal armeabi-v7a arm64-v8a x86_64; do
   bash scripts/build_android_apk.sh "$abi" "$output_dir"
   if [[ "$abi" != universal ]]; then
     cp "$output_dir/Rytmica-Android-$abi-$version.apk" "$output_dir/Rytmica-FDroid-Android-$abi-$version.apk"
+    cp "$output_dir/Rytmica-Android-$abi-$version.apk" "$output_dir/Rytmica-FDroid-Clean-Android-$abi-$version.apk"
   fi
 done
 

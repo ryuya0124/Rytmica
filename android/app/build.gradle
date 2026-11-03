@@ -48,6 +48,12 @@ android {
     compileSdk = 37
     ndkVersion = flutter.ndkVersion
 
+    // F-Droid rejects the encrypted SDK dependency block added to APK signatures.
+    // Keep dependency reporting for Play bundles; APK payloads remain unchanged.
+    dependenciesInfo {
+        includeInApk = false
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
