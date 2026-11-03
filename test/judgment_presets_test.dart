@@ -72,6 +72,52 @@ void main() {
     expect(preset('phigros_normal_perfect').earlyMs, 80);
   });
 
+  test('Phigros BAD-or-better excludes the late MISS region', () {
+    expect(preset('phigros_normal_2').earlyMs, 220);
+    expect(preset('phigros_normal_2').lateMs, 180);
+    expect(
+      preset('phigros_challenge_60_2').earlyMs,
+      closeTo(148 + 1 / 3, 1e-10),
+    );
+    expect(preset('phigros_challenge_60_2').lateMs, closeTo(98 + 1 / 3, 1e-10));
+    expect(
+      preset('phigros_challenge_120_2').lateMs,
+      closeTo(94 + 1 / 6, 1e-10),
+    );
+  });
+
+  test(
+    'nested windows cannot produce more overlap than either full window',
+    () {
+      final narrow = preset('ournotes_normal_assist0_0');
+      final wide = preset('ournotes_normal_assist0_4');
+      for (final pair in [(narrow, wide), (wide, narrow)]) {
+        final result = AnmitsuLogic.calculateResult(
+          selection: SelectionSnapshot(
+            game: narrow.game,
+            presets: [narrow, wide],
+            earlyPreset: pair.$1,
+            latePreset: pair.$2,
+          ),
+          bpm: 240,
+          noteType: 16,
+          isDotted: false,
+        )!;
+        expect(result.overlapDurationMs, 4);
+        expect(result.anmituValue, 2);
+        expect(result.overlapEndMs - result.overlapStartMs, 4);
+        expect(
+          result.overlapDurationMs,
+          lessThanOrEqualTo(pair.$1.totalWindowMs),
+        );
+        expect(
+          result.overlapDurationMs,
+          lessThanOrEqualTo(pair.$2.totalWindowMs),
+        );
+      }
+    },
+  );
+
   test(
     'chart samples stay separate and release bonuses respect input caps',
     () {

@@ -1,1 +1,0 @@
-Expand judgment presets to 414 entries across 26 games. Update asymmetric early/late windows and note, mode and assist variants. Show reference versions and conditions, and improve compact layouts with larger text.

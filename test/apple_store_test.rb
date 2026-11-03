@@ -15,7 +15,7 @@ def scenario(name, versions, expected_error: nil)
   $fixtures = {
     "/v1/apps/#{APP_ID}" => {'data' => {'attributes' => {'bundleId' => 'net.ryuya-dev.mnc'}}},
     "/v1/apps/#{APP_ID}/appStoreVersions?limit=200" => {'data' => versions},
-    "/v1/builds?filter%5Bapp%5D=#{APP_ID}&filter%5Bversion%5D=37&limit=200&include=preReleaseVersion" => {'data' => [], 'included' => []}
+    "/v1/builds?filter%5Bapp%5D=#{APP_ID}&filter%5Bversion%5D=38&limit=200&include=preReleaseVersion" => {'data' => [], 'included' => []}
   }
   begin
     yield
@@ -27,13 +27,13 @@ def scenario(name, versions, expected_error: nil)
   puts "PASS: #{name}"
 end
 
-raise 'Release version fixture needs updating' unless release_version == ['2.5.2', '37']
+raise 'Release version fixture needs updating' unless release_version == ['2.5.2', '38']
 scenario('preserves another macOS version in review', [version('old', 'MAC_OS', '2.5.1', 'IN_REVIEW')]) do
   result = submit_update('MAC_OS')
   raise 'Existing review was not preserved' unless result[:status] == 'BLOCKED_BY_EXISTING_REVIEW'
 end
 scenario('does not resubmit an already submitted release', [version('target', 'IOS', '2.5.2', 'WAITING_FOR_REVIEW')]) do
-  $fixtures['/v1/appStoreVersions/target/build'] = {'data' => {'attributes' => {'version' => '37'}}}
+  $fixtures['/v1/appStoreVersions/target/build'] = {'data' => {'attributes' => {'version' => '38'}}}
   raise 'Submission was not recognized' unless submit_update('IOS')[:already_submitted]
 end
 scenario('rejects an unexpected bundle ID', [], expected_error: 'Unexpected bundle ID') do

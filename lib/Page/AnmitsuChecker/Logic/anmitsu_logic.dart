@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:material_ui/material_ui.dart';
 import 'package:musical_note_calculator/l10n/app_localizations.dart';
 
@@ -25,12 +27,21 @@ class AnmitsuLogic {
   }
 
   static double calculateAnmitsuValue(
+    double earlierNoteEarlyWindow,
     double earlierNoteLateWindow,
     double laterNoteEarlyWindow,
+    double laterNoteLateWindow,
     double noteLengthMs,
   ) {
-    final totalWindow = earlierNoteLateWindow + laterNoteEarlyWindow;
-    return (totalWindow - noteLengthMs) / 2;
+    final start = math.max(
+      -earlierNoteEarlyWindow,
+      noteLengthMs - laterNoteEarlyWindow,
+    );
+    final end = math.min(
+      earlierNoteLateWindow,
+      noteLengthMs + laterNoteLateWindow,
+    );
+    return (end - start) / 2;
   }
 
   static SelectionSnapshot resolveSelection(
@@ -129,14 +140,18 @@ class AnmitsuLogic {
       return null;
     }
 
-    // A simultaneous hit must be late enough for the earlier note and early
-    // enough for the later note. The opposite sides of both judgment windows
-    // do not participate in their intersection.
+    // Intersect both complete intervals: either window can contain the other.
+    // Using only the inward-facing sides overstates overlap in that case.
     final earlierNoteLateWindow = earlyPreset.lateMs;
     final laterNoteEarlyWindow = latePreset.earlyMs;
-    final overlapDurationMs =
-        earlierNoteLateWindow + laterNoteEarlyWindow - noteLengthMs;
-    final anmituValue = overlapDurationMs / 2;
+    final anmituValue = calculateAnmitsuValue(
+      earlyPreset.earlyMs,
+      earlierNoteLateWindow,
+      laterNoteEarlyWindow,
+      latePreset.lateMs,
+      noteLengthMs,
+    );
+    final overlapDurationMs = anmituValue * 2;
     final color = getResultColor(anmituValue);
 
     return AnmituCalcResult(

@@ -118,7 +118,7 @@
   "anmitsuPossibleDesc": "The judgment windows overlap, so anmitsu is possible",
   "anmitsuImpossibleDesc": "The judgment windows do not overlap, so anmitsu is impossible",
   "anmitsuPageSubtitle": "Calculate the timing range where two notes can be hit together",
-  "anmitsuHowTo": "Checks whether the late window of the earlier note overlaps the early window of the later note. Change BPM at the top of the screen.",
+  "anmitsuHowTo": "Finds the common range of both notes’ complete early/late windows. Change BPM at the top of the screen.",
   "earlierNote": "Earlier note",
   "laterNote": "Later note",
   "earlierNotePreset": "Earlier note judgment",

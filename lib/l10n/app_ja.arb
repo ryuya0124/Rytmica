@@ -118,7 +118,7 @@
   "anmitsuPossibleDesc": "判定幅が重なっているため、餡蜜が可能です",
   "anmitsuImpossibleDesc": "判定幅が重なっていないため、餡蜜は不可能です",
   "anmitsuPageSubtitle": "2つのノーツを同時押しできるタイミング幅を計算します",
-  "anmitsuHowTo": "先のノーツの遅判定と、後のノーツの早判定が重なるかを確認します。BPMは画面上部から変更できます。",
+  "anmitsuHowTo": "2つのノーツの早／遅判定から、それぞれの区間に共通する範囲を計算します。BPMは画面上部から変更できます。",
   "earlierNote": "先のノーツ",
   "laterNote": "後のノーツ",
   "earlierNotePreset": "先のノーツの判定",

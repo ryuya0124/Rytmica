@@ -211,8 +211,14 @@ class _TimelinePainter extends CustomPainter {
     const top = 54.0;
     const bottom = 30.0;
     final plotHeight = math.max(1.0, size.height - top - bottom);
-    final minTime = -result.earlierNoteEarlyWindow;
-    final maxTime = result.noteLengthMs + result.laterNoteLateWindow;
+    final minTime = math.min(
+      -result.earlierNoteEarlyWindow,
+      result.noteLengthMs - result.laterNoteEarlyWindow,
+    );
+    final maxTime = math.max(
+      result.earlierNoteLateWindow,
+      result.noteLengthMs + result.laterNoteLateWindow,
+    );
     final timeRange = math.max(1, maxTime - minTime);
     double yFor(double time) => top + (time - minTime) / timeRange * plotHeight;
 
@@ -261,16 +267,16 @@ class _TimelinePainter extends CustomPainter {
         canvas,
         earlierX,
         laterX,
-        laterTop,
-        earlierBottom,
+        yFor(result.overlapStartMs),
+        yFor(result.overlapEndMs),
       );
     } else {
       _drawShortfall(
         canvas,
         earlierX,
         laterX,
-        earlierBottom,
-        laterTop,
+        yFor(result.overlapEndMs),
+        yFor(result.overlapStartMs),
       );
     }
   }

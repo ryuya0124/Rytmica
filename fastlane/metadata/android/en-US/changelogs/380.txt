@@ -1,0 +1,1 @@
+Expand judgment presets to 414 entries across 26 games, with asymmetric windows and note, mode and assist variants. Show reference versions and conditions. Correct Phigros BAD windows and nested timing-window overlap calculations, and improve compact layouts with larger text.

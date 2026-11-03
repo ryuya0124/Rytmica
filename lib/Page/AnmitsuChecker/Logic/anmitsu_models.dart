@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:material_ui/material_ui.dart';
 
 import '../../../ParamData/judgment.dart';
@@ -57,6 +59,12 @@ class AnmituCalcResult {
   });
 
   bool get isPossible => overlapDurationMs > 0;
+
+  double get overlapStartMs =>
+      math.max(-earlierNoteEarlyWindow, noteLengthMs - laterNoteEarlyWindow);
+
+  double get overlapEndMs =>
+      math.min(earlierNoteLateWindow, noteLengthMs + laterNoteLateWindow);
 
   double get relevantWindowTotal =>
       earlierNoteLateWindow + laterNoteEarlyWindow;
