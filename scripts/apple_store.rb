@@ -60,8 +60,9 @@ end
 def complete_age_rating
   facts = JSON.parse(File.read(File.expand_path('../fastlane/app-store/age-rating-facts.json', __dir__)))
   infos = api('get', "/v1/apps/#{APP_ID}/appInfos?limit=200")['data']
-  info = infos.find { |i| %w[PREPARE_FOR_SUBMISSION DEVELOPER_REJECTED REJECTED METADATA_REJECTED].include?(i['attributes']['appStoreState']) }
-  raise 'No editable app information found for age declaration' unless info
+  editable = infos.find { |i| %w[PREPARE_FOR_SUBMISSION DEVELOPER_REJECTED REJECTED METADATA_REJECTED].include?(i['attributes']['appStoreState']) }
+  info = editable || infos.find { |i| i['attributes']['appStoreState'] != 'READY_FOR_SALE' } || infos.first
+  raise 'App information for age declaration is missing' unless info
   rating = api('get', "/v1/appInfos/#{info['id']}/ageRatingDeclaration")['data']
   missing = facts.reject do |key, value|
     current = rating['attributes'][key]
@@ -69,6 +70,7 @@ def complete_age_rating
     current == value
   end
   return if missing.empty?
+  raise 'Age declaration is locked by an existing review' unless editable
   api('patch', "/v1/ageRatingDeclarations/#{rating['id']}", data: {
     type: 'ageRatingDeclarations', id: rating['id'], attributes: missing
   })

@@ -62,3 +62,21 @@ scenario('replacement refuses a review with unrelated items', [version('old', 'M
   }
   replace_previous_macos_review
 end
+scenario('second platform can reuse an already-complete age declaration', []) do
+  $fixtures["/v1/apps/#{APP_ID}/appInfos?limit=200"] = {'data' => [
+    {'id' => 'info', 'attributes' => {'appStoreState' => 'WAITING_FOR_REVIEW'}}
+  ]}
+  $fixtures['/v1/appInfos/info/ageRatingDeclaration'] = {'data' => {
+    'id' => 'rating', 'attributes' => {'socialMedia' => false, 'socialMediaAgeRestricted' => false}
+  }}
+  complete_age_rating
+end
+scenario('ordinary submission does not modify a locked incomplete age declaration', [], expected_error: 'Age declaration is locked') do
+  $fixtures["/v1/apps/#{APP_ID}/appInfos?limit=200"] = {'data' => [
+    {'id' => 'info', 'attributes' => {'appStoreState' => 'IN_REVIEW'}}
+  ]}
+  $fixtures['/v1/appInfos/info/ageRatingDeclaration'] = {'data' => {
+    'id' => 'rating', 'attributes' => {'socialMedia' => nil, 'socialMediaAgeRestricted' => nil}
+  }}
+  complete_age_rating
+end
