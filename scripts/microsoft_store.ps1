@@ -91,9 +91,9 @@ if (!($staged.applicationPackages | Where-Object { $_.fileName -eq 'Rytmica.msix
 }
 foreach ($listing in $staged.listings.PSObject.Properties) {
     $listing.Value.baseListing.releaseNotes = if ($listing.Name -like 'ja*') {
-        'ウィンドウサイズ変更時の入力・タブ・メトロノーム再生状態の保持を改善しました。狭い画面の単位切替や設定見出しを修正し、Flutterと依存ライブラリを更新しました。'
+        '判定プリセットを26ゲーム・414件に整理しました。早判定と遅判定の非対称な幅、ノーツ・モード・アシスト別の設定、対象版と確認条件を反映しました。狭い画面と文字拡大時の表示も改善しました。'
     } else {
-        'Preserve inputs, the selected tab and metronome playback when resizing the window. Improve compact unit controls and settings headings. Update Flutter and dependencies.'
+        'Expand judgment presets to 414 entries across 26 games. Update asymmetric early/late windows and note, mode and assist variants. Show reference versions and conditions, and improve compact layouts with larger text.'
     }
 }
 $null = Invoke-RestMethod -Method Put -Headers $headers -Uri "$apiRoot/submissions/$submissionId" -ContentType 'application/json' -Body ($staged | ConvertTo-Json -Depth 100 -Compress)
