@@ -60,9 +60,8 @@ end
 def complete_age_rating
   facts = JSON.parse(File.read(File.expand_path('../fastlane/app-store/age-rating-facts.json', __dir__)))
   infos = api('get', "/v1/apps/#{APP_ID}/appInfos?limit=200")['data']
-  info = infos.find { |i| i['attributes']['appStoreState'] == 'PREPARE_FOR_SUBMISSION' } ||
-    infos.find { |i| i['attributes']['appStoreState'] == 'IN_REVIEW' }
-  raise 'No current editable/review app information found for age declaration' unless info
+  info = infos.find { |i| %w[PREPARE_FOR_SUBMISSION DEVELOPER_REJECTED REJECTED METADATA_REJECTED].include?(i['attributes']['appStoreState']) }
+  raise 'No editable app information found for age declaration' unless info
   rating = api('get', "/v1/appInfos/#{info['id']}/ageRatingDeclaration")['data']
   missing = facts.reject do |key, value|
     current = rating['attributes'][key]
@@ -75,6 +74,41 @@ def complete_age_rating
   })
   updated = api('get', "/v1/appInfos/#{info['id']}/ageRatingDeclaration")['data']
   raise 'Age declaration update was not confirmed' unless facts.all? { |k, v| updated['attributes'][k] == v }
+end
+
+# Explicitly authorized replacement of the old macOS 2.5.1 review. This is a
+# separate action; ordinary submit/inspect never cancel a pending review.
+def replace_previous_macos_review
+  version_name, = release_version
+  raise 'Replacement is scoped to the 2.5.2 release' unless version_name == '2.5.2'
+  app = api('get', "/v1/apps/#{APP_ID}")['data']
+  raise 'Unexpected bundle ID' unless app['attributes']['bundleId'] == 'net.ryuya-dev.mnc'
+  versions = api('get', "/v1/apps/#{APP_ID}/appStoreVersions?limit=200")['data']
+  old = versions.find { |v| v['attributes']['platform'] == 'MAC_OS' && v['attributes']['versionString'] == '2.5.1' }
+  raise 'Expected old macOS 2.5.1 version was not found' unless old
+  if %w[IN_REVIEW WAITING_FOR_REVIEW].include?(old['attributes']['appStoreState'])
+    reviews = api('get', "/v1/reviewSubmissions?filter%5Bapp%5D=#{APP_ID}&limit=200")['data']
+    review = reviews.find { |r| r['attributes']['platform'] == 'MAC_OS' && %w[IN_REVIEW WAITING_FOR_REVIEW].include?(r['attributes']['state']) }
+    raise 'Expected macOS review was not found' unless review
+    items = api('get', "/v1/reviewSubmissions/#{review['id']}/items?include=appStoreVersion&limit=200")
+    ids = (items['included'] || []).select { |i| i['type'] == 'appStoreVersions' }.map { |i| i['id'] }
+    raise 'Review contains other items; refusing cancellation' unless items['data'].length == 1 && ids == [old['id']]
+    api('patch', "/v1/reviewSubmissions/#{review['id']}", data: {
+      type: 'reviewSubmissions', id: review['id'], attributes: {canceled: true}
+    })
+    60.times do
+      old = api('get', "/v1/appStoreVersions/#{old['id']}")['data']
+      break if old['attributes']['appStoreState'] == 'DEVELOPER_REJECTED'
+      sleep 5
+    end
+  end
+  raise 'Old version did not become editable after cancellation' unless old['attributes']['appStoreState'] == 'DEVELOPER_REJECTED'
+  updated = api('patch', "/v1/appStoreVersions/#{old['id']}", data: {
+    type: 'appStoreVersions', id: old['id'], attributes: {versionString: version_name}
+  })['data']
+  raise 'Replacement version was not confirmed' unless updated['attributes']['versionString'] == version_name
+  {platform: 'MAC_OS', previous_version: '2.5.1', version: version_name,
+   status: updated['attributes']['appStoreState'], previous_review_withdrawn: true}
 end
 
 # Returns a status rather than canceling another version's review. The caller
@@ -223,6 +257,8 @@ if $PROGRAM_NAME == __FILE__
         sleep 30
       end
     end
+  when 'replace_previous_macos'
+    puts JSON.generate(kind: 'replacement', **replace_previous_macos_review)
   else
     abort 'Unsupported action'
   end

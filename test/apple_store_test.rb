@@ -50,3 +50,15 @@ end
 scenario('does not confuse a macOS review with an iOS review', [version('old', 'MAC_OS', '2.5.1', 'IN_REVIEW')], expected_error: 'Matching uploaded build') do
   submit_update('IOS')
 end
+scenario('replacement refuses other version numbers', [version('old', 'MAC_OS', '2.5.0', 'IN_REVIEW')], expected_error: 'Expected old macOS 2.5.1') do
+  replace_previous_macos_review
+end
+scenario('replacement refuses a review with unrelated items', [version('old', 'MAC_OS', '2.5.1', 'IN_REVIEW')], expected_error: 'Review contains other items') do
+  $fixtures["/v1/reviewSubmissions?filter%5Bapp%5D=#{APP_ID}&limit=200"] = {'data' => [
+    {'id' => 'review', 'attributes' => {'platform' => 'MAC_OS', 'state' => 'IN_REVIEW'}}
+  ]}
+  $fixtures['/v1/reviewSubmissions/review/items?include=appStoreVersion&limit=200'] = {
+    'data' => [{'id' => 'item'}], 'included' => [{'type' => 'appStoreVersions', 'id' => 'unrelated'}]
+  }
+  replace_previous_macos_review
+end

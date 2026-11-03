@@ -7,7 +7,7 @@ on:
         description: App Store action
         type: choice
         default: inspect
-        options: [inspect, submit]
+        options: [inspect, submit, replace_previous_macos]
       platform:
         description: App Store platform
         type: choice
