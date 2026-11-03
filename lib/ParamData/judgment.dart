@@ -1,5 +1,43 @@
 import 'dart:math';
 
+part 'judgment_catalog.dart';
+
+/// Version and limitations of a timing-window reference, not a latency test.
+class JudgmentPresetContext {
+  final String version;
+  final String noteJa;
+  final String noteEn;
+  final String? checkedOn;
+
+  const JudgmentPresetContext({
+    required this.version,
+    required this.noteJa,
+    required this.noteEn,
+    this.checkedOn,
+  });
+
+  String describe(String languageCode) => [
+    if (version.isNotEmpty) version,
+    ?checkedOn,
+    languageCode.startsWith('ja') ? noteJa : noteEn,
+  ].join(' · ');
+
+  Map<String, dynamic> toJson() => {
+    'version': version,
+    'noteJa': noteJa,
+    'noteEn': noteEn,
+    if (checkedOn != null) 'checkedOn': checkedOn,
+  };
+
+  factory JudgmentPresetContext.fromJson(Map<String, dynamic> json) =>
+      JudgmentPresetContext(
+        version: json['version'] as String,
+        noteJa: json['noteJa'] as String,
+        noteEn: json['noteEn'] as String,
+        checkedOn: json['checkedOn'] as String?,
+      );
+}
+
 /// 音楽ゲームの判定幅プリセット
 class JudgmentPreset {
   final String id;
@@ -8,6 +46,8 @@ class JudgmentPreset {
   final double earlyMs;
   final double lateMs;
   final bool isCustom;
+  final String? labelEn;
+  final JudgmentPresetContext? context;
 
   const JudgmentPreset({
     required this.id,
@@ -16,10 +56,15 @@ class JudgmentPreset {
     required this.earlyMs,
     required this.lateMs,
     this.isCustom = false,
+    this.labelEn,
+    this.context,
   }) : assert(earlyMs >= 0),
        assert(lateMs >= 0);
 
   double get totalWindowMs => earlyMs + lateMs;
+
+  String labelFor(String languageCode) =>
+      languageCode.startsWith('ja') ? label : labelEn ?? label;
 
   Map<String, dynamic> toJson() => {
     'id': id,
@@ -28,6 +73,8 @@ class JudgmentPreset {
     'earlyMs': earlyMs,
     'lateMs': lateMs,
     'isCustom': isCustom,
+    if (labelEn != null) 'labelEn': labelEn,
+    if (context != null) 'context': context!.toJson(),
   };
 
   factory JudgmentPreset.fromJson(Map<String, dynamic> json) => JudgmentPreset(
@@ -37,6 +84,12 @@ class JudgmentPreset {
     earlyMs: (json['earlyMs'] as num).toDouble(),
     lateMs: (json['lateMs'] as num).toDouble(),
     isCustom: json['isCustom'] as bool? ?? true,
+    labelEn: json['labelEn'] as String?,
+    context: json['context'] == null
+        ? null
+        : JudgmentPresetContext.fromJson(
+            Map<String, dynamic>.from(json['context'] as Map),
+          ),
   );
 
   JudgmentPreset copyWith({
@@ -46,6 +99,8 @@ class JudgmentPreset {
     double? earlyMs,
     double? lateMs,
     bool? isCustom,
+    String? labelEn,
+    JudgmentPresetContext? context,
   }) {
     return JudgmentPreset(
       id: id ?? this.id,
@@ -54,6 +109,8 @@ class JudgmentPreset {
       earlyMs: earlyMs ?? this.earlyMs,
       lateMs: lateMs ?? this.lateMs,
       isCustom: isCustom ?? this.isCustom,
+      labelEn: labelEn ?? this.labelEn,
+      context: context ?? this.context,
     );
   }
 
@@ -75,195 +132,3 @@ class JudgmentPreset {
     );
   }
 }
-
-const List<JudgmentPreset> defaultJudgmentPresets = [
-  JudgmentPreset(
-    id: 'proseca_white_notes',
-    game: 'プロセカ',
-    label: '白 ノーツ',
-    earlyMs: 41.6,
-    lateMs: 41.6,
-  ),
-  JudgmentPreset(
-    id: 'proseca_green_long_start',
-    game: 'プロセカ',
-    label: '緑 ロング始点',
-    earlyMs: 41.6,
-    lateMs: 41.6,
-  ),
-  JudgmentPreset(
-    id: 'proseca_red_flick',
-    game: 'プロセカ',
-    label: '赤 フリック',
-    earlyMs: 41.6,
-    lateMs: 41.6,
-  ),
-  JudgmentPreset(
-    id: 'proseca_yellow_notes',
-    game: 'プロセカ',
-    label: '黄 ノーツ',
-    earlyMs: 55.0,
-    lateMs: 55.0,
-  ),
-  JudgmentPreset(
-    id: 'proseca_yellow_long_start',
-    game: 'プロセカ',
-    label: '黄 ロング始点',
-    earlyMs: 55.0,
-    lateMs: 55.0,
-  ),
-  JudgmentPreset(
-    id: 'proseca_yellow_flick',
-    game: 'プロセカ',
-    label: '黄 フリック',
-    earlyMs: 58.3,
-    lateMs: 58.3,
-  ),
-  JudgmentPreset(
-    id: 'proseca_green_long_end',
-    game: 'プロセカ',
-    label: '緑 ロング終点',
-    earlyMs: 58.3,
-    lateMs: 66.6,
-  ),
-  JudgmentPreset(
-    id: 'proseca_green_long_end_flick',
-    game: 'プロセカ',
-    label: '緑 終点フリック',
-    earlyMs: 58.3,
-    lateMs: 66.6,
-  ),
-  JudgmentPreset(
-    id: 'proseca_yellow_long_end',
-    game: 'プロセカ',
-    label: '黄 ロング終点',
-    earlyMs: 58.3,
-    lateMs: 66.6,
-  ),
-  JudgmentPreset(
-    id: 'proseca_yellow_long_end_flick',
-    game: 'プロセカ',
-    label: '黄 終点フリック',
-    earlyMs: 58.3,
-    lateMs: 66.6,
-  ),
-  JudgmentPreset(
-    id: 'yumeste_perfect_plus',
-    game: 'ユメステ',
-    label: 'PERFECT+',
-    earlyMs: 25.0,
-    lateMs: 25.0,
-  ),
-  JudgmentPreset(
-    id: 'yumeste_perfect',
-    game: 'ユメステ',
-    label: 'PERFECT',
-    earlyMs: 40.0,
-    lateMs: 40.0,
-  ),
-  JudgmentPreset(
-    id: 'garupa_perfect',
-    game: 'ガルパ',
-    label: 'PERFECT',
-    earlyMs: 41.67,
-    lateMs: 41.67,
-  ),
-  JudgmentPreset(
-    id: 'd4dj_internal_perfect',
-    game: 'D4DJ グルミク',
-    label: 'PERFECT (内部)',
-    earlyMs: 25.0,
-    lateMs: 25.0,
-  ),
-  JudgmentPreset(
-    id: 'd4dj_perfect',
-    game: 'D4DJ グルミク',
-    label: 'PERFECT',
-    earlyMs: 50.0,
-    lateMs: 50.0,
-  ),
-  JudgmentPreset(
-    id: 'deemo_default',
-    game: 'Deemo',
-    label: 'Default',
-    earlyMs: 50.0,
-    lateMs: 50.0,
-  ),
-  JudgmentPreset(
-    id: 'arcaea_internal_pure',
-    game: 'Arcaea',
-    label: 'PURE (内部)',
-    earlyMs: 25.0,
-    lateMs: 25.0,
-  ),
-  JudgmentPreset(
-    id: 'arcaea_pure',
-    game: 'Arcaea',
-    label: 'PURE',
-    earlyMs: 50.0,
-    lateMs: 50.0,
-  ),
-  JudgmentPreset(
-    id: 'takumi_rainbow_just',
-    game: 'TAKUMI³',
-    label: '虹JUST',
-    earlyMs: 40.0,
-    lateMs: 40.0,
-  ),
-  JudgmentPreset(
-    id: 'takumi_just',
-    game: 'TAKUMI³',
-    label: 'JUST',
-    earlyMs: 60.0,
-    lateMs: 60.0,
-  ),
-  JudgmentPreset(
-    id: 'cytus_tp_perfect',
-    game: 'Cytus/Cytus II',
-    label: 'TP PERFECT',
-    earlyMs: 70.0,
-    lateMs: 70.0,
-  ),
-  JudgmentPreset(
-    id: 'kalpa_perfect',
-    game: 'KALPA',
-    label: 'PERFECT',
-    earlyMs: 67.0,
-    lateMs: 67.0,
-  ),
-  JudgmentPreset(
-    id: 'phigros_normal_perfect',
-    game: 'Phigros',
-    label: '通常 Perfect',
-    earlyMs: 80.0,
-    lateMs: 80.0,
-  ),
-  JudgmentPreset(
-    id: 'phigros_challenge_perfect',
-    game: 'Phigros',
-    label: '課題 Perfect',
-    earlyMs: 40.0,
-    lateMs: 40.0,
-  ),
-  JudgmentPreset(
-    id: 'mltd_om_perfect',
-    game: 'ミリシタ',
-    label: 'PERFECT (OM)',
-    earlyMs: 28.0,
-    lateMs: 28.0,
-  ),
-  JudgmentPreset(
-    id: 'mltd_mm_perfect',
-    game: 'ミリシタ',
-    label: 'PERFECT (MM以下)',
-    earlyMs: 50.0,
-    lateMs: 50.0,
-  ),
-  JudgmentPreset(
-    id: 'deresute_perfect',
-    game: 'デレステ',
-    label: 'PERFECT (Mas以上)',
-    earlyMs: 70.0,
-    lateMs: 70.0,
-  ),
-];

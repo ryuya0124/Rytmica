@@ -83,11 +83,9 @@ class SettingsModel extends ChangeNotifier {
       ..sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
     final Map<String, List<JudgmentPreset>> sorted = {};
     for (final key in sortedKeys) {
-      final entries = grouped[key]!
-        ..sort(
-          (a, b) => a.label.toLowerCase().compareTo(b.label.toLowerCase()),
-        );
-      sorted[key] = entries;
+      // Catalog order groups note types/modes and keeps higher grades first.
+      // Alphabetical sorting would select BAD before PERFECT by default.
+      sorted[key] = grouped[key]!;
     }
     return sorted;
   }

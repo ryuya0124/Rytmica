@@ -85,6 +85,14 @@
   "otherOption": "その他",
   "beatLabel": "拍数",
   "judgment_presets": "判定プリセット",
+  "preset_reference_caption": "早／遅は中心から片側の幅です。「以上」は上位判定を含みます。計算は時間窓の重なりの目安で、接触・保持・候補ノーツ選択までは再現しません。",
+  "preset_window_range": "早 −{early} ms / 遅 +{late} ms",
+  "@preset_window_range": {
+    "placeholders": {
+      "early": { "type": "String" },
+      "late": { "type": "String" }
+    }
+  },
   "judgment_name_label": "判定名",
   "no_presets_available": "プリセットはまだありません",
   "custom_preset_section_title": "カスタム判定プリセット",
