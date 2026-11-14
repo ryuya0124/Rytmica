@@ -23,7 +23,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
     - name: Cache Flutter SDK
       uses: actions/cache@v4
@@ -52,14 +52,14 @@ jobs:
 
     - name: Upload Microsoft Store package
       if: ${{ inputs.store_action == 'submit' }}
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
       with:
         name: rytmica-store-msix
         path: build/windows/x64/runner/Release/Rytmica.msix
         if-no-files-found: error
 
     - name: Upload Windows executable as artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
       with:
         name: rytmica-windows
         path: build\windows\x64\runner\Release\
@@ -77,7 +77,7 @@ jobs:
       AZURE_AD_APPLICATION_SECRET: ${{ secrets.AZURE_AD_APPLICATION_SECRET }}
       SELLER_ID: ${{ secrets.SELLER_ID }}
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
     - uses: actions/download-artifact@v4
       if: ${{ inputs.store_action == 'submit' }}
       with:
@@ -90,7 +90,7 @@ jobs:
       env:
         STORE_ACTION: ${{ inputs.store_action }}
       run: ./scripts/microsoft_store.ps1 -Mode $env:STORE_ACTION -PackagePath store-package/Rytmica.msix
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
       if: always()
       with:
         name: microsoft-store-status

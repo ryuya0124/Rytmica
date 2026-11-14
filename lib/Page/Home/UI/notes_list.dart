@@ -1,5 +1,4 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:flutter/rendering.dart';
 import 'package:musical_note_calculator/l10n/app_localizations.dart';
 
 import 'note_card.dart';

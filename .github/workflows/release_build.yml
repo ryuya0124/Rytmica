@@ -29,7 +29,7 @@ jobs:
     name: Validate release source and version
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Match release tag to source
         shell: bash
         run: |
@@ -55,7 +55,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set up Java 21
         uses: actions/setup-java@v5
@@ -96,7 +96,7 @@ jobs:
             scripts/verify_android_signature.sh build/app/outputs/flutter-apk/app-release.apk
 
       - name: Upload Android assets
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: android-release
           path: release-assets/*
@@ -109,7 +109,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
@@ -148,7 +148,7 @@ jobs:
           Copy-Item $msix.FullName "release-assets/Rytmica-Microsoft-Store-${env:RELEASE_VERSION}.msix"
 
       - name: Upload Windows asset
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: windows-release
           path: release-assets/*

@@ -38,6 +38,10 @@ linter:
     file_names: false
 analyzer:
   exclude:
+    # Flutter 3.50's localization generator still emits compatibility exports
+    # deprecated by the SDK's design-library split. Analyze application code;
+    # the generated delegates remain covered by the build and widget tests.
+    - lib/l10n/app_localizations*.dart
     - build/**
     - android/**
     - ios/**
