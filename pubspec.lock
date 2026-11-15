@@ -363,7 +363,7 @@ packages:
       path: "packages/metronome"
       relative: true
     source: path
-    version: "2.0.7"
+    version: "2.0.13+rytmica.1"
   msix:
     dependency: "direct dev"
     description:

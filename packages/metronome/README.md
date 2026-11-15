@@ -37,8 +37,27 @@ metronome.init(
     // The time signature is the number of beats per measure,default is 4
     timeSignature: 4,
     sampleRate: 44100,
+    // iOS only. Keep true unless the host app manages AVAudioSession.
+    manageAudioSession: true,
 );
 ```
+
+### iOS audio session management
+
+`manageAudioSession` controls whether the plugin configures and activates the shared `AVAudioSession` during initialization.
+
+The default value is `true`, which preserves the existing behavior. The plugin uses the `playAndRecord` category, `videoRecording` mode, and activates the audio session.
+
+Set it to `false` when the host application already manages `AVAudioSession`, for example through the Flutter [`audio_session`](https://pub.dev/packages/audio_session) package. The host application must configure and activate its audio session before starting audio playback:
+
+```dart
+await metronome.init(
+  'assets/audio/snare.wav',
+  manageAudioSession: false,
+);
+```
+
+This parameter only affects iOS. It does not change audio session behavior on Android, macOS, Windows, or Web.
 
 ### Play
 
@@ -127,5 +146,4 @@ metronome.tickStream.listen((int tick) {
   print("tick: $tick");
 });
 ```
-
 

@@ -1,1 +1,1 @@
-Updated libraries to improve compatibility with the latest operating systems and app stability.
+Updated libraries and improved metronome stability when switching audio outputs.
