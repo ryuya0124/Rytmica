@@ -1,0 +1,60 @@
+name: Submit existing Microsoft Store build
+on:
+  workflow_dispatch:
+    inputs:
+      source_run_id:
+        description: Windows build workflow run containing the validated MSIX
+        type: string
+        required: true
+      replace_submission_id:
+        description: Explicitly supersede this older pending submission only
+        type: string
+        default: ''
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: rytmica-windows-store
+  cancel-in-progress: false
+jobs:
+  submit:
+    runs-on: windows-latest
+    environment: microsoft-store
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - name: Verify successful source build
+        id: source
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN: ${{ inputs.source_run_id }}
+        run: |
+          if ($env:SOURCE_RUN -notmatch '^\d+$') { throw 'Invalid source run ID' }
+          $run = gh api "repos/$env:GITHUB_REPOSITORY/actions/runs/$env:SOURCE_RUN" | ConvertFrom-Json
+          if ($LASTEXITCODE -ne 0 -or $run.path -ne '.github/workflows/Windows_build.yml') { throw 'Unexpected source workflow' }
+          $jobs = gh api "repos/$env:GITHUB_REPOSITORY/actions/runs/$env:SOURCE_RUN/jobs" | ConvertFrom-Json
+          if ($LASTEXITCODE -ne 0 -or !($jobs.jobs | Where-Object { $_.name -eq 'build' -and $_.conclusion -eq 'success' })) { throw 'Source MSIX build did not pass' }
+          "commit=$($run.head_sha)" >> $env:GITHUB_OUTPUT
+      - uses: actions/download-artifact@v4
+        with:
+          name: rytmica-store-msix
+          path: store-package
+          run-id: ${{ inputs.source_run_id }}
+          github-token: ${{ github.token }}
+      - uses: microsoft/microsoft-store-apppublisher@v1.4
+      - name: Submit validated package
+        shell: pwsh
+        env:
+          AZURE_AD_TENANT_ID: ${{ secrets.AZURE_AD_TENANT_ID }}
+          AZURE_AD_APPLICATION_CLIENT_ID: ${{ secrets.AZURE_AD_APPLICATION_CLIENT_ID }}
+          AZURE_AD_APPLICATION_SECRET: ${{ secrets.AZURE_AD_APPLICATION_SECRET }}
+          SELLER_ID: ${{ secrets.SELLER_ID }}
+          REPLACE_SUBMISSION: ${{ inputs.replace_submission_id }}
+          SOURCE_COMMIT: ${{ steps.source.outputs.commit }}
+        run: ./scripts/microsoft_store.ps1 -Mode submit -PackagePath store-package/Rytmica.msix -ReplaceSubmissionId $env:REPLACE_SUBMISSION -SourceCommit $env:SOURCE_COMMIT
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        if: always()
+        with:
+          name: microsoft-store-status
+          path: store-status/*.json
+          if-no-files-found: ignore

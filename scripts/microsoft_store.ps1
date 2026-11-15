@@ -1,6 +1,8 @@
 param(
     [ValidateSet('inspect', 'submit')][string]$Mode = 'inspect',
-    [string]$PackagePath = 'store-package/Rytmica.msix'
+    [string]$PackagePath = 'store-package/Rytmica.msix',
+    [string]$ReplaceSubmissionId = '',
+    [string]$SourceCommit = $env:GITHUB_SHA
 )
 $ErrorActionPreference = 'Stop'
 $productId = '9N7HMK8TN36X'
@@ -54,7 +56,17 @@ Save-Report before @{
 }
 if ($Mode -eq 'inspect') { exit 0 }
 if (!$published) { throw 'First publication must be completed in Partner Center' }
-if ($pending) { throw 'An existing submission is pending; inspect it before changing anything' }
+if ($pending) {
+    if (!$ReplaceSubmissionId -or $pending.id -ne $ReplaceSubmissionId) {
+        throw 'An existing submission is pending; inspect it before changing anything'
+    }
+    foreach ($package in $pending.applicationPackages) {
+        if ($package.fileStatus -ne 'PendingDelete' -and
+            (!$package.version -or [version]$package.version -ge $expectedVersion)) {
+            throw 'Replacement requires a confirmed older pending package'
+        }
+    }
+}
 if ($published.pricing.priceId -ne 'Free') { throw 'Unexpected price configuration; refusing to change it' }
 foreach ($package in $published.applicationPackages) {
     if ($package.architecture -eq 'x64' -and [version]$package.version -ge $expectedVersion) {
@@ -76,6 +88,20 @@ try {
     if (!$archive.GetEntry('Rytmica.exe') -or !$archive.GetEntry('flutter_windows.dll')) { throw 'MSIX application payload missing' }
 } finally { $archive.Dispose() }
 $packageHash = (Get-FileHash -LiteralPath $PackagePath -Algorithm SHA256).Hash
+if ($pending) {
+    $current = Get-App
+    if ($current.pendingApplicationSubmission.id -ne $ReplaceSubmissionId) {
+        throw 'Pending submission changed before replacement; inspect before retrying'
+    }
+    # Explicit replacement only, after validating the complete newer MSIX.
+    $null = Invoke-RestMethod -Method Delete -Headers $headers -Uri "$apiRoot/submissions/$ReplaceSubmissionId"
+    for ($attempt = 0; $attempt -lt 24; $attempt++) {
+        if (!(Get-App).pendingApplicationSubmission.id) { break }
+        Start-Sleep -Seconds 5
+    }
+    if ((Get-App).pendingApplicationSubmission.id) { throw 'Previous submission cancellation is still processing' }
+    Save-Report superseded @{ previousSubmissionId = $ReplaceSubmissionId; replacementVersion = "$expectedVersion" }
+}
 & msstore reconfigure --tenantId $env:AZURE_AD_TENANT_ID --sellerId $env:SELLER_ID --clientId $env:AZURE_AD_APPLICATION_CLIENT_ID --clientSecret $env:AZURE_AD_APPLICATION_SECRET
 if ($LASTEXITCODE -ne 0) { throw 'Store CLI authentication failed' }
 if ((Get-App).pendingApplicationSubmission.id) { throw 'A new pending submission appeared; refusing to replace it' }
@@ -99,9 +125,9 @@ foreach ($listing in $staged.listings.PSObject.Properties) {
 $null = Invoke-RestMethod -Method Put -Headers $headers -Uri "$apiRoot/submissions/$submissionId" -ContentType 'application/json' -Body ($staged | ConvertTo-Json -Depth 100 -Compress)
 Save-Report staged @{
     submission = (Submission-Summary (Get-Submission $submissionId))
-    sha256 = $packageHash; sourceCommit = $env:GITHUB_SHA; packageVersion = "$expectedVersion"
+    sha256 = $packageHash; sourceCommit = $SourceCommit; packageVersion = "$expectedVersion"
 }
 $null = Invoke-RestMethod -Method Post -Headers $headers -Uri "$apiRoot/submissions/$submissionId/commit" -ContentType 'application/json' -Body '{}'
 $status = Invoke-RestMethod -Headers $headers -Uri "$apiRoot/submissions/$submissionId/status"
-Save-Report submitted @{ productId = $productId; submissionId = $submissionId; status = $status; packageVersion = "$expectedVersion"; sha256 = $packageHash; sourceCommit = $env:GITHUB_SHA }
+Save-Report submitted @{ productId = $productId; submissionId = $submissionId; status = $status; packageVersion = "$expectedVersion"; sha256 = $packageHash; sourceCommit = $SourceCommit }
 if ($status.status -match 'Failed|Canceled' -or $status.statusDetails.errors.Count -gt 0) { throw 'Store reported a submission error' }
