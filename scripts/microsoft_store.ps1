@@ -91,9 +91,9 @@ if (!($staged.applicationPackages | Where-Object { $_.fileName -eq 'Rytmica.msix
 }
 foreach ($listing in $staged.listings.PSObject.Properties) {
     $listing.Value.baseListing.releaseNotes = if ($listing.Name -like 'ja*') {
-        'ライブラリを更新し、最新のOSでの互換性と動作の安定性を改善しました。'
+        'ライブラリを更新し、メトロノームの音声出力切替時の安定性を改善しました。'
     } else {
-        'Updated libraries to improve compatibility with the latest operating systems and app stability.'
+        'Updated libraries and improved metronome stability when switching audio outputs.'
     }
 }
 $null = Invoke-RestMethod -Method Put -Headers $headers -Uri "$apiRoot/submissions/$submissionId" -ContentType 'application/json' -Body ($staged | ConvertTo-Json -Depth 100 -Compress)

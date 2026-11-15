@@ -47,6 +47,7 @@ class MetronomeWeb extends MetronomePlatform {
     bool enableTickCallback = false,
     int timeSignature = 4,
     int sampleRate = 44100,
+    bool manageAudioSession = true,
   }) async {
     _sampleRate = sampleRate;
     _audioContext = web.AudioContext(
