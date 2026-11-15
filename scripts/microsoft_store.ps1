@@ -91,9 +91,9 @@ if (!($staged.applicationPackages | Where-Object { $_.fileName -eq 'Rytmica.msix
 }
 foreach ($listing in $staged.listings.PSObject.Properties) {
     $listing.Value.baseListing.releaseNotes = if ($listing.Name -like 'ja*') {
-        '判定プリセットを26ゲーム・414件に整理しました。早／遅の非対称幅とノーツ・モード・アシスト別の設定、対象版と確認条件を反映しました。PhigrosのBAD範囲、餡蜜チェッカーの重なり計算、狭い画面と文字拡大時の表示を修正しました。'
+        'ライブラリを更新し、最新のOSでの互換性と動作の安定性を改善しました。'
     } else {
-        'Expand judgment presets to 414 entries across 26 games, with asymmetric windows and note, mode and assist variants. Show reference versions and conditions. Correct Phigros BAD windows and nested timing-window overlap calculations, and improve compact layouts with larger text.'
+        'Updated libraries to improve compatibility with the latest operating systems and app stability.'
     }
 }
 $null = Invoke-RestMethod -Method Put -Headers $headers -Uri "$apiRoot/submissions/$submissionId" -ContentType 'application/json' -Body ($staged | ConvertTo-Json -Depth 100 -Compress)
