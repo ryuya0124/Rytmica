@@ -1,5 +1,14 @@
 # F-Droid ビルド
 
+## 2026-11-15: 2.5.4
+
+2.5.2 の [公式 F-Droid CI](https://gitlab.com/fdroid/fdroiddata/-/pipelines/3021713267) は成功した。掲載 MR は未マージ。
+
+2.5.4 は Flutter 3.50.0 と更新済みライブラリでビルドし、ARM32・ARM64・x86_64 の独立した署名なしビルドに公開署名をコピーした結果、配布 APK とバイト単位で一致した。署名、16 KB アラインメント、暗号化依存メタデータブロックがないことも確認済み。
+[検証記録](release-validation/android-fdroid-2.5.4.json) と [更新パッチ](https://github.com/ryuya0124/Rytmica/releases/download/2.5.4/fdroid-2.5.4-update.patch) を公開した。
+
+2.5.4 の申請更新は未送信。Windows のブラウザー URL を安全に確認できないため画面操作が停止し、CLI 用の GitLab 認証情報も設定されていない。既存の 2.5.2 申請は維持している。2.5.4 の公式 F-Droid CI 成功・掲載完了を意味しない。
+
 ソースは GitHub で管理し、公式掲載のビルド定義は
 [fdroiddata](https://gitlab.com/fdroid/fdroiddata) へ提出する。
 Android application ID は `net.ryuya_dev.mnc`。
@@ -27,7 +36,7 @@ F-Droid 公式ビルド環境イメージで、ARM32・ARM64・x86_64 のソー�
 JNI ライブラリの一時パスに依存するビルド ID を除去し、アプリのビルドパスと
 PUB_CACHE のパスを揃えて再現可能にしている。公式 GitLab CI と掲載審査は別途必要。
 
-署名なしのリリース APK は、JDK 21、Flutter 3.47.8、Android SDK 37.0、
+署名なしのリリース APK は、JDK 21、Flutter 3.50.0、Android SDK 37.0、
 NDK r28c を用意し、以下で生成する。Android のビルドツールは
 AGP 9.2.1 / Gradle 9.4.1 / Kotlin 2.4.21 を使用する。
 AGP 9.1.0 は現在配布されている SDK 37.0 をクリーン環境で解決できない。
@@ -35,7 +44,7 @@ AGP 9.1.0 は現在配布されている SDK 37.0 をクリーン環境で解決
 ```sh
 flutter pub get --enforce-lockfile
 ORG_GRADLE_PROJECT_fdroid=true flutter build apk --release
-# 例: 2.5.2 の ARM64 だけの APK（Android versionCode 382）
+# 例: 2.5.4 の ARM64 だけの APK（Android versionCode 402）
 ORG_GRADLE_PROJECT_fdroid=true flutter build apk --release --split-per-abi --target-platform=android-arm64 -PrytmicaAbi=arm64-v8a
 ```
 
@@ -54,8 +63,8 @@ GitHub Actions の `Flutter Android Build` で `distribution: fdroid` と `abi` 
 初回申請は完全なコミット SHA に固定し、将来の更新はタグと `pubspec.yaml` から取得する。
 
 2.5.1 以降は Android の versionCode を `pubspec のビルド番号 × 10 + ABI 番号` に揃える。
-2.5.2 の通常版は 380、ARM32 は 381、ARM64 は 382、x86_64 は 383。
-次回の通常版 390 はこれらすべてを更新できる。自動更新側も同じ `VercodeOperation` を使う。
+2.5.4 の通常版は 400、ARM32 は 401、ARM64 は 402、x86_64 は 403。
+次回の通常版 410 はこれらすべてを更新できる。自動更新側も同じ `VercodeOperation` を使う。
 詳細は [Android signing](ANDROID_SIGNING.md) を参照。
 
 申請は [再現ビルド](https://f-droid.org/docs/Reproducible_Builds/) と

@@ -1,0 +1,57 @@
+{
+  "version": "2.5.4",
+  "build": 40,
+  "source_commit": "587e291911776f6945be55c03eddb8600721a2bc",
+  "abis": [
+    {
+      "abi": "armeabi-v7a",
+      "version_code": 401,
+      "file": "Rytmica-FDroid-Clean-Android-armeabi-v7a-2.5.4.apk",
+      "sha256": "5d5a9d40e3b495efac26a236575be43e33777ce5b0b0e9253e72d0538d75243f",
+      "bytes": 19599732,
+      "signing_block_ids": [
+        "0x7109871a",
+        "0x42726577"
+      ],
+      "reproduced_sha256": "5d5a9d40e3b495efac26a236575be43e33777ce5b0b0e9253e72d0538d75243f",
+      "signature_verified": true,
+      "alignment_16kb_verified": true
+    },
+    {
+      "abi": "arm64-v8a",
+      "version_code": 402,
+      "file": "Rytmica-FDroid-Clean-Android-arm64-v8a-2.5.4.apk",
+      "sha256": "48ed2d9d70773127077d4c39cbb7e7872b0f37cb7fcfa2c87233d3944b80fe9f",
+      "bytes": 21832308,
+      "signing_block_ids": [
+        "0x7109871a",
+        "0x42726577"
+      ],
+      "reproduced_sha256": "48ed2d9d70773127077d4c39cbb7e7872b0f37cb7fcfa2c87233d3944b80fe9f",
+      "signature_verified": true,
+      "alignment_16kb_verified": true
+    },
+    {
+      "abi": "x86_64",
+      "version_code": 403,
+      "file": "Rytmica-FDroid-Clean-Android-x86_64-2.5.4.apk",
+      "sha256": "e7f2194b67b06c0bfea99312d89c96c6361ef593b20b9a203dc6956ecdd85bc3",
+      "bytes": 23198796,
+      "signing_block_ids": [
+        "0x7109871a",
+        "0x42726577"
+      ],
+      "reproduced_sha256": "e7f2194b67b06c0bfea99312d89c96c6361ef593b20b9a203dc6956ecdd85bc3",
+      "signature_verified": true,
+      "alignment_16kb_verified": true
+    }
+  ],
+  "official_fdroid_pipeline_for_2_5_4_passed": false,
+  "universal_apk": {
+    "version_code": 400,
+    "signature_verified": true,
+    "alignment_16kb_verified": true
+  },
+  "aab_signature_verified": true,
+  "github_asset_digests_verified": 13
+}

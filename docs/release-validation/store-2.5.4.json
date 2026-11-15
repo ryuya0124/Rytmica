@@ -1,0 +1,90 @@
+{
+  "verified_at": "2026-11-15T04:08:50.459913+00:00",
+  "version": "2.5.4",
+  "build": 40,
+  "build_source_commit": "587e291911776f6945be55c03eddb8600721a2bc",
+  "library_updates": {
+    "flutter": "3.50.0",
+    "dart": "3.14.0",
+    "image": "4.13.1",
+    "fastlane": "2.241.2",
+    "metronome_upstream": "2.0.13",
+    "metronome_local": "2.0.13+rytmica.1"
+  },
+  "upstream_constrained_pub_dependencies": [
+    "cli_util 0.4.2",
+    "material_color_utilities 0.13.0",
+    "test_api 0.7.14"
+  ],
+  "validation": {
+    "flutter_analyze": "passed",
+    "application_tests": 31,
+    "upstream_audio_session_tests": 1,
+    "offline_apple_guards": 10,
+    "web_wasm_release": "passed",
+    "windows_release": "passed",
+    "ios_signed_release": "passed",
+    "macos_signed_release": "passed",
+    "android_signed_release": "passed",
+    "physical_device_audio_checked": false
+  },
+  "github": {
+    "url": "https://github.com/ryuya0124/Rytmica/releases/tag/2.5.4",
+    "draft": false,
+    "asset_count": 16,
+    "all_asset_sha256_verified": true,
+    "build_run": "https://github.com/ryuya0124/Rytmica/actions/runs/43674366457"
+  },
+  "apple": {
+    "ios": {
+      "kind": "submission",
+      "platform": "IOS",
+      "version": "2.5.4",
+      "build": "40",
+      "review_id": "5522b6ac-d9bf-4756-a222-0b4ec8bd6305",
+      "status": "WAITING_FOR_REVIEW"
+    },
+    "macos": {
+      "kind": "submission",
+      "platform": "MAC_OS",
+      "version": "2.5.4",
+      "build": "40",
+      "review_id": "5d4ed72b-cefa-4bed-90ab-599ef3a2ed11",
+      "status": "WAITING_FOR_REVIEW"
+    },
+    "ios_build_run": "https://github.com/ryuya0124/Rytmica/actions/runs/43674369115",
+    "macos_build_run": "https://github.com/ryuya0124/Rytmica/actions/runs/43674371079"
+  },
+  "microsoft": {
+    "product_id": "9N7HMK8TN36X",
+    "submission_id": "1152921505702407414",
+    "package_version": "2.5.4.0",
+    "status": "Certification",
+    "errors": [],
+    "previous_2_5_3_submission_superseded": "1152921505702407185",
+    "submission_run": "https://github.com/ryuya0124/Rytmica/actions/runs/43674860997"
+  },
+  "fdroid": {
+    "mr": "https://gitlab.com/fdroid/fdroiddata/-/merge_requests/54059",
+    "current_mr_version": "2.5.2",
+    "current_mr_official_pipeline": "https://gitlab.com/fdroid/fdroiddata/-/pipelines/3021713267",
+    "current_mr_official_pipeline_status": "success",
+    "version_2_5_4_submitted": false,
+    "version_2_5_4_independent_rebuilds": 3,
+    "patch": "https://github.com/ryuya0124/Rytmica/releases/download/2.5.4/fdroid-2.5.4-update.patch",
+    "blocker": "Computer Use stopped because the current browser URL could not be determined safely. No GitLab credential is configured for CLI submission."
+  },
+  "web": {
+    "url": "https://rytmica.ryuya-dev.net",
+    "source_commit": "f2a22b3",
+    "deployment_version": "3add1a88-32b4-4d10-8a4c-b1535651e2c3",
+    "http_status": 200,
+    "software_version": "2.5.4",
+    "dependencies": {
+      "wrangler": "4.162.0",
+      "workers_types": "5.20261114.1",
+      "pnpm": "12.21.0"
+    },
+    "pnpm_audit": "no known vulnerabilities"
+  }
+}
