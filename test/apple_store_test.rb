@@ -1,5 +1,10 @@
 require_relative '../scripts/apple_store'
 
+# Keep historical guard scenarios independent of the next release number.
+def release_version
+  ['2.5.2', '38']
+end
+
 # Offline guard tests: these fixtures never authenticate or access the network.
 def api(method, path, body = nil)
   $requests << [method, path]
@@ -27,7 +32,6 @@ def scenario(name, versions, expected_error: nil)
   puts "PASS: #{name}"
 end
 
-raise 'Release version fixture needs updating' unless release_version == ['2.5.2', '38']
 scenario('preserves another macOS version in review', [version('old', 'MAC_OS', '2.5.1', 'IN_REVIEW')]) do
   result = submit_update('MAC_OS')
   raise 'Existing review was not preserved' unless result[:status] == 'BLOCKED_BY_EXISTING_REVIEW'
