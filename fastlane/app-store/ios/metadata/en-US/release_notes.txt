@@ -1,1 +1,3 @@
+Judgment presets are easier to read. See how early or late you can hit, and which notes or modes each preset applies to.
+
 Updated libraries and improved metronome stability when switching audio outputs.
