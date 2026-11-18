@@ -16,11 +16,8 @@ class JudgmentPresetContext {
     this.checkedOn,
   });
 
-  String describe(String languageCode) => [
-    if (version.isNotEmpty) version,
-    ?checkedOn,
-    languageCode.startsWith('ja') ? noteJa : noteEn,
-  ].join(' · ');
+  String noteFor(String languageCode) =>
+      languageCode.startsWith('ja') ? noteJa : noteEn;
 
   Map<String, dynamic> toJson() => {
     'version': version,

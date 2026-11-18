@@ -67,7 +67,7 @@ void main() {
     );
     expect(
       preset('phigros_challenge_perfect').context!.noteJa,
-      contains('表示Hz'),
+      contains('実際のフレームレート'),
     );
     expect(preset('phigros_normal_perfect').earlyMs, 80);
   });
@@ -132,7 +132,7 @@ void main() {
       );
       expect(
         preset('mltd_thanky_2lane23_6lane123_tap_0').context!.noteJa,
-        contains('全曲共通ではありません'),
+        contains('この曲・譜面だけ'),
       );
       expect(
         defaultJudgmentPresets.any((p) => p.id == 'mltd_om_perfect'),
@@ -281,7 +281,7 @@ void main() {
       expect(find.byType(JudgmentPresetDetails), findsNWidgets(2));
       expect(
         find.textContaining(
-          locale == 'ja' ? '全曲共通ではありません' : 'not universal across songs',
+          locale == 'ja' ? 'この曲・譜面だけ' : 'only to this song and chart',
         ),
         findsNWidgets(2),
       );

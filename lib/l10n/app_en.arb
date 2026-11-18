@@ -85,7 +85,13 @@
   "otherOption": "Other",
   "beatLabel": "Beats",
   "judgment_presets": "Judgment presets",
-  "preset_reference_caption": "Early/late values are one-sided limits. “Or better” includes higher grades. Overlap is a timing estimate; it does not simulate contact, holding or candidate-note selection.",
+  "preset_reference_caption": "Early and late show how far before or after the note you can hit. “GREAT or better” includes PERFECT.",
+  "preset_game_version": "Game version {version}",
+  "@preset_game_version": {
+    "placeholders": {
+      "version": { "type": "String" }
+    }
+  },
   "preset_window_range": "Early −{early} ms / Late +{late} ms",
   "@preset_window_range": {
     "placeholders": {
@@ -118,7 +124,7 @@
   "anmitsuPossibleDesc": "The judgment windows overlap, so anmitsu is possible",
   "anmitsuImpossibleDesc": "The judgment windows do not overlap, so anmitsu is impossible",
   "anmitsuPageSubtitle": "Calculate the timing range where two notes can be hit together",
-  "anmitsuHowTo": "Finds the common range of both notes’ complete early/late windows. Change BPM at the top of the screen.",
+  "anmitsuHowTo": "Choose the spacing between the notes and a grade for each. Flick direction and hold duration aren’t included in the calculation.",
   "earlierNote": "Earlier note",
   "laterNote": "Later note",
   "earlierNotePreset": "Earlier note judgment",
