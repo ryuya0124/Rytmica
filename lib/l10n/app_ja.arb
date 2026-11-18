@@ -85,8 +85,14 @@
   "otherOption": "その他",
   "beatLabel": "拍数",
   "judgment_presets": "判定プリセット",
-  "preset_reference_caption": "早／遅は中心から片側の幅です。「以上」は上位判定を含みます。計算は時間窓の重なりの目安で、接触・保持・候補ノーツ選択までは再現しません。",
-  "preset_window_range": "早 −{early} ms / 遅 +{late} ms",
+  "preset_reference_caption": "早押し・遅押しは、どれくらいずれても判定に入るかの目安です。「GREAT以上」にはPERFECTも含まれます。",
+  "preset_game_version": "対象バージョン {version}",
+  "@preset_game_version": {
+    "placeholders": {
+      "version": { "type": "String" }
+    }
+  },
+  "preset_window_range": "早押し −{early} ms / 遅押し +{late} ms",
   "@preset_window_range": {
     "placeholders": {
       "early": { "type": "String" },
@@ -118,7 +124,7 @@
   "anmitsuPossibleDesc": "判定幅が重なっているため、餡蜜が可能です",
   "anmitsuImpossibleDesc": "判定幅が重なっていないため、餡蜜は不可能です",
   "anmitsuPageSubtitle": "2つのノーツを同時押しできるタイミング幅を計算します",
-  "anmitsuHowTo": "2つのノーツの早／遅判定から、それぞれの区間に共通する範囲を計算します。BPMは画面上部から変更できます。",
+  "anmitsuHowTo": "ノーツ間隔と、先・後それぞれの判定を選んでください。フリックの向きやホールドの長さは計算に入りません。",
   "earlierNote": "先のノーツ",
   "laterNote": "後のノーツ",
   "earlierNotePreset": "先のノーツの判定",

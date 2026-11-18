@@ -19,6 +19,9 @@ class JudgmentPresetDetails extends StatelessWidget {
     final loc = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final reference = preset.context;
+    final noteStyle = theme.textTheme.bodySmall?.copyWith(
+      color: theme.colorScheme.onSurfaceVariant,
+    );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -34,12 +37,9 @@ class JudgmentPresetDetails extends StatelessWidget {
           ),
         if (reference != null) ...[
           const SizedBox(height: 4),
-          Text(
-            reference.describe(Localizations.localeOf(context).languageCode),
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-          ),
+          Text(reference.noteFor(loc.localeName), style: noteStyle),
+          if (reference.version.isNotEmpty)
+            Text(loc.preset_game_version(reference.version), style: noteStyle),
         ],
       ],
     );

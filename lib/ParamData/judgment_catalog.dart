@@ -64,8 +64,8 @@ List<JudgmentPreset> _buildJudgmentCatalog() {
   final presets = <JudgmentPreset>[];
   final sekai = _reference(
     'JP 7.1.0 / EN 6.1.0 / KR・TW 6.4.0',
-    '保存マスターの参照値。現在の演奏中の適用値は未確認。CN・体験版の実ロード値を保証しません。接触・方向・保持条件は別です。',
-    'Saved-master reference; live values are unconfirmed. Not a verified live value for CN or the trial. Contact, direction and hold conditions are separate.',
+    '日本・英語・韓国・台湾版のデータをもとにした目安です。実際のプレイでの判定は未確認です。',
+    'Based on data from the Japanese, English, Korean and Taiwanese versions. Timing in live play is unverified.',
   );
   for (final row in [
     ('white_notes', '通常タップ', 'Normal tap', 2.5 * _frameMs),
@@ -136,8 +136,8 @@ List<JudgmentPreset> _buildJudgmentCatalog() {
       early: [2.5 * _frameMs, 5.5 * _frameMs, 6.5 * _frameMs, 7.5 * _frameMs],
       context: _reference(
         'JP 10.2.0 / EN 9.4.0 / TW 10.1.0',
-        'sweetFrame=0。フレーム丸めを考慮した境界の近似値。端点の包含は段階ごとに異なり、強化・特殊ノーツは別です。',
-        'sweetFrame=0. Approximate boundaries after frame rounding; endpoint inclusion differs by rank. Skills and special notes are separate.',
+        '通常タップの目安です。判定幅を広げるスキルの効果は含みません。',
+        'Approximate values for normal taps, without skills that widen the timing window.',
       ),
       existingIds: {0: 'garupa_perfect'},
     ),
@@ -150,8 +150,8 @@ List<JudgmentPreset> _buildJudgmentCatalog() {
       early: [25, 50, 100, 150, 200],
       context: _reference(
         'JP 11.0.1 / EN 10.8.00',
-        '基本の時間差評価。スライドの保持・回復時間は別条件です。',
-        'Base timing evaluation. Slide holding and recovery use separate conditions.',
+        '押すタイミングの目安です。スライドを途中で離した場合の判定は別です。',
+        'Use this for hit timing. Releasing a slide early has its own rules.',
       ),
       existingIds: {0: 'd4dj_internal_perfect', 1: 'd4dj_perfect'},
     ),
@@ -164,15 +164,15 @@ List<JudgmentPreset> _buildJudgmentCatalog() {
       early: [50, 100, 150, 200],
       context: _reference(
         '1.2.1',
-        'JUST PERFECTの独立段階はありません。',
-        'There is no separate JUST PERFECT rank.',
+        'D4U Editionの最高判定はPERFECTです。',
+        'PERFECT is the highest grade in D4U Edition.',
       ),
     ),
   );
   final yumeste = _reference(
     '2.31.3',
-    '基本設定。タップとフリックは別テーブル。動作・ホールド・スクラッチの条件は別です。',
-    'Base settings. Tap and flick use different tables; gestures, holds and scratches have additional conditions.',
+    'タップとフリックでは判定幅が違います。ノーツに合う方を選んでください。',
+    'Taps and flicks have different timing. Choose the preset for the note you’re playing.',
   );
   presets.addAll(
     _series(
@@ -205,8 +205,8 @@ List<JudgmentPreset> _buildJudgmentCatalog() {
       early: [40, 90],
       context: _reference(
         '2.0.5',
-        '通常打音の初期値・保存値。厳密な未満比較。不可140msは成功判定に含めず、候補ノーツ選択も別条件です。',
-        'Normal hit defaults and saved values; strict comparisons. The 140 ms failure window is excluded. Candidate-note selection is separate.',
+        '通常の打音を初期設定で叩くときの目安です。良は40 ms未満、可は90 ms未満です。',
+        'For normal hits at default settings. 良 is under 40 ms and 可 is under 90 ms.',
       ),
     ),
   );
@@ -222,8 +222,8 @@ List<JudgmentPreset> _buildJudgmentCatalog() {
       late: [80, 180, 180],
       context: _reference(
         '4.0.1.2',
-        '取得版の通常設定。BADは早側のみ。BAD以上の遅側はGOOD期限180msまでとし、未接触の遅MISS領域を含めません。ドラッグ・フリックの接触記憶は別処理です。',
-        'Normal settings in the inspected version. BAD is early-only; its or-better late side stops at the 180 ms GOOD deadline, excluding late MISS. Drag/flick contact memory is separate.',
+        '通常モードでは、早く押したときだけBADが出ます。遅く押した場合は180 msまでがGOOD以上です。',
+        'In Normal mode, only early hits can get BAD. Late hits within 180 ms can still get GOOD or better.',
       ),
       existingIds: {0: 'phigros_normal_perfect'},
     ),
@@ -234,15 +234,15 @@ List<JudgmentPreset> _buildJudgmentCatalog() {
       _series(
         id: 'phigros_challenge_$fps',
         game: 'Phigros',
-        mode: '挑戦・安定${fps}fps参考',
-        modeEn: 'Challenge · stable $fps fps reference',
+        mode: '挑戦（$fps fps）',
+        modeEn: 'Challenge ($fps fps)',
         grades: ['PERFECT', 'GOOD', 'BAD'],
         early: [40 + h, 90 + h, 140 + h],
         late: [40 + h, 90 + h, 90 + h],
         context: _reference(
           '4.0.1.2',
-          '各基準値に直近最大10フレームの平均deltaTime÷2を加算。安定${fps}fpsの参考値で表示Hzだけでは決まりません。BADは早側のみで、遅側はGOOD期限までです。',
-          'Base values plus half the average deltaTime of up to 10 recent frames. A stable $fps fps reference, not inferred from display Hz. BAD is early-only; the late side stops at the GOOD deadline.',
+          '$fps fpsで安定しているときの目安です。判定幅は実際のフレームレートで変わります。BADが出るのは早押しだけです。',
+          'Approximate values for a steady $fps fps. Timing varies with the actual frame rate. Only early hits can get BAD.',
         ),
         existingIds: fps == 60 ? {0: 'phigros_challenge_perfect'} : const {},
       ),
@@ -257,8 +257,8 @@ List<JudgmentPreset> _buildJudgmentCatalog() {
       late: [24, 49, 99],
       context: _reference(
         '1.2.68',
-        '整数msの実区間はMAX −25〜+24、PERFECT −50〜+49、GOOD −100〜+99。譜面リマップ・保持受付は別です。',
-        'Integer intervals: MAX −25…+24, PERFECT −50…+49, GOOD −100…+99 ms. Chart remaps and hold acceptance are separate.',
+        '判定は1 ms刻みです。ホールドや判定が変更された譜面では条件が異なります。',
+        'Timing is judged in whole milliseconds. Holds and charts with custom timing use different rules.',
       ),
     ),
   );
@@ -270,8 +270,8 @@ List<JudgmentPreset> _buildJudgmentCatalog() {
       early: [25, 50, 100],
       context: _reference(
         '7.1.0',
-        '通常タップの時間分類。120msのLOST外周は成功判定に含めません。アーク・ホールドの追従条件は別です。',
-        'Normal tap timing. The 120 ms LOST perimeter is excluded. Arc/hold tracking uses separate conditions.',
+        '通常タップ用です。アークやホールドには、指を動かしたり押し続けたりする条件もあります。',
+        'For normal taps. Arcs and holds also check how you move or hold your finger.',
       ),
       existingIds: {0: 'arcaea_internal_pure', 1: 'arcaea_pure'},
     ),
@@ -279,25 +279,29 @@ List<JudgmentPreset> _buildJudgmentCatalog() {
   for (final row in [
     (
       'tap',
+      'タップ',
       'Tap',
       <double>[1 * _frameMs, 50, 100, 150],
       <double>[1 * _frameMs, 50, 100, 150],
     ),
     (
       'hold',
+      'ホールド',
       'Hold',
       <double>[1 * _frameMs, 50, 100, 150],
       <double>[1 * _frameMs, 8 * _frameMs, 11 * _frameMs, 14 * _frameMs],
     ),
     (
       'touch',
+      'タッチ',
       'Touch',
       <double>[150, 150, 150, 150],
       <double>[150, 13 * _frameMs, 250, 300],
     ),
     (
       'slide_finish',
-      'SlideFinish',
+      'スライド終点',
+      'Slide finish',
       <double>[14 * _frameMs, 26 * _frameMs, 600],
       <double>[14 * _frameMs, 26 * _frameMs, 600],
     ),
@@ -307,15 +311,16 @@ List<JudgmentPreset> _buildJudgmentCatalog() {
         id: 'astrodx_${row.$1}',
         game: 'AstroDX',
         mode: row.$2,
+        modeEn: row.$3,
         grades: row.$1 == 'slide_finish'
             ? ['CRITICAL PERFECT', 'GREAT', 'GOOD']
             : ['CRITICAL PERFECT', 'PERFECT', 'GREAT', 'GOOD'],
-        early: row.$3,
-        late: row.$4,
+        early: row.$4,
+        late: row.$5,
         context: _reference(
           '2.0.0.beta.pre.96.exp.8',
-          'ノーツ別の時間表。境界では評価順が影響します。Holdの最終成績は保持時間も使用。SlideFinishに独立したPERFECT段階はありません。',
-          'Note-specific timing table; evaluation order matters at shared boundaries. Hold also evaluates duration. SlideFinish has no separate PERFECT rank.',
+          'ホールドは押し続けた長さも判定に入ります。スライド終点はCRITICAL PERFECTの次がGREATです。',
+          'Hold also checks how long you held the note. For SlideFinish, GREAT comes right after CRITICAL PERFECT.',
         ),
       ),
     );
@@ -330,8 +335,8 @@ List<JudgmentPreset> _buildJudgmentCatalog() {
       early: [50, 100, 120, 150],
       context: _reference(
         '1.1.8',
-        'APK初期値・MusicRate=1。端末の変更済み設定50/33/41/50msは非単調のため収録しません。ファジー軽減・離し補正は別です。',
-        'APK defaults, MusicRate=1. The device-specific non-monotonic 50/33/41/50 ms settings are excluded. Fuzzy and release corrections are separate.',
+        '曲の再生速度が等倍で、判定を初期設定のまま使う場合の目安です。',
+        'For normal song speed with the default timing settings.',
       ),
     ),
   );
@@ -343,8 +348,8 @@ List<JudgmentPreset> _buildJudgmentCatalog() {
       early: [50, 200],
       context: _reference(
         '1.0.6',
-        '演奏シーンの値。コンストラクタ値ではありません。POOR期限400msは通常の成功グレードに含めません。',
-        'Gameplay-scene values, not constructor defaults. The 400 ms POOR deadline is not an ordinary success grade.',
+        'プレイ中のGREATとGOODの目安です。',
+        'Approximate timing for GREAT and GOOD during play.',
       ),
     ),
   );
@@ -352,25 +357,29 @@ List<JudgmentPreset> _buildJudgmentCatalog() {
   for (final row in [
     (
       'regular',
-      'Regular/SlideStart/Skill/Kime',
+      '通常・スライド始点・スキル・キメ',
+      'Normal / Slide start / Skill / Kime',
       <double>[30, 50, 5 * _frameMs, 8 * _frameMs],
       <double>[30, 50, 5 * _frameMs, 8 * _frameMs],
     ),
     (
       'flick',
+      'フリック',
       'Flick',
       <double>[5 * _frameMs, 5 * _frameMs, 5 * _frameMs, 5 * _frameMs],
       <double>[40, 50, 5 * _frameMs, 8 * _frameMs],
     ),
     (
       'slide_end',
-      'SlideEnd',
+      'スライド終点',
+      'Slide end',
       <double>[5.5 * _frameMs, 5.5 * _frameMs, 0, 0],
       <double>[30, 50, 4 * _frameMs, 100],
     ),
     (
       'slide_joint',
-      'SlideJoint',
+      'スライド中継点',
+      'Slide joint',
       <double>[2 * _frameMs, 2 * _frameMs, 0, 0],
       <double>[2 * _frameMs, 2 * _frameMs, 4 * _frameMs, 4 * _frameMs],
     ),
@@ -380,13 +389,14 @@ List<JudgmentPreset> _buildJudgmentCatalog() {
         id: 'shinycolors_${row.$1}',
         game: 'シャニソン',
         mode: row.$2,
+        modeEn: row.$3,
         grades: ['SHINY', 'PERFECT', 'GREAT', 'GOOD'],
-        early: row.$3,
-        late: row.$4,
+        early: row.$4,
+        late: row.$5,
         context: _reference(
           '2.19.1',
-          'SHINY有効時。以上の範囲は上位判定を含むため、マスターの0を上位の早判定から除きません。保持・動作条件は別です。',
-          'SHINY enabled. “Or better” includes higher ranks, so a raw zero does not remove their early acceptance. Hold/gesture conditions are separate.',
+          'SHINYを有効にしたときの判定幅です。スライドやフリックでは指の動きも判定されます。',
+          'Timing with SHINY enabled. Slides and flicks also check finger movement.',
         ),
       ),
     );
@@ -401,29 +411,32 @@ List<JudgmentPreset> _buildJudgmentCatalog() {
       early: [40, 80, 130],
       context: _reference(
         '2.99.0',
-        '通常ノーツ。フリックは動作条件と専用判定が別です。',
-        'Normal notes; flick gestures have separate conditions and timing.',
+        '通常ノーツ用です。フリックは別の判定幅で、指の動きも判定されます。',
+        'For normal notes. Flicks use their own timing and also check the gesture.',
       ),
     ),
   );
   for (final row in [
     (
       'normal',
-      'Normal/LongStart',
+      '通常・ロング始点',
+      'Normal / Long start',
       ['PERFECT+', 'PERFECT', 'GREAT', 'GOOD', 'BAD'],
       <double>[25, 4 * _frameMs, 100, 8 * _frameMs, 150],
       <double>[25, 50, 5 * _frameMs, 7 * _frameMs, 8 * _frameMs],
     ),
     (
       'flick',
-      'Flick/LongFlickEnd',
+      'フリック・ロング終点フリック',
+      'Flick / Long end flick',
       ['PERFECT+', 'PERFECT', 'BAD'],
       <double>[25, 100, 150],
       <double>[25, 5 * _frameMs, 8 * _frameMs],
     ),
     (
       'critical',
-      'Critical Normal/LongStart',
+      'クリティカル（通常・ロング始点）',
+      'Critical (Normal / Long start)',
       ['PERFECT+', 'PERFECT', 'BAD'],
       <double>[25, 8 * _frameMs, 150],
       <double>[25, 7 * _frameMs, 8 * _frameMs],
@@ -434,13 +447,14 @@ List<JudgmentPreset> _buildJudgmentCatalog() {
         id: 'holodori_${row.$1}',
         game: 'ホロライブ ドリームス',
         mode: row.$2,
-        grades: row.$3,
-        early: row.$4,
-        late: row.$5,
+        modeEn: row.$3,
+        grades: row.$4,
+        early: row.$5,
+        late: row.$6,
         context: _reference(
           '1.2.101',
-          '端末で選択されたマスターDBの値。CriticalType=1はGreat/GoodをPerfectへ昇格。中継・継続・終点の到達確定や接触維持は別です。',
-          'Selected on-device master DB. CriticalType=1 promotes Great/Good to Perfect. Relay, continuation, end arrival and sustained contact are separate.',
+          'クリティカル対象のノーツでは、GREATやGOODのタイミングでもPERFECTになることがあります。',
+          'On critical notes, a hit timed for GREAT or GOOD can count as PERFECT.',
         ),
       ),
     );
@@ -448,26 +462,32 @@ List<JudgmentPreset> _buildJudgmentCatalog() {
   for (final row in [
     (
       'normal',
-      '標準分岐',
-      'Standard branch',
+      '通常',
+      'Normal',
       ['PERFECT', 'GREAT', 'GOOD', 'BAD'],
       <double>[45, 90, 120, 150],
     ),
     (
       'type21',
-      '内部type21',
-      'Internal type21',
+      '特殊ノーツ（ID 21）',
+      'Special note (ID 21)',
       ['PERFECT', 'GREAT', 'GOOD', 'BAD'],
       <double>[90, 180, 240, 300],
     ),
     (
       'type30_32',
-      '内部type30/31/32',
-      'Internal type30/31/32',
+      '特殊ノーツ（ID 30〜32）',
+      'Special note (IDs 30–32)',
       ['PERFECT'],
       <double>[90],
     ),
-    ('type62', '内部type62', 'Internal type62', ['PERFECT'], <double>[120]),
+    (
+      'type62',
+      '特殊ノーツ（ID 62）',
+      'Special note (ID 62)',
+      ['PERFECT'],
+      <double>[120],
+    ),
   ]) {
     presets.addAll(
       _series(
@@ -479,8 +499,8 @@ List<JudgmentPreset> _buildJudgmentCatalog() {
         early: row.$5,
         context: _reference(
           '4.22.3',
-          '特殊type IDと画面上のノーツ名は未対応づけ。MISS入力外周200msは除外。特殊ノーツの接触・自動判定は別です。',
-          'Special type IDs are not mapped to UI note names. The 200 ms MISS perimeter is excluded. Contact and automatic judgments are separate.',
+          '特殊ノーツはゲーム内データの番号で表示しています。画面上のノーツ名との対応は未確認です。',
+          'Special notes are listed by their data IDs. The matching in-game note names are unconfirmed.',
         ),
       ),
     );
@@ -488,37 +508,43 @@ List<JudgmentPreset> _buildJudgmentCatalog() {
   for (final row in [
     (
       'tap',
+      'タップ',
       'Tap',
       ['JUST PERFECT', 'PERFECT', 'GREAT', 'GOOD', 'BAD'],
       <double>[20, 50, 100, 150, 200],
     ),
     (
       'long_end_flick',
-      'LongEndFlick',
+      'ロング終点フリック',
+      'Long end flick',
       ['JUST PERFECT', 'PERFECT'],
       <double>[37.5, 75],
     ),
     (
       'sky_start',
-      'SkyStart',
+      'Sky始点',
+      'Sky start',
       ['JUST PERFECT', 'PERFECT', 'GREAT', 'GOOD'],
       <double>[25, 50, 100, 150],
     ),
     (
       'sky_end',
-      'SkyEnd',
+      'Sky終点',
+      'Sky end',
       ['JUST PERFECT', 'PERFECT', 'GREAT', 'GOOD'],
       <double>[37.5, 75, 150, 175],
     ),
     (
       'other',
+      'その他',
       'Other',
       ['JUST PERFECT', 'PERFECT', 'GREAT', 'GOOD', 'BAD'],
       <double>[37.5, 75, 150, 175, 200],
     ),
     (
       'classic',
-      'Classic Tap',
+      'Classicタップ',
+      'Classic tap',
       ['PERFECT', 'GREAT', 'GOOD', 'BAD'],
       <double>[50.1, 100, 167, 234],
     ),
@@ -528,12 +554,13 @@ List<JudgmentPreset> _buildJudgmentCatalog() {
         id: 't7s_${row.$1}',
         game: 'Tokyo 7th シスターズ',
         mode: row.$2,
-        grades: row.$3,
-        early: row.$4,
+        modeEn: row.$3,
+        grades: row.$4,
+        early: row.$5,
         context: _reference(
           '13.0.3',
-          '現行とClassicを区別。Soloの内部時刻換算とClassic特殊配列の段階対応は未確定のため除外。MISS外周も含めません。',
-          'Current and Classic tables are separate. Solo time conversion, Classic special-array rank mapping and MISS perimeters are excluded.',
+          '通常プレイとClassicでは判定幅が違います。Classicのタップには「Classicタップ」を選んでください。',
+          'Normal play and Classic have different timing. Choose Classic tap for taps in Classic mode.',
         ),
       ),
     );
@@ -548,8 +575,8 @@ List<JudgmentPreset> _buildJudgmentCatalog() {
       early: [25, 2.5 * _frameMs, 60, 82.5, 110],
       context: _reference(
         '7.7.5',
-        'LB/Pの表示オプション・スコア方式で上位段階の扱いが変化。MISS外周120msと保持用定数は除外。旧「虹JUST 40ms」はP JUST約41.67msに訂正。',
-        'LB/P display options and scoring mode affect top ranks. The 120 ms MISS perimeter and hold constants are excluded. The old 40 ms rainbow preset is corrected to P JUST ≈41.67 ms.',
+        'LB JUSTとP JUSTの扱いは、ゲーム内の表示設定やスコア方式で変わります。',
+        'How LB JUST and P JUST are counted depends on your display and scoring settings.',
       ),
       existingIds: {1: 'takumi_rainbow_just', 2: 'takumi_just'},
     ),
@@ -567,14 +594,14 @@ List<JudgmentPreset> _buildJudgmentCatalog() {
       JudgmentPreset(
         id: row.$1,
         game: row.$2,
-        label: '${row.$3}・従来値',
-        labelEn: '${row.$3} · legacy reference',
+        label: '${row.$3}（参考）',
+        labelEn: '${row.$3} (estimate)',
         earlyMs: row.$4,
         lateMs: row.$4,
         context: const JudgmentPresetContext(
           version: '',
-          noteJa: '今回の資料の調査対象外です。従来値を保持していますが、出所・対象版・現在の適用値は未確認です。',
-          noteEn: 'Not covered by this survey. Retained legacy value; source, version and current applicability are unverified.',
+          noteJa: '以前からある参考値です。出典や対象バージョン、今の判定幅は未確認です。',
+          noteEn: 'An older estimate. Its source, game version and current accuracy are unverified.',
         ),
       ),
     );
@@ -586,13 +613,14 @@ void _addOurNotes(List<JudgmentPreset> presets) {
   for (var level = 0; level <= 5; level++) {
     final context = _reference(
       '1.1.0',
-      '実行中マスター・内部アシストLv$level・強化前。UI上のアシスト名との対応は未確認。以上は上位判定を含む範囲。MISS用の窓・別集計EXCELLENT・接触ラッチは除外。',
-      'Runtime master, internal assist Lv$level, before skills. UI assist-name mapping is unconfirmed. “Or better” includes higher ranks. MISS windows, separate EXCELLENT counters and contact latches are excluded.',
+      '強化前の判定幅です。アシストLvはゲーム内データの番号で、画面上の設定名との対応は未確認です。',
+      'Timing before skill effects. Assist levels use numbers from the game data. The matching menu options are unconfirmed.',
     );
     for (final row in [
       (
         'normal',
-        'Normal/SlideBegin',
+        '通常・スライド始点',
+        'Normal / Slide start',
         ['JUST (内部)', 'PERFECT', 'GREAT', 'GOOD', 'BAD'],
         <double>[
           2,
@@ -611,13 +639,15 @@ void _addOurNotes(List<JudgmentPreset> presets) {
       ),
       (
         'easy',
-        'EasyNormal/SlideBeginEasy',
+        '通常・スライド始点（Easy）',
+        'Normal / Slide start (Easy)',
         ['JUST (内部)', 'PERFECT'],
         <double>[2, 67.0 + 5 * level],
         <double>[2, 67.0 + 5 * level],
       ),
       (
         'flick',
+        'フリック',
         'Flick',
         ['JUST (内部)', 'PERFECT', 'GREAT', 'GOOD', 'BAD'],
         <double>[2, 83.0 + 5 * level, 0, 0, 0],
@@ -631,7 +661,8 @@ void _addOurNotes(List<JudgmentPreset> presets) {
       ),
       (
         'end_flick',
-        'SlideEndFlick',
+        'スライド終点フリック',
+        'Slide end flick',
         ['JUST (内部)', 'PERFECT', 'GREAT', 'GOOD', 'BAD'],
         <double>[2, 83.0 + 5 * level, 0, 0, 0],
         <double>[
@@ -644,7 +675,8 @@ void _addOurNotes(List<JudgmentPreset> presets) {
       ),
       (
         'end',
-        'SlideEnd',
+        'スライド終点',
+        'Slide end',
         ['PERFECT', 'GREAT', 'GOOD', 'BAD'],
         <double>[84, 0, 0, 0],
         <double>[
@@ -659,10 +691,11 @@ void _addOurNotes(List<JudgmentPreset> presets) {
         _series(
           id: 'ournotes_${row.$1}_assist$level',
           game: 'アワーノーツ',
-          mode: '${row.$2} · Lv$level',
-          grades: row.$3,
-          early: row.$4,
-          late: row.$5,
+          mode: '${row.$2}（アシストLv$level）',
+          modeEn: '${row.$3} (Assist Lv $level)',
+          grades: row.$4,
+          early: row.$5,
+          late: row.$6,
           context: context,
         ),
       );
@@ -677,39 +710,49 @@ void _addMillionLive(List<JudgmentPreset> presets) {
   for (final row in [
     (
       'thanky_2lane0_4lane',
-      'thanky · 2L index0 / 4L index0–3',
+      '譜面 thanky（2レーン #0 / 4レーン #0〜3）',
+      'Chart thanky (2 lanes #0 / 4 lanes #0–3)',
       <double>[5, 9, 14],
       16.0,
     ),
     (
       'thanky_2lane1_6lane0',
-      'thanky · 2L index1 / 6L index0',
+      '譜面 thanky（2レーン #1 / 6レーン #0）',
+      'Chart thanky (2 lanes #1 / 6 lanes #0)',
       <double>[3, 6, 11],
       13.0,
     ),
     (
       'thanky_2lane23_6lane123',
-      'thanky · 2L index2–3 / 6L index1–3',
+      '譜面 thanky（2レーン #2〜3 / 6レーン #1〜3）',
+      'Chart thanky (2 lanes #2–3 / 6 lanes #1–3)',
       <double>[3, 6, 9],
       11.0,
     ),
-    ('bnthtr_6lane2', 'bnthtr · 6L index2', <double>[2, 6, 9], 11.0),
+    (
+      'bnthtr_6lane2',
+      '譜面 bnthtr（6レーン #2）',
+      'Chart bnthtr (6 lanes #2)',
+      <double>[2, 6, 9],
+      11.0,
+    ),
   ]) {
     for (final release in [false, true]) {
       presets.addAll(
         _series(
           id: 'mltd_${row.$1}_${release ? 'release' : 'tap'}',
           game: 'ミリシタ',
-          mode: '${row.$2} · ${release ? 'Flick/HoldEnd' : 'Tap'}',
+          mode: '${row.$2} · ${release ? 'フリック／ホールド終点' : 'タップ'}',
+          modeEn: '${row.$3} · ${release ? 'Flick / Hold end' : 'Tap'}',
           grades: ['PERFECT', 'GREAT', 'GOOD'],
           early: [
-            for (final frames in row.$3)
-              min(frames * _frameMs + (release ? 50 : 0), row.$4 * _frameMs),
+            for (final frames in row.$4)
+              min(frames * _frameMs + (release ? 50 : 0), row.$5 * _frameMs),
           ],
           context: _reference(
             '9.0.350',
-            '取得キャッシュ譜面${row.$1.startsWith('bnthtr') ? 'bnthtr' : 'thanky'}限定の参考値。内部difficultyとUIコース名は未対応づけ。全曲共通ではありません。上位3段は厳密な未満比較。終点加算は入力外周で制限済み。',
-            'Reference for the sampled ${row.$1.startsWith('bnthtr') ? 'bnthtr' : 'thanky'} chart only. Internal difficulty IDs are not mapped to UI courses; not universal across songs. Top ranks use strict comparisons. Release bonuses are capped by the input perimeter.',
+            'この曲・譜面だけの参考値です。譜面番号とゲーム内のコース名の対応は未確認です。',
+            'These values apply only to this song and chart. The matching in-game course names are unconfirmed.',
           ),
         ),
       );
@@ -738,13 +781,14 @@ void _addMalody(List<JudgmentPreset> presets) {
         _series(
           id: 'malody_${row.$1}_$setting',
           game: 'Malody',
-          mode: '${row.$2} · setting $setting',
+          mode: '${row.$2}（設定 $setting）',
+          modeEn: '${row.$2} (Setting $setting)',
           grades: ['BEST', 'COOL', 'GOOD'],
           early: [for (final value in row.$3) value + delta],
           context: _reference(
             '4.3.7',
-            '内部モード名・内部設定番号。UI表示やA〜Eとの対応は未確認。Keyのみ設定補正を確認済み。Fairは別表です。',
-            'Internal mode and setting IDs; UI names and A–E mapping are unconfirmed. Setting corrections are verified only for Key; Fair has its own table.',
+            '判定設定はゲーム内データの番号で表示しています。画面上のA〜Eとの対応は未確認です。',
+            'Timing settings use numbers from the game data. The matching A–E menu options are unconfirmed.',
           ),
         ),
       );
@@ -755,7 +799,8 @@ void _addMalody(List<JudgmentPreset> presets) {
       _series(
         id: 'malody_lovelive_$setting',
         game: 'Malody',
-        mode: 'LoveLive · setting $setting',
+        mode: 'LoveLive（設定 $setting）',
+        modeEn: 'LoveLive (Setting $setting)',
         grades: ['BEST', 'COOL', 'GOOD'],
         early: [
           <double>[52, 46, 40, 36, 32][setting],
@@ -764,8 +809,8 @@ void _addMalody(List<JudgmentPreset> presets) {
         ],
         context: _reference(
           '4.3.7',
-          'LoveLive専用の内部設定0〜4。UIのA〜Eへの対応は未確認です。',
-          'LoveLive-specific internal settings 0–4; the UI A–E mapping is unconfirmed.',
+          'LoveLiveモード用です。設定番号と画面上のA〜Eとの対応は未確認です。',
+          'For LoveLive mode. The matching A–E menu options are unconfirmed.',
         ),
       ),
     );
@@ -778,8 +823,8 @@ void _addOsu(List<JudgmentPreset> presets) {
   for (final od in [0, 5, 10]) {
     final context = _reference(
       '2026.1005.0-lazer',
-      '同版タグの公式ソース参照・OD$od・速度1・判定変更Modなし。maniaはClassic・コンバート分岐を除外。MISS外周とcatchは含めません。',
-      'Official source at the matching tag; OD$od, speed=1, no timing-changing mods. Mania excludes Classic/converted branches. MISS perimeters and catch are excluded.',
+      '等速で、判定幅を変えるModを使わない場合の値です。',
+      'For normal speed without mods that change timing.',
     );
     presets.addAll(
       _series(
@@ -823,7 +868,11 @@ void _addOsu(List<JudgmentPreset> presets) {
           ])
             value.floorToDouble() + 0.5,
         ],
-        context: context,
+        context: _reference(
+          context.version,
+          'mania専用譜面を等速・判定変更Modなしで遊ぶ場合の値です。Classicの判定も対象外です。',
+          'For native mania charts at normal speed with no timing mods or Classic settings.',
+        ),
       ),
     );
   }
